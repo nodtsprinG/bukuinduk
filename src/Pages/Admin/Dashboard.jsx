@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaFemale, FaMale, FaDatabase, FaUser, FaBars } from "react-icons/fa";
 import Navigation from "../../components/nav";
-import { baseUrl } from "../../utils/constan";
+import { baseUrl } from "../../Utils/constan";
 import GenderCharts from "../../Components/GenderCharts";
 import { Toaster } from "react-hot-toast";
 

@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navigation from "../../../components/nav";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import { CiFilter } from "react-icons/ci";
 import FilterComponent from "../../../components/filter";
-import { baseUrl } from "../../../utils/constan";
+import { baseUrl } from "../../../Utils/constan";
 import fileDownload from "js-file-download";
 import { toast } from "react-toastify";
 import detailPreparing from "../../../Utils/detailPreparing"
@@ -26,27 +26,22 @@ const DataSiswa = () => {
     axios.get(`${baseUrl}/admin/akun`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     }).then((res) => setSiswa(res.data));
+  }, []); 
+
+  useEffect(() => {
     if (!siswa) return;
     let data = siswa.filter((s) =>
       s.nama.toLowerCase().includes(searchKey.toLowerCase())
     );
 
-    if (angkatans.length > 0) {
-      data = data.filter((s) => angkatans.includes(s.angkatan));
-    }
+    const selectedAngkatans = angkatans.filter((x) => x.checked).map((x) => x.tahun);
+    const selectedJurusans = jurusans.filter((x) => x.checked).map((x) => x.nama);
 
-    if (jurusans.length > 0) {
-      data = data.filter((s) => jurusans.includes(s.jurusan));
-    }
+    if (selectedAngkatans.length) data = data.filter((s) => selectedAngkatans.includes(s.angkatan));
+    if (selectedJurusans.length) data = data.filter((s) => selectedJurusans.includes(s.jurusan));
 
     setFiltered(data);
-  }, [siswa, searchKey, angkatans, jurusans]);
-
-  useEffect(() => {
-    if (!siswa) return;
-    let data = siswa.filter((s) => s.nama.toLowerCase().includes(searchKey.toLowerCase()));
-    setFiltered(data);
-  }, [siswa, searchKey]);
+  }, [siswa, searchKey, angkatans, jurusans]);  
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -123,23 +118,18 @@ const DataSiswa = () => {
     navigate(`/admin/lihat/${id}/biodata`);
   };
 
-  const handleEditClick = (id) => {
-    detailPreparing(id);
-    navigate(`/admin/audit/${id}/biodata`);
-  };
-
   return (
     <div className="flex h-screen font-body">
       <Navigation />
       <div className="flex-1 p-6 bg-white text-black overflow-y-scroll">
         <h1 className="text-3xl font-normal ml-2">Data Siswa</h1>
         <header className="flex justify-end gap-4 my-5">
-          <button onClick={() => exportData()} className="bg-blue-500 rounded-sm p-2 text-white">Unduh Excel</button>
-          <button onClick={() => exportDataPDF()} className="bg-blue-500 rounded-sm p-2 text-white">Unduh PDF</button>
-          <button onClick={() => exportDataPDF()} className="bg-blue-500 rounded-sm p-2 text-white">Unduh Format</button>
+          <button onClick={() => exportData()} className="bg-blue-500 rounded-sm py-1 px-2 text-white">Unduh Excel</button>
+          <button onClick={() => exportDataPDF()} className="bg-blue-500 rounded-sm py-1 px-2 text-white">Unduh PDF</button>
+          <button onClick={() => exportDataPDF()} className="bg-blue-500 rounded-sm py-1 px-2 text-white">Unduh Format</button>
           <form onSubmit={handleImport} className="flex gap-5">
-            <input type="file" onChange={handleFileChange} className="border border-black rounded-sm p-2 file:bg-gray-400 file:rounded file:border file:border-black file:p-2 placeholder:ml-2" />
-            <button type="submit" className="bg-blue-500 rounded-sm p-2 text-white">Impor Excel</button>
+            <input type="file" onChange={handleFileChange} className="border border-black rounded-sm py-1 px-2 file:bg-gray-300 file:rounded file:border file:border-black file:p-1 placeholder:ml-2" />
+            <button type="submit" className="bg-blue-500 rounded-sm py-1 px-2 text-white">Impor Excel</button>
           </form>
         </header>
         <div className="grid grid-cols-10 gap-5 mt-6">
@@ -170,9 +160,8 @@ const DataSiswa = () => {
                 <td className="border px-4 py-2">{indexOfFirstItem + index + 1}</td>
                 <td className="border px-4 py-2">{s.nisn}</td>
                 <td className="border px-4 py-2">{s.nama}</td>
-                <td className="px-4 py-2 grid grid-cols-2 gap-2 justify-center">
-                  <button onClick={() => handleDetailClick(s.id)} className="bg-blue-500 rounded-sm p-2 text-white border">Lihat Detail</button>
-                  <button onClick={() => handleEditClick(s.id)} className="bg-green-800 rounded-sm p-2 text-white border">Perbarui</button>
+                <td className="px-4 py-2 justify-center">
+                  <button onClick={() => handleDetailClick(s.id)} className="bg-blue-500 rounded-sm p-2 text-white border">Detail Siswa</button>
                 </td>
               </tr>
             ))}

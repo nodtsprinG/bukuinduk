@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { baseUrl } from "../../../utils/constan";
+import { baseUrl } from "../../../Utils/constan";
 import Profil from "../../../Components/profileCard";
 import InputHalaman from "../../../Components/pilihHalamanV2";
-import {
-  TextInput,
-  IntegerInput,
-  RadioInput,
-} from "../../../Components/inputComponent";
+import {TextInput} from "../../../Components/inputComponent";
 import Nextbefore from "../../../Components/nextbefore";
 import HeaderInput from "../../../Components/headerInput";
 import DatePicker from "react-datepicker";
@@ -108,40 +104,28 @@ const Biodata = () => {
         <table className="w-3/4 font-body border-separate border-spacing-4">
           <tbody>
             {[
-              { label: "Nama Lengkap", field: "nama_lengkap" },
-              { label: "Nama Panggilan", field: "nama_panggilan" },
-              { label: "Jenis Kelamin", field: "jenis_kelamin", type: "radio" },
-              { label: "Tempat Lahir", field: "tempat_lahir" },
-              { label: "Agama", field: "agama" },
-              { label: "Kewarganegaraan", field: "kewarganegaraan" },
-              { label: "Anak ke", field: "anak_ke", type: "integer" },
-              { label: "Jumlah Saudara Kandung", field: "jml_saudara_kandung", type: "integer" },
-              { label: "Jumlah Saudara Tiri", field: "jml_saudara_tiri", type: "integer" },
-              { label: "Jumlah Saudara Angkat", field: "jml_saudara_angkat", type: "integer" },
-              { label: "Bahasa Sehari-hari", field: "bahasa_sehari_hari" },
+              { label: "Menerima Beasiswa Tahun Kelas Dari", field: "menerima_bea_siswa_tahun_kelas_dari" },
+              { label: "Tanggal Meninggalkan Sekolah", field: "meninggalkan_sekolah_ini_tanggal", type: "date" },
+              { label: "Alasan Meninggalkan Sekolah", field: "meninggalkan_sekolah_ini_alasan" },
+              { label: "Lulus Tahun", field: "akhir_pendidikan_tamat_belajar_lulus_tahun" },
+              { label: "Nomor dan Tanggal Ijazah", field: "akhir_pendidikan_no_tanggal_ijazah" },
+              { label: "Nomor dan Tanggal SKHUN", field: "akhir_pendidikan_no_tanggal_skhun" },
             ].map(({ label, field, type }, index) => (
               <tr key={index}>
                 <td className="w-[63%] h-full">
                   <label className="py-1">{label}</label>
                 </td>
                 <td className="w-[37%] h-full">
-                  {type === "integer" ? (
-                    <IntegerInput
-                      value={siswa.data_diri[field]}
-                      onChange={(e) => isEditing && handleChange(e, "kelengkapan_ortu")}
-                      className="h-full"
-                      disabled={!isEditing}
-                    />
-                  ) : type === "radio" ? (
-                    <RadioInput
-                      value={siswa.data_diri[field]}
+                  {type === 'date' ? (
+                    <DatePicker
+                      value={siswa.perkembangan[field]}
                       onChange={(e) => isEditing && handleChange(e, field)}
-                      className="h-full"
+                      className="h-full w-1/2 px-4 py-2 bg-[#DEE0E1] rounded-lg"
                       disabled={!isEditing}
                     />
                   ) : (
                     <TextInput
-                      value={siswa.data_diri[field]}
+                      value={siswa.perkembangan[field]}
                       onChange={(e) => isEditing && handleChange(e, field)}
                       className="h-full"
                       disabled={!isEditing}

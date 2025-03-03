@@ -78,23 +78,23 @@ const Navigation = () => {
         </li>
         <li>
           <Link
-            to="/admin/datajurusan"
+            to="/admin/pending"
             className="flex items-center space-x-3 p-3 rounded-lg transition duration-300 hover:bg-gray-700"
           >
             <MdPendingActions size={20} />
             <span className="text-sm font-medium">Pending Data</span>
           </Link>
         </li>
+        <li className="mt-[100px]">
+          <button
+            onClick={Logout}
+            className="flex w-full space-x-3 p-3 rounded-lg bg-transparent hover:bg-red-700 transition duration-300"
+          >
+            <RiLogoutBoxLine size={20} />
+            <span className="text-sm font-medium">Logout</span>
+          </button>
+        </li>
       </ul>
-
-      {/* Logout Button */}
-      <button
-        onClick={Logout}
-        className="flex items-center space-x-3 p-3 rounded-lg bg-transparent hover:bg-red-700 transition duration-300"
-      >
-        <RiLogoutBoxLine size={20} />
-        <span className="text-sm font-medium">Logout</span>
-      </button>
     </nav>
   );
 };

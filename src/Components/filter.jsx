@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { CiFilter } from "react-icons/ci";
 import axios from "axios";
-import { baseUrl } from "../utils/constan";
+import { baseUrl } from "../Utils/constan";
 
 const FilterComponent = ({ stateAngkatan, stateJurusan }) => {
   const [angkatan, setAngkatan] = useState([]);

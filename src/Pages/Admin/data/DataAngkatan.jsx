@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navigation from "../../../components/nav";
-import { baseUrl } from "../../../utils/constan";
+import { baseUrl } from "../../../Utils/constan";
 
 const DataAngkatan = () => {
   const [showDialog, setShowDialog] = useState(false);
@@ -81,7 +81,7 @@ const DataAngkatan = () => {
               <tr key={s.id} className="border">
                 <td className="border px-4 py-2">{index + 1}</td>
                 <td className="border px-4 py-2">{s.tahun}</td>
-                <td className="border px-4 py-2 grid grid-cols-2">
+                <td className="px-4 py-2 grid grid-cols-2">
                   <button onClick={() => handleEditClick(s.id, s.tahun)} className="bg-green-700 col-span-2 text-white rounded-sm font-semibold">
                     Ubah
                   </button>

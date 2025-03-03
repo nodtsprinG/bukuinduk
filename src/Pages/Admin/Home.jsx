@@ -25,11 +25,13 @@ import Wali from "./edit/Wali";
 import KetSelesai from "./edit/Selesaipend";
 
 import Dashboard from "./Dashboard";
+import Pending from "./Pending"
 
 import DataJurusan from "./data/DataJurusan";
 import DataAngkatan from "./data/DataAngkatan";
 import DataSiswa from "./data/DataSiswa";
 import DataMapel from "./data/DataMapel"
+
 
 import TambahAkun from "./edit/Main";
 
@@ -163,6 +165,7 @@ const AdminRouting = () => {
       <Route exact path="/datasiswa" element={<DataSiswa />} />
       <Route exact path="/dataangkatan" element={<DataAngkatan />} />
       <Route exact path="/mapel" element={<DataMapel />} />
+      <Route exact path="/pending" element={<Pending />} />
     </Routes>
   );
 };

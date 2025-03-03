@@ -93,7 +93,7 @@ const GenderCharts = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-2 gap-2">
       <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all">
         <ReactApexChart options={barChartOptions} series={chartSeries} type="bar" height={350} />
       </div>

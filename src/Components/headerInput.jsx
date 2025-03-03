@@ -10,8 +10,8 @@ import {
   isAyahFilled,
   isIbuFilled,
   isHobiFilled,
-} from "../utils/check";
-import { baseUrl } from "../utils/constan";
+} from "../Utils/check";
+import { baseUrl } from "../Utils/constan";
 import axios from "axios";
 
 
