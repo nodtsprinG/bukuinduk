@@ -1,250 +1,169 @@
-import HeaderInput from "../../../components/headerInputV2";
 import { useState, useEffect } from "react";
-import Profil from "../../../components/lihatprofil";
-import InputHalaman from "../../../components/pilihHalamanV2"
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import { baseUrl } from "../../../Utils/constan";
+import Profil from "../../../Components/profileCard";
+import InputHalaman from "../../../Components/pilihHalamanV2";
 import {
   TextInput,
   IntegerInput,
-} from "../../../components/inputComponent";
-import Nextbefore from "../../../components/nextbefore";
-import axios from "axios";
-import { baseUrl } from "../../../utils/constan";
-import toast from "react-hot-toast";
-
-//Date issues
-
+  RadioInput,
+} from "../../../Components/inputComponent";
+import Nextbefore from "../../../Components/nextbefore";
+import HeaderInput from "../../../Components/headerInput";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-// CSS Modules, react-datepicker-cssmodules.css//
-import "react-datepicker/dist/react-datepicker-cssmodules.css";
-import { useNavigate } from "react-router";
-
-/* 
-
-=====================================================================================================
-                    D A T A _ P E N D I D I K A N _ S I S W A
-  >> Documented and Edited By. Ananda Eka & Nataniel || Developed By. Kelompok 2 <<
-
-[!] Warning : Dilarang mengganti sembarangan pada bagian ini
-
-=====================================================================================================
-
-*/
 
 const Pendidikan = () => {
   const [siswa, setSiswa] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const navigate = useNavigate()
-
-  // Ambil ID dari localStorage
-  const siswaId = localStorage.getItem("akun-id");
+  const [isEditing, setIsEditing] = useState(false); // State untuk mode edit
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!siswaId) {
-          setError("ID tidak ditemukan di localStorage");
+        if (!id) {
+          setError("ID tidak ditemukan");
           setLoading(false);
           return;
         }
 
-        // Panggil API untuk mendapatkan data siswa
-        const response = await axios.get(baseUrl + `/siswa/data-diri`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
+        const response = await axios.get(`${baseUrl}/siswa/lihat-data`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
 
         setSiswa(response.data);
       } catch (err) {
-        console.log(err)
-        setError("Gagal mengambil data siswa", err);
+        setError("Gagal mengambil data siswa");
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [siswaId]);
+  }, [id]);
 
   const backButton = () => {
-    navigate("/siswa/lihat-data/kesehatan")
-  }
+    navigate(`/siswa/lihat-data/kesehatan`);
+  };
+
   const nextButton = () => {
-    navigate("/siswa/lihat-data/ayah")
-  }
+    navigate(`/siswa/lihat-data/ayah`);
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true); // Aktifkan mode edit
+  };
+
+  const handleChange = (e, field) => {
+    setSiswa((prev) => ({
+      ...prev,
+      pendidikan: {
+        ...prev.pendidikan,
+        [field]: e.target.value,
+      },
+    }));
+  };
+
+  const handleSave = async () => {
+    try {
+      console.log("Data yang dikirim ke backend:", siswa);
+      const response = await axios.put(baseUrl + `/siswa/data-diri/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("Response dari backend:", response.data);
+      setIsEditing(false); // Kembali ke mode lihat setelah sukses
+      alert("Data berhasil diperbarui!");
+    } catch (err) {
+      alert("Gagal menyimpan perubahan");
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-[24px]">
+    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-2xl">
       <div className="my-10 w-full"><Profil /></div>
       <div><InputHalaman /></div>
-      <HeaderInput title={"Pendidikan"} word={"D"} form={"siswa"} />
+      {/* Tombol Edit / Simpan */}
+      <div className="flex justify-center">
+        {!isEditing ? (
+          <button onClick={handleEdit} className="bg-blue-600 text-white px-4 py-2 rounded">
+            Ubah Data
+          </button>
+        ) : (
+          <button onClick={handleSave} className="bg-green-800 text-white px-4 py-2 rounded">
+            Simpan
+          </button>
+        )}
+      </div>
+      <HeaderInput title={"Pendidikan Siswa"} word={"D"} form={"admin"} />
       <div className="bg-white p-6 flex items-center justify-center">
-        <table className="w-3/4 font-body border-separate border-spacing-4 ">
+        <table className="w-3/4 font-body border-separate border-spacing-4">
           <tbody>
-            <tr>
-              <td>1. Keterangan Sebelumnya</td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">a. Tamatan Dari</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.pendidikan.sebelumnya_tamatan_dari}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">b. Sebelumnya Lama Belajar</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.pendidikan.sebelumnya_lama_belajar}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">c. Tanggal Ijazah</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.pendidikan.sebelumnya_tanggal_ijazah}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">d. Nomor Ijazah</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.pendidikan.sebelumnya_no_ijazah}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">e. Tanggal SKHUN</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  name="skhun"
-                  value={siswa.pendidikan.sebelumnya_tanggal_skhun}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">f. Tanggal SKHUN</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  name="skhun"
-                  value={siswa.pendidikan.sebelumnya_no_skhun}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>2. Pindahan</td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">a. Dari Sekolah</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.pendidikan.pindahan_dari_sekolah}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">b. Alasan</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.pendidikan.pindahan_alasan}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>3. Diterima Disekolah Ini</td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">a. Kelas</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <IntegerInput
-                  value={siswa.pendidikan.diterima_di_kelas}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">b. Bidang Keahlian</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.pendidikan.diterima_di_bidang_keahlian}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">c. Program Keahlian</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.pendidikan.diterima_di_program_keahlian}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">d. Paket Keahlian</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.pendidikan.diterima_di_paket_keahlian}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">e. Tanggal Diterima</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <DatePicker
-                  selected={siswa.pendidikan.diterima_tanggal}
-                  dateFormat={"dd-MM-yyyy"}
-                  className="bg-[#DEE0E1] py-2 px-2 w-full focus:outline-none rounded-lg"
-                />
-              </td>
-            </tr>
+            {[
+              { label: "Tamatan dari", field: "sebelumnya_tamatan_dari" },
+              { label: "Tanggal Ijazah", field: "sebelumnya_tanggal_ijazah", type: "date" },
+              { label: "Nomor Ijazah", field: "sebelumnya_no_ijazah" },
+              { label: "Tanggal SKHUN", field: "sebelumnya_tanggal_skhun", type: "date" },
+              { label: "Nomor SKHUN", field: "sebelumnya_no_skhun" },
+              { label: "Lama belajar", field: "sebelumnya_lama_belajar" },
+              { label: "Pindahan", field: "pindahan_dari_sekolah" },
+              { label: "Alasan", field: "pindahan_alasan" },
+              { label: "Bidang Keahlian", field: "diterima_di_bidang_keahlian" },
+              { label: "Program Keahlian", field: "diterima_di_program_keahlian" },
+              { label: "Paket Keahlian", field: "diterima_di_paket_keahlian" },
+              { label: "Tanggal Diterima", field: "diterima_tanggal" },
+            ].map(({ label, field, type }, index) => (
+              <tr key={index}>
+                <td className="w-[63%] h-full">
+                  <label className="py-1">{label}</label>
+                </td>
+                <td className="w-[37%] h-full">
+                  {type === "integer" ? (
+                    <IntegerInput
+                      value={siswa.pendidikan[field]}
+                      onChange={(e) => isEditing && handleChange(e, "kelengkapan_ortu")}
+                      className="h-full"
+                      disabled={!isEditing}
+                    />
+                  ) : type === "radio" ? (
+                    <RadioInput
+                      value={siswa.pendidikan[field]}
+                      onChange={(e) => isEditing && handleChange(e, field)}
+                      className="h-full"
+                      disabled={!isEditing}
+                    />
+                  ) : type === 'date' ? (
+                    <DatePicker
+                      value={siswa.pendidikan[field]}
+                      onChange={(e) => isEditing && handleChange(e, field)}
+                      className="h-full w-1/2 px-4 py-2 bg-[#DEE0E1] rounded-lg"
+                      disabled={!isEditing}
+                    />
+                  ) : (
+                    <TextInput
+                      value={siswa.pendidikan[field]}
+                      onChange={(e) => isEditing && handleChange(e, field)}
+                      className="h-full"
+                      disabled={!isEditing}
+                    />
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
-      <Nextbefore next={nextButton} back={backButton} />
+      <div>
+        <Nextbefore next={nextButton} back={backButton} />
+      </div>
     </div>
   );
 };

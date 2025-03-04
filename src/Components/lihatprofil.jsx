@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios';
-import { baseUrl } from '../utils/constan';
-const LihatProfil = () => {
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { baseUrl } from "../Utils/constan";
+
+const StudentInfo = () => {
     const [siswa, setSiswa] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -27,8 +28,8 @@ const LihatProfil = () => {
 
                 setSiswa(response.data);
             } catch (err) {
-                console.log(err)
-                setError("Gagal mengambil data siswa", err);
+                console.log(err);
+                setError("Gagal mengambil data siswa");
             } finally {
                 setLoading(false);
             }
@@ -37,8 +38,18 @@ const LihatProfil = () => {
         fetchData();
     }, [siswaId]);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>{error}</p>;
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+    if (!siswa) {
+        return <div>Data siswa tidak ditemukan</div>;
+    }
+
     return (
         <div className="bg-white p-6 rounded-lg shadow-md w-full mx-auto">
             <h2 className="text-lg font-semibold mb-4">Informasi Siswa</h2>
@@ -81,7 +92,7 @@ const LihatProfil = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default LihatProfil
+export default StudentInfo;

@@ -1,133 +1,138 @@
-import HeaderInput from "../../../components/headerInputV2";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
-import Profil from "../../../components/lihatprofil";
-import InputHalaman from "../../../components/pilihHalamanV2";
-import { TextInput } from "../../../components/inputComponent";
-import Nextbefore from "../../../components/nextbefore";
-import { useNavigate } from "react-router";
 import axios from "axios";
-import { baseUrl } from "../../../utils/constan";
+import { useNavigate, useParams } from "react-router-dom";
+import { baseUrl } from "../../../Utils/constan";
+import Profil from "../../../Components/profileCard";
+import InputHalaman from "../../../Components/pilihHalamanV2";
+import { TextInput } from "../../../Components/inputComponent";
+import Nextbefore from "../../../Components/nextbefore";
+import HeaderInput from "../../../Components/headerInput";
 
-//Date issues
-import "react-datepicker/dist/react-datepicker.css";
-// CSS Modules, react-datepicker-cssmodules.css//
-import "react-datepicker/dist/react-datepicker-cssmodules.css";
-
-/* 
-
-=====================================================================================================
-                    D A T A _ H O B I _ S I S W A
-  >> Documented and Edited By. Ananda Eka & Nataniel || Developed By. Kelompok 2 <<
-
-[#] Note : Mengikuti desain
-
-=====================================================================================================
-
-*/
-
-const Hobi = () => {
+const Biodata = () => {
   const [siswa, setSiswa] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const navigate = useNavigate()
-
-  // Ambil ID dari localStorage
-  const siswaId = localStorage.getItem("akun-id");
+  const [isEditing, setIsEditing] = useState(false); // State untuk mode edit
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!siswaId) {
-          setError("ID tidak ditemukan di localStorage");
+        if (!id) {
+          setError("ID tidak ditemukan");
           setLoading(false);
           return;
         }
 
-        // Panggil API untuk mendapatkan data siswa
-        const response = await axios.get(baseUrl + `/siswa/data-diri`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
+        const response = await axios.get(`${baseUrl}/siswa/data-diri`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
 
         setSiswa(response.data);
       } catch (err) {
-        console.log(err)
-        setError("Gagal mengambil data siswa", err);
+        setError("Gagal mengambil data siswa");
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [siswaId]);
+  }, [id]);
 
   const backButton = () => {
-    navigate("/siswa/lihat-data/wali")
-  }
+    navigate(`/siswa/lihat-data/wali`);
+  };
+
   const nextButton = () => {
-    navigate("/siswa/lihat-data/perkembangan")
-  }
+    navigate(`/siswa/lihat-data/perkembangan`);
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true); // Aktifkan mode edit
+  };
+
+  const handleChange = (e, field) => {
+    setSiswa((prev) => ({
+      ...prev,
+      hobi_siswa: {
+        ...prev.hobi_siswa,
+        [field]: e.target.value,
+      },
+    }));
+  };
+
+  const handleSave = async () => {
+    try {
+      console.log("Struktur siswa:", JSON.stringify(siswa, null, 2));
+      const response = await axios.put(baseUrl + `/admin/data-diri/${id}`, siswa, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("Response dari backend:", response.data);
+      setIsEditing(false); // Kembali ke mode lihat setelah sukses
+      alert("Data berhasil diperbarui!");
+    } catch (err) {
+      alert("Gagal menyimpan perubahan");
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
+
   return (
-    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-[24px]">
+    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-2xl">
       <div className="my-10 w-full"><Profil /></div>
       <div><InputHalaman /></div>
-      <HeaderInput title={"Hobi"} word={"H"} form={"siswa"}/>
+      {/* Tombol Edit / Simpan */}
+      <div className="flex justify-center">
+        {!isEditing ? (
+          <button onClick={handleEdit} className="bg-blue-600 text-white px-4 py-2 rounded">
+            Ubah Data
+          </button>
+        ) : (
+          <button onClick={handleSave} className="bg-green-800 text-white px-4 py-2 rounded">
+            Simpan
+          </button>
+        )}
+      </div>
+      <HeaderInput title={"Hobi Siswa"} word={"H"} form={"admin"} />
       <div className="bg-white p-6 flex items-center justify-center">
-        <table className="w-3/4 font-body border-separate border-spacing-4 ">
+        <table className="w-3/4 font-body border-separate border-spacing-4">
           <tbody>
-            <tr>
-              <td className="w=1/2 h-full">
-                <label className="py-1">Kesenian</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.hobi_siswa?.kesenian}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w=1/2 h-full">
-                <label className="py-1">Olahraga</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.hobi_siswa?.olahraga}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w=1/2 h-full">
-                <label className="py-1">Organisasi/Kemasyarakatan</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.hobi_siswa?.organisasi}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w=1/2 h-full">
-                <label className="py-1">Lain-lain</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.hobi_siswa?.lain_lain || "Tidak ada"}
-                  className="h-full"
-                />
-              </td>
-            </tr>
+            {[
+              { label: "Kesenian", field: "kesenian" },
+              { label: "Olahraga", field: "olahraga" },
+              { label: "Organisasi", field: "organisasi" },
+              { label: "Lainnya", field: "lain_lain" },
+            ].map(({ label, field, type }, index) => (
+              <tr key={index}>
+                <td className="w-[63%] h-full">
+                  <label className="py-1">{label}</label>
+                </td>
+                <td className="w-[37%] h-full">
+                  {(
+                    <TextInput
+                      value={siswa.hobi_siswa[field] || ""}
+                      onChange={(e) => isEditing && handleChange(e, field)}
+                      className="h-full"
+                      disabled={!isEditing}
+                    />
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
-      <Nextbefore next={nextButton} back={backButton} lastpage={true} />
+      <div>
+        <Nextbefore next={nextButton} back={backButton} />
+      </div>
     </div>
   );
 };
-export default Hobi;
+
+export default Biodata;

@@ -1,218 +1,202 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { baseUrl } from "../../../utils/constan";
-import Profil from "../../../components/lihatprofil"
-import InputHalaman from "../../../components/pilihHalamanV2"
+import { useNavigate } from "react-router-dom";
+import { baseUrl } from "../../../Utils/constan";
+import Profil from "../../../components/lihatprofil";
+import InputHalaman from "../../../Components/pilihHalamanV2";
 import {
   TextInput,
   IntegerInput,
   RadioInput,
-} from "../../../components/inputComponent";
-import Nextbefore from "../../../components/nextbefore";
-import HeaderInput from "../../../components/headerInputV2";
+} from "../../../Components/inputComponent";
+import Nextbefore from "../../../Components/nextbefore";
+import HeaderInput from "../../../Components/headerInput";
 import DatePicker from "react-datepicker";
-import toast from "react-hot-toast";
 
 const Biodata = () => {
   const [siswa, setSiswa] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const navigate = useNavigate()
+  const [isEditing, setIsEditing] = useState(false); // State untuk mode edit
+  const navigate = useNavigate();
 
-  // Ambil ID dari localStorage
-  const siswaId = localStorage.getItem("akun-id");
-
+  const id = localStorage.getItem("akun-id")
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!siswaId) {
-          setError("ID tidak ditemukan di localStorage");
+        if (!id) {
+          setError("ID tidak ditemukan");
           setLoading(false);
           return;
         }
 
-        // Panggil API untuk mendapatkan data siswa
-        const response = await axios.get(baseUrl + `/siswa/data-diri`, {
-          headers: {
-            Authorization : `Bearer ${localStorage.getItem("token")}`
-          }
+        const response = await axios.get(`${baseUrl}/siswa/data-diri`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
 
         setSiswa(response.data);
       } catch (err) {
-        console.log(err)
-        setError("Gagal mengambil data siswa", err);
+        setError("Gagal mengambil data siswa");
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [siswaId]);
+  }, [id]);
 
   const backButton = () => {
-    localStorage.removeItem("token")
-    navigate("/siswa")
-  }
+    navigate("/admin/dashboard");
+  };
+
   const nextButton = () => {
-    navigate("/siswa/lihat-data/tempattinggal")
-  }
+    navigate("/siswa/lihat-data/tempattinggal");
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true); // Aktifkan mode edit
+  };
+
+  const handleChange = (e, field) => {
+    setSiswa((prev) => ({
+      ...prev,
+      data_diri: {
+        ...prev.data_diri,
+        [field]: e.target.value,
+      },
+    }));
+  };
+
+  const handleSave = async () => {
+    try {
+      console.log("Data yang dikirim ke backend:", siswa);
+      const response = await axios.put(baseUrl + `/siswa/data-diri`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("Response dari backend:", response.data);
+      setIsEditing(false); // Kembali ke mode lihat setelah sukses
+      alert("Data berhasil diperbarui!");
+    } catch (err) {
+      alert("Gagal menyimpan perubahan");
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll h-min:h-screen text-2xl">
+    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-2xl">
       <div className="my-10 w-full"><Profil /></div>
       <div><InputHalaman /></div>
-      <HeaderInput title={"Biodata"} word={"A"} form={"siswa"} />
+      {/* Tombol Edit / Simpan */}
+      <div className="flex justify-center">
+        {!isEditing ? (
+          <button onClick={handleEdit} className="bg-blue-600 text-white px-4 py-2 rounded">
+            Ubah Data
+          </button>
+        ) : (
+          <button onClick={handleSave} className="bg-green-800 text-white px-4 py-2 rounded">
+            Simpan
+          </button>
+        )}
+      </div>
+      <HeaderInput title={"Data Diri Siswa"} word={"A"} form={"admin"} />
       <div className="bg-white p-6 flex items-center justify-center">
         <table className="w-3/4 font-body border-separate border-spacing-4">
           <tbody>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Nama Lengkap</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <TextInput
-                  value={siswa.data_diri.nama_lengkap}
-                  className="h-full rounded-[10px]"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Nama Panggilan</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <TextInput
-                  value={siswa.data_diri.nama_panggilan}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Jenis Kelamin</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <RadioInput
-                  value={siswa.data_diri.jenis_kelamin}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Tempat Lahir</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <TextInput
-                  value={siswa.data_diri.tempat_lahir}
-                  className="h-full"
-                />
-              </td>
-            </tr>
+            {[
+              { label: "Nama Lengkap", field: "nama_lengkap" },
+              { label: "Nama Panggilan", field: "nama_panggilan" },
+              { label: "Jenis Kelamin", field: "jenis_kelamin", type: "radio" },
+              { label: "Tempat Lahir", field: "tempat_lahir" },
+              { label: "Agama", field: "agama" },
+              { label: "Kewarganegaraan", field: "kewarganegaraan" },
+              { label: "Anak ke", field: "anak_ke", type: "integer" },
+              { label: "Jumlah Saudara Kandung", field: "jml_saudara_kandung", type: "integer" },
+              { label: "Jumlah Saudara Tiri", field: "jml_saudara_tiri", type: "integer" },
+              { label: "Jumlah Saudara Angkat", field: "jml_saudara_angkat", type: "integer" },
+              { label: "Bahasa Sehari-hari", field: "bahasa_sehari_hari" },
+            ].map(({ label, field, type }, index) => (
+              <tr key={index}>
+                <td className="w-[63%] h-full">
+                  <label className="py-1">{label}</label>
+                </td>
+                <td className="w-[37%] h-full">
+                  {type === "integer" ? (
+                    <IntegerInput
+                      value={siswa.data_diri[field]}
+                      onChange={(e) => isEditing && handleChange(e, "kelengkapan_ortu")}
+                      className="h-full"
+                      disabled={!isEditing}
+                    />
+                  ) : type === "radio" ? (
+                    <RadioInput
+                      value={siswa.data_diri[field]}
+                      onChange={(e) => isEditing && handleChange(e, field)}
+                      className="h-full"
+                      disabled={!isEditing}
+                    />
+                  ) : (
+                    <TextInput
+                      value={siswa.data_diri[field]}
+                      onChange={(e) => isEditing && handleChange(e, field)}
+                      className="h-full"
+                      disabled={!isEditing}
+                    />
+                  )}
+                </td>
+              </tr>
+            ))}
+
+            {/* Input Tanggal Lahir */}
             <tr>
               <td className="w-[63%] h-full">
                 <label className="py-1">Tanggal Lahir</label>
               </td>
               <td className="w-[37%] h-full rounded-lg">
                 <DatePicker
-                  selected={siswa.data_diri.tanggal_lahir}
+                  selected={new Date(siswa.data_diri.tanggal_lahir)}
+                  onChange={(date) =>
+                    isEditing &&
+                    setSiswa((prev) => ({
+                      ...prev,
+                      data_diri: { ...prev.data_diri, tanggal_lahir: date },
+                    }))
+                  }
                   dateFormat={"dd-MM-yyyy"}
                   className="bg-[#DEE0E1] py-2 px-2 w-full focus:outline-none rounded-lg"
+                  disabled={!isEditing}
                 />
               </td>
             </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Agama</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <TextInput
-                  value={siswa.data_diri.agama}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Kewarganegaraan</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <TextInput
-                  value={siswa.data_diri.kewarganegaraan}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Anak ke</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <IntegerInput
-                  value={siswa.data_diri.anak_ke}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Jumlah Saudara Kandung</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <IntegerInput
-                  value={siswa.data_diri.jml_saudara_kandung}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Jumlah Saudara Tiri</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <TextInput
-                  value={siswa.data_diri.jml_saudara_tiri}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Jumlah Saudara Angkat</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <IntegerInput
-                  value={siswa.data_diri.jml_saudara_angkat}
-                  className="h-full"
-                />
-              </td>
-            </tr>
+
             <tr>
               <td className="w-[63%] h-full">
                 <label className="py-1">Anak Yatim</label>
               </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.data_diri.kelengkapan_ortu}
-                  className="w-[37%] bg-[#DEE0E1] text-black p-2 rounded shadow-md"
+              <td className="w-[37%] h-full">
+                <select
+                  name="anak_yatim"
+                  value={siswa.data_diri.kelengkapan_ortu || ""}
+                  className="w-full bg-[#DEE0E1] text-black p-2 rounded shadow-md"
+                  onChange={(e) =>
+                    isEditing &&
+                    setSiswa((prev) => ({
+                      ...prev,
+                      data_diri: { ...prev.data_diri, kelengkapan_ortu: e.target.value },
+                    }))
+                  }
+                  disabled={!isEditing} // Hanya bisa diubah saat mode edit
                 >
-                </TextInput>
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Bahasa Sehari-hari</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={siswa.data_diri.bahasa_sehari_hari}
-                  className="h-full"
-                />
+                  <option value="" hidden>Pilih</option>
+                  <option value="lengkap">Lengkap</option>
+                  <option value="yatim">Yatim</option>
+                  <option value="piatu">Piatu</option>
+                  <option value="yatim piatu">Yatim Piatu</option>
+                </select>
               </td>
             </tr>
           </tbody>

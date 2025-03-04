@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-import { FaDownload } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router";
 import {
   isAkunFilled,
@@ -11,8 +10,6 @@ import {
   isIbuFilled,
   isHobiFilled,
 } from "../Utils/check";
-import { baseUrl } from "../Utils/constan";
-import axios from "axios";
 
 
 /* 
@@ -133,7 +130,7 @@ const HeaderButton = ({ nama, isActive = false, to }) => {
   }
 };
 
-const HeaderInput = ({ title, word, form, lastpage }) => {
+const HeaderInput = ({ title, word, form}) => {
   const params = useParams();
   const ButtonList = [
     { a: "Data Diri Siswa", b: "biodata" },
@@ -151,53 +148,16 @@ const HeaderInput = ({ title, word, form, lastpage }) => {
     },
     { a: "Selesai Pendidikan", b: "selesaipend", c: true },
   ];
-
-  const downloadPdf = async () => {
-    console.log(baseUrl, params.id)
-    const response = await axios.get(`${baseUrl}/admin/export-pdf/${params.id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      responseType: 'blob', // Untuk menerima data dalam format blob (binary large object)
-    });
-    console.log(localStorage.getItem("token"))
-    // Buat URL dari blob yang diterima
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'file.pdf'); // Nama file yang diunduh
-    document.body.appendChild(link);
-    link.click();
-
-    // Hapus URL dan elemen link setelah selesai
-    link.parentNode.removeChild(link);
-    window.URL.revokeObjectURL(url);
-  };
   
-  const totalCols = ButtonList.some((t) => t.b === "perkembangansiswa" || t.b === "selesaipend") ? "grid grid-cols-10" : "grid grid-cols-10";
+  const totalCols = ButtonList.some((t) => t.b === "perkembangansiswa" || t.b === "selesaipend") ? "grid grid-cols-8" : "grid grid-cols-10";
 
   return (
-    <div className="pt-5">
+    <div>
       <div className="flex flex-row items-center w-full">
-        <div className="w-[63%] h-full">
-          <p className="font-header font-bold text-xl">
+        <div className="w-[63%] h-full mb-4">
+          <label className="font-header font-bold text-xl">
             {word}. {title}
-          </p>
-        </div>
-        <div className="w-[63%] h-full flex justify-end items-center my-10">
-          {!isNaN(params.id) ? (
-            <button
-              onClick={downloadPdf}
-              className="flex flex-row justify-center items-center px-5 py-2 mr-6 text-center text-m font-bold font-body rounded-md"
-            >
-              <FaDownload className="mr-2" /> Download
-            </button>
-          ) : null}
-          {params.action === "upload" && lastpage ? (
-            <div className="px-5 py-2 text-center text-m font-bold font-body bg-[#0C7FDA] text-white rounded-md">
-              Simpan
-            </div>
-          ) : null}
+          </label>
         </div>
       </div>
       <div className={`grid md:${totalCols} border-b-gray-400`}>

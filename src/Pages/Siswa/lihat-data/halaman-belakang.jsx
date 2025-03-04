@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import InputHalaman from "../../../Components/pilihHalamanV2";
-import Profil from "../../../Components/lihatprofil";
-import { baseUrl } from "../../../utils/constan";
+import InputHalaman from "../../../Components/pilihHalaman";
+import Profil from "../../../Components/profileCard";
+import { baseUrl } from "../../../Utils/constan";
 import { useParams } from "react-router";
 import fileDownload from "js-file-download";
 

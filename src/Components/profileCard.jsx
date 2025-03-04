@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { baseUrl } from "../utils/constan";
+import { baseUrl } from "../Utils/constan";
 
 const StudentInfo = () => {
     const [siswa, setSiswa] = useState(null);

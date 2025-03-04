@@ -1,4 +1,4 @@
-import HeaderInput from "../../../components/headerInputV2";
+import HeaderInput from "../../../Components/headerInput";
 import { useState, useEffect } from "react";
 import {
   TextInput,
@@ -130,7 +130,7 @@ const Biodata = () => {
 
   return (
     <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll h-min:h-screen rounded-lg text-[24px]">
-      <HeaderInput title={"Biodata"} word={"A"} form={"siswa"} />
+      <HeaderInput title={"Data Diri Siswa"} word={"A"} form={"siswa"} />
       <div className="bg-white p-6 flex items-center justify-center">
         <table className="w-3/4 font-body border-separate border-spacing-4">
           <tbody>

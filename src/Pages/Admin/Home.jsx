@@ -2,7 +2,6 @@
 // import axios from "axios";
 
 // ========================== Import state
-import {  useEffect } from "react";
 
 // ========================== import react-router
 import { Routes, Route, useNavigate } from "react-router";
@@ -12,18 +11,6 @@ import { Routes, Route, useNavigate } from "react-router";
 import Login from "./auth/Login";
 import Verify from "./auth/Verify";
 
-// ========================== import halaman audit
-import Ayah from "./edit/Ayah";
-import Biodata from "./edit/Biodata";
-import Hobi from "./edit/Hobi";
-import Ibu from "./edit/Ibu";
-import Kesehatan from "./edit/Kesehatan";
-import KetPerkembanganSiswa from "./edit/Ketpersiswa";
-import Pendidikan from "./edit/Pendidikan";
-import TempatTinggal from "./edit/TempatTinggal";
-import Wali from "./edit/Wali";
-import KetSelesai from "./edit/Selesaipend";
-
 import Dashboard from "./Dashboard";
 import Pending from "./Pending"
 
@@ -31,9 +18,6 @@ import DataJurusan from "./data/DataJurusan";
 import DataAngkatan from "./data/DataAngkatan";
 import DataSiswa from "./data/DataSiswa";
 import DataMapel from "./data/DataMapel"
-
-
-import TambahAkun from "./edit/Main";
 
 import Lbiodata from "./lihat-data/Biodata"
 import LtempatTinggal from "./lihat-data/TempatTinggal"
@@ -45,59 +29,8 @@ import Lpendidikan from "./lihat-data/Pendidikan"
 import Lhobi from "./lihat-data/Hobi"
 import Perkembangan from "./lihat-data/perkembangan"
 import Selesai from "./lihat-data/Selesai"
-// import LHalamanBelakang from "./lihat-data/halaman-belakang"
-
-import HalamanBelakang from './edit/halaman-belakang'
-
-import { useParams } from "react-router";
-
+import LHalamanBelakang from './lihat-data/halaman-belakang'
 import Logo from "../../assets/logosekolah.png"
-
-
-//Audit system
-const AuditSystem = () => {
-  const params = useParams();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isNaN(parseInt(params.id))) {
-      navigate("/admin/dashboard");
-    }
-  }, []);
-
-  return (
-    <Routes>
-      <Route exact path="/siswa" element={<TambahAkun />} />
-      <Route exact path="/biodata" element={<Biodata />} />
-      <Route exact path="/tempattinggal" element={<TempatTinggal />} />
-      <Route exact path="/kesehatan" element={<Kesehatan />} />
-      <Route exact path="/pendidikan" element={<Pendidikan />} />
-      <Route exact path="/ayah" element={<Ayah />} />
-      <Route exact path="/ibu" element={<Ibu />} />
-      <Route exact path="/wali" element={<Wali />} />
-      <Route exact path="/hobi" element={<Hobi />} />
-      <Route exact path="/belakang" element={<HalamanBelakang />} />
-      <Route
-        exact
-        path="/perkembangansiswa"
-        element={<KetPerkembanganSiswa />}
-      />
-      <Route
-        exact
-        path="/selesaipend"
-        element={<KetSelesai />}
-      />
-      <Route
-        exact
-        path="/belakang"
-        element={<HalamanBelakang />}
-      />
-    </Routes>
-  );
-};
-
-
-
 const HomeAdmin = () => {
   const navigate = useNavigate();
   const check = () => {
@@ -144,7 +77,7 @@ const LihatData = () => {
       <Route exact path="/perkembangan" element={<Perkembangan />} />
       <Route exact path="/selesai" element={<Selesai />} />
       {/* <Route exact path="/hobi" element={<Perkembangan />} /> */}
-      <Route exact path="/halaman-belakang" element={<HalamanBelakang />} />
+      <Route exact path="/halaman-belakang" element={<LHalamanBelakang />} />
     </Routes>
   );
 }
@@ -158,7 +91,6 @@ const AdminRouting = () => {
       <Route exact path="/auth/login" element={<Login />} />
       <Route exact path="/auth/verification/:code" element={<Verify />} />
       {/* [#] Halaman Input Data */}
-      <Route exact path="/audit/:id/*" element={<AuditSystem />} />
       <Route exact path="/lihat/:id/*" element={<LihatData />} />
       {/* [#] Data Jurusan */}
       <Route exact path="/datajurusan" element={<DataJurusan />} />

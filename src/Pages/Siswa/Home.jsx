@@ -15,7 +15,7 @@ import Pendidikan from "./data/Pendidikan";
 import TempatTinggal from "./data/Tempattinggal";
 import Wali from "./data/Wali";
 import TambahAkun from "./data/Main";
-import GoBack from "../../components/goback"
+import GoBack from "../../Components/goback"
 
 // ========================== import halaman liat data
 import Lbiodata from "./lihat-data/Biodata"

@@ -2,9 +2,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { baseUrl } from "../../../utils/constan";
+import { baseUrl } from "../../../Utils/constan";
 import Profil from "../../../Components/profileCard";
-import InputHalaman from "../../../Components/pilihHalamanV2";
+import InputHalaman from "../../../Components/pilihHalaman";
 import {TextInput} from "../../../Components/inputComponent";
 import Nextbefore from "../../../Components/nextbefore";
 import HeaderInput from "../../../Components/headerInput";

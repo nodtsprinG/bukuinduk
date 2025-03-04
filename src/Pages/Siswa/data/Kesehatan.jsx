@@ -1,11 +1,10 @@
-import HeaderInput from "../../../components/headerInputV2";
+import HeaderInput from "../../../Components/headerInput";
 import { useState, useEffect } from "react";
 import {
   TextInput,
-  IntegerInput,
-  RadioInput,
-} from "../../../components/inputComponent";
-import Nextbefore from "../../../components/nextbefore";
+  IntegerInput
+} from "../../../Components/inputComponent";
+import Nextbefore from "../../../Components/nextbefore";
 import { useNavigate, useParams } from "react-router";
 /* 
 
@@ -84,8 +83,8 @@ const Kesehatan = () => {
 
   return (
     <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll h-min:h-screen text-[24px]">
-      <HeaderInput title={"Kesehatan"} word={"C"} form={"siswa"} />
-      <div className="bg-white p-6 flex items-center justify-center rounded-2xl">
+      <HeaderInput title={"Kesehatan Siswa"} word={"C"} form={"siswa"} />
+      <div className="bg-white p-6 flex items-center justify-center">
         <table className="w-3/4 font-body border-separate border-spacing-4">
           <tbody>
             <tr>
@@ -154,11 +153,14 @@ const Kesehatan = () => {
                 <label className="py-1">Tinggi Badan (*cm)</label>
               </td>
               <td className="w-[63%] h-full">
-                <TextInput
+                <IntegerInput
                   value={tinggi}
                   onChange={(e) => setTinggi(e.target.value)}
                   className="h-full"
                 />
+                <span className="ml-2 text-lg text-black">
+                  CM
+                </span>
               </td>
             </tr>
             <tr>
@@ -166,11 +168,14 @@ const Kesehatan = () => {
                 <label className="py-1">Berat Badan (*kg)</label>
               </td>
               <td className="w-[63%] h-full">
-                <TextInput
+                <IntegerInput
                   value={berat}
                   onChange={(e) => setBerat(e.target.value)}
                   className="h-full"
                 />
+                <span className="ml-2 text-lg text-black">
+                  KG
+                </span>
               </td>
             </tr>
           </tbody>

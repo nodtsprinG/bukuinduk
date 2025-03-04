@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import HeaderInput from "../../../components/headerInputV2";
+import HeaderInput from "../../../Components/headerInput";
 import { useState, useEffect } from "react";
 import {
   TextInput,
@@ -79,7 +79,7 @@ const Pendidikan = () => {
       setPaketkeahlian(localStorage.getItem("pendidikan-paketkeahlian"));
     if (localStorage.getItem("pendidikan-kelas"))
       setKelas(localStorage.getItem("pendidikan-kelas"));
-    if(localStorage.getItem("pendidikan-sebelumnyalamabelajar")) setLamabelajar(localStorage.getItem("pendidikan-sebelumnyalamabelajar"))
+    if (localStorage.getItem("pendidikan-sebelumnyalamabelajar")) setLamabelajar(localStorage.getItem("pendidikan-sebelumnyalamabelajar"))
   }, []);
 
   const backButton = () => {
@@ -136,7 +136,7 @@ const Pendidikan = () => {
 
   return (
     <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-[24px]">
-      <HeaderInput title={"Pendidikan"} word={"D"} form={"siswa"} />
+      <HeaderInput title={"Pendidikan Siswa"} word={"D"} form={"siswa"} />
       <div className="bg-white p-6 flex items-center justify-center">
         <table className="w-3/4 font-body border-separate border-spacing-4 ">
           <tbody>
@@ -160,11 +160,14 @@ const Pendidikan = () => {
                 <label className="py-1 ">b. Sebelumnya Lama Belajar</label>
               </td>
               <td className="w-[63%] h-full">
-                <TextInput
+                <IntegerInput
                   value={lamabelajar}
                   onChange={(e) => setLamabelajar(e.target.value)}
-                  className="h-full"
+                  className="h-full w-[20%]"
                 />
+                <span className="ml-2 text-lg text-black">
+                  Tahun
+                </span>
               </td>
             </tr>
             <tr>

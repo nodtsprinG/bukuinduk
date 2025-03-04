@@ -1,11 +1,10 @@
-import HeaderInput from "../../../components/headerInputV2";
+import HeaderInput from "../../../Components/headerInput";
 import { useState, useEffect } from "react";
 import {
   TextInput,
   IntegerInput,
-  RadioInput,
-} from "../../../components/inputComponent";
-import Nextbefore from "../../../components/nextbefore";
+} from "../../../Components/inputComponent";
+import Nextbefore from "../../../Components/nextbefore";
 import { useNavigate, useParams } from "react-router-dom";
 /* 
 
@@ -62,7 +61,7 @@ const TempatTinggal = () => {
 
   return (
     <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-[24px]">
-      <HeaderInput title={"Tempat Tinggal"} word={"B"} form={"siswa"} />
+      <HeaderInput title={"Tempat Tinggal Siswa"} word={"B"} form={"siswa"} />
       <div className="bg-white p-6 flex items-center justify-center">
         <table className="w-3/4 font-body border-separate border-spacing-4 ">
           <tbody>
@@ -105,6 +104,9 @@ const TempatTinggal = () => {
               </td>
               <td className="w-[63%] h-full">
                 <IntegerInput value={jarak} onChange={(e) => setJarak(e.target.value)} className="h-full" />
+                <span className="ml-2 text-lg text-black">
+                  Km
+                </span>
               </td>
             </tr>
           </tbody>
