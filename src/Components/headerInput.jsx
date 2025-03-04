@@ -149,7 +149,7 @@ const HeaderInput = ({ title, word, form}) => {
     { a: "Selesai Pendidikan", b: "selesaipend", c: true },
   ];
   
-  const totalCols = ButtonList.some((t) => t.b === "perkembangansiswa" || t.b === "selesaipend") ? "grid grid-cols-8" : "grid grid-cols-10";
+  const totalCols = ButtonList.some((t) => t.b === "perkembangansiswa" || t.b === "selesaipend") ? "grid grid-cols-10" : "grid grid-cols-8";
 
   return (
     <div>
