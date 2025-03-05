@@ -35,9 +35,9 @@ const Pendidikan = () => {
   const [tanggal, setTanggal] = useState(new Date());
 
   const [tamatan, setTamatan] = useState("");
-  const [ijazah, setIjazah] = useState("")
+  const [tanggalIjazah, setTanggalIjazah] = useState("")
   const [nomorijazah, setNomorijazah] = useState("");
-  const [skhun, setSkhun] = useState("");
+  const [tanggalSkhun, setTanggalSkhun] = useState("");
   const [nomorskhun, setNomorSKHUN] = useState("")
   const [darisekolah, setDarisekolah] = useState("");
   const [alasan, setAlasan] = useState("");
@@ -55,18 +55,14 @@ const Pendidikan = () => {
     if (localStorage.getItem("pendidikan-tamatan"))
       setTamatan(localStorage.getItem("pendidikan-tamatan"));
 
-    if (localStorage.getItem("pendidikan-ijazah"))
-      setIjazah(localStorage.getItem("pendidikan-nomorijazah"));
-
-    if (localStorage.getItem("pendidikan-nomorijazah"))
+    if (localStorage.getItem("pendidikan-tanggal-ijazah"))
+      setTanggalIjazah(localStorage.getItem("pendidikan-tanggal-ijazah"));
+    if (localStorage.getItem("pendidikan-nomor-ijazah"))
       setNomorijazah(localStorage.getItem("pendidikan-nomorijazah"));
-
-    if (localStorage.getItem("pendidikan-nomorskhun"))
-      setNomorSKHUN(localStorage.getItem("pendidikan-nomorskhun"));
-
-    if (localStorage.getItem("pendidikan-skhun"))
-      setSkhun(localStorage.getItem("pendidikan-skhun"));
-
+    if (localStorage.getItem("pendidikan-tanggal-skhun"))
+      setTanggalSkhun(localStorage.getItem("pendidikan-tanggal-skhun"));
+    if (localStorage.getItem("pendidikan-nomor-skhun"))
+      setNomorSKHUN(localStorage.getItem("pendidikan-nomor-skhun"));
     if (localStorage.getItem("pendidikan-darisekolah") !== "null")
       setDarisekolah(localStorage.getItem("pendidikan-darisekolah"));
     if (localStorage.getItem("pendidikan-alasan") !== "null")
@@ -79,7 +75,8 @@ const Pendidikan = () => {
       setPaketkeahlian(localStorage.getItem("pendidikan-paketkeahlian"));
     if (localStorage.getItem("pendidikan-kelas"))
       setKelas(localStorage.getItem("pendidikan-kelas"));
-    if (localStorage.getItem("pendidikan-sebelumnyalamabelajar")) setLamabelajar(localStorage.getItem("pendidikan-sebelumnyalamabelajar"))
+    if (localStorage.getItem("pendidikan-sebelumnyalamabelajar"))
+      setLamabelajar(localStorage.getItem("pendidikan-sebelumnyalamabelajar"))
   }, []);
 
   const backButton = () => {
@@ -91,9 +88,9 @@ const Pendidikan = () => {
       tanggal,
       tamatan,
       lamabelajar,
-      ijazah,
+      tanggalIjazah,
       nomorijazah,
-      skhun,
+      tanggalSkhun,
       nomorskhun,
       darisekolah,
       alasan,
@@ -106,9 +103,9 @@ const Pendidikan = () => {
       tanggal &&
       tamatan &&
       lamabelajar &&
-      ijazah &&
+      tanggalIjazah &&
       nomorijazah &&
-      skhun &&
+      tanggalSkhun &&
       nomorskhun &&
       bidangkeahlian &&
       programkeahlian &&
@@ -117,10 +114,10 @@ const Pendidikan = () => {
     ) {
       localStorage.setItem("pendidikan-tanggal", tanggal);
       localStorage.setItem("pendidikan-tamatan", tamatan);
-      localStorage.setItem("pendidikan-ijazah", ijazah);
-      localStorage.setItem("pendidikan-nomorijazah", nomorijazah);
-      localStorage.setItem("pendidikan-skhun", skhun);
-      localStorage.setItem("pendidikan-nomorskhun", nomorskhun);
+      localStorage.setItem("pendidikan-tanggal-ijazah", tanggalIjazah);
+      localStorage.setItem("pendidikan-nomor-ijazah", nomorijazah);
+      localStorage.setItem("pendidikan-tanggal-skhun", tanggalSkhun);
+      localStorage.setItem("pendidikan-nomor-skhun", nomorskhun);
       localStorage.setItem("pendidikan-darisekolah", darisekolah ? darisekolah : null);
       localStorage.setItem("pendidikan-alasan", alasan ? alasan : null);
       localStorage.setItem("pendidikan-bidangkeahlian", bidangkeahlian);
@@ -172,7 +169,22 @@ const Pendidikan = () => {
             </tr>
             <tr>
               <td className="w-[63%] h-full">
-                <label className="py-1 ">c. Nomor Ijazah</label>
+                <label className="py-1 ">c. Tanggal Ijazah</label>
+              </td>
+              <td className="w-[63%] h-full">
+                <DatePicker
+                  selected={tanggalIjazah}
+                  onChange={(date) => setTanggalIjazah(date)}
+                  scrollableMonthYearDropdown
+                  showYearDropdown
+                  dateFormat={"dd-MM-yyyy"}
+                  className="h-full w-1/2 px-4 py-2 bg-[#DEE0E1] rounded-lg"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td className="w-[63%] h-full">
+                <label className="py-1 ">d. Nomor Ijazah</label>
               </td>
               <td className="w-[63%] h-full">
                 <TextInput
@@ -184,12 +196,27 @@ const Pendidikan = () => {
             </tr>
             <tr>
               <td className="w-[63%] h-full">
-                <label className="py-1 ">d. Nomor SKHUN</label>
+                <label className="py-1 ">e. Tanggal SKHUN</label>
+              </td>
+              <td className="w-[63%] h-full">
+                <DatePicker
+                  selected={tanggalSkhun}
+                  onChange={(date) => setTanggalSkhun(date)}
+                  scrollableMonthYearDropdown
+                  showYearDropdown
+                  dateFormat={"dd-MM-yyyy"}
+                  className="h-full w-1/2 px-4 py-2 bg-[#DEE0E1] rounded-lg"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td className="w-[63%] h-full">
+                <label className="py-1 ">f. Nomor SKHUN</label>
               </td>
               <td className="w-[63%] h-full">
                 <TextInput
-                  value={skhun}
-                  onChange={(e) => setSkhun(e.target.value)}
+                  value={nomorskhun}
+                  onChange={(e) => setNomorSKHUN(e.target.value)}
                   className="h-full"
                 />
               </td>

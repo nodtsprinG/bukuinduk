@@ -1,4 +1,4 @@
-import HeaderInput from "../../../Components/headerInput";
+import HeaderInput from "../../../Components/headerInputV2";
 import { useState, useEffect } from "react";
 import {
   TextInput,

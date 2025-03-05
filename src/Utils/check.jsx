@@ -76,21 +76,23 @@ export const isPendidikanFilled = () => {
   return (
     localStorage.getItem("pendidikan-tanggal") &&
     localStorage.getItem("pendidikan-tamatan") &&
-    localStorage.getItem("pendidikan-nomorijazah") &&
-    localStorage.getItem("pendidikan-skhun") &&
-    //localStorage.getItem("pendidikan-darisekolah") &&
-    //localStorage.getItem("pendidikan-alasan") &&
+    localStorage.getItem("pendidikan-tanggal-ijazah") &&
+    localStorage.getItem("pendidikan-nomor-ijazah") &&
+    localStorage.getItem("pendidikan-nomor-skhun") &&
+    localStorage.getItem("pendidikan-sebelumnyalamabelajar") &&
+    localStorage.getItem("pendidikan-darisekolah") &&
+    localStorage.getItem("pendidikan-alasan") &&
+    localStorage.getItem("pendidikan-kelas") &&
     localStorage.getItem("pendidikan-bidangkeahlian") &&
     localStorage.getItem("pendidikan-programkeahlian") &&
-    localStorage.getItem("pendidikan-paketkeahlian") &&
-    localStorage.getItem("pendidikan-kelas")
+    localStorage.getItem("pendidikan-paketkeahlian")
   );
 };
 export const isKesehatanFilled = () => {
   return (
     localStorage.getItem("kesehatan-goldarah") &&
-    //localStorage.getItem("kesehatan-penyakit") &&
-    //localStorage.getItem("kesehatan-jasmani") &&
+    localStorage.getItem("kesehatan-penyakit") &&
+    localStorage.getItem("kesehatan-jasmani") &&
     localStorage.getItem("kesehatan-tinggi") &&
     localStorage.getItem("kesehatan-berat")
   );
