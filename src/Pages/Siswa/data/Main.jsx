@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import Logo from "../../../assets/logosekolah.png"
-import EmailIcon from "../../../assets/EmailIcon.png"
 import axios from "axios";
-import resetAll from "../../../utils/resetAll";
-import GoBack from "../../../components/goback";
+import GoBack from "../../../Components/goback";
 
-import { baseUrl } from "../../../utils/constan";
+import { baseUrl } from "../../../Utils/constan";
 
 const TambahAkun = () => {
   const params = useParams();

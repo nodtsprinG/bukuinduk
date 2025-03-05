@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import HeaderInput from "../../../components/headerInputV2";
+import HeaderInput from "../../../Components/headerInputV2";
 import { useState, useEffect } from "react";
 import {
   TextInput,
@@ -119,7 +119,7 @@ const Ayah = () => {
   return (
     <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-[24px]">
       <HeaderInput
-        title={"Ayah"}
+        title={"Keterangan Ayah"}
         word={"E"}
         form={"siswa"}
       />
@@ -218,11 +218,12 @@ const Ayah = () => {
               <td className="w-[63%] h-full">
                 <label className="py-1 ">h. Pengeluaran per Bulan (*Rp)</label>
               </td>
-              <td className="w-[37%] h-full">
+              <td className="w-[37%] h-full flex">
+                <span className="text-2xl flex items-center mr-2">Rp</span>
                 <TextInput
                   value={pengeluaran}
                   onChange={(e) => setPengeluaran(e.target.value)}
-                  className="h-full"
+                  className="h-full w-full"
                 />
               </td>
             </tr>

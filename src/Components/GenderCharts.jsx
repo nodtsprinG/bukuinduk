@@ -79,7 +79,7 @@ const GenderCharts = () => {
 
       const dummyData = {
         "Teknik Komunikasi Jaringan": { laki: 3, perempuan: 0, total: 3 },
-        "Animasi": { laki: 2, perempuan: 0, total: 2 },
+        "Animasi": { laki: 1, perempuan: 1, total: 2 },
         "Rekayasa Perangkat Lunak": { laki: 6, perempuan: 0, total: 6 }
       };
 

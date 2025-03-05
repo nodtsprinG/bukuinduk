@@ -93,24 +93,27 @@ const DataSiswa = () => {
     const searchQuery = searchKey;
     const jurusanQuery = jurusans.filter((x) => x.checked).map((x) => x.nama).join(",");
     const angkatanQuery = angkatans.filter((x) => x.checked).map((x) => x.tahun).join(",");
-
+    const userChoice = window.confirm("Unduh halaman depan? (Klik Batal untuk halaman belakang)");
+    
+    const url =
+      userChoice
+        ? `${baseUrl}/admin/export-pdf?search=${searchQuery}&jurusan=${jurusanQuery}&angkatan=${angkatanQuery}`
+        : `${baseUrl}/admin/export-raport-template`;
+  
     axios
-      .get(
-        `${baseUrl}/admin/export-pdf?search=${searchQuery}&jurusan=${jurusanQuery}&angkatan=${angkatanQuery}`,
-        {
-          responseType: "blob",
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      )
+      .get(url, {
+        responseType: "blob",
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
       .then((response) => {
-        fileDownload(response.data, "download.pdf");
+        fileDownload(response.data, userChoice ? "data-siswa.pdf" : "nilai-siswa.pdf");
         toast.success("Ekspor PDF berhasil");
       })
       .catch((error) => {
         console.error("Download error:", error);
         toast.error("Gagal mengekspor PDF!");
       });
-  };
+  };  
 
   const handleDetailClick = (id) => {
     detailPreparing(id);

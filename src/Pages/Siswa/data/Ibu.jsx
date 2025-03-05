@@ -1,11 +1,11 @@
-import HeaderInput from "../../../components/headerInputV2";
+import HeaderInput from "../../../Components/headerInputV2";
 import { useState, useEffect } from "react";
 import {
   TextInput,
   IntegerInput,
   RadioInput,
-} from "../../../components/inputComponent";
-import Nextbefore from "../../../components/nextbefore";
+} from "../../../Components/inputComponent";
+import Nextbefore from "../../../Components/nextbefore";
 import { useNavigate, useParams } from "react-router";
 
 //Date issues
@@ -114,7 +114,7 @@ const Ibu = () => {
 
   return (
     <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-[24px]">
-      <HeaderInput title={"Ibu"} word={"F"} form={"siswa"} />
+      <HeaderInput title={"Keterangan Ibu"} word={"F"} form={"siswa"} />
       <div className="bg-white p-6 flex items-center justify-center">
         <table className="w-3/4 font-body border-separate border-spacing-4 ">
           <tbody>
@@ -210,11 +210,12 @@ const Ibu = () => {
               <td className="w-[63%] h-full">
                 <label className="py-1 ">h. Pengeluaran per Bulan (*Rp)</label>
               </td>
-              <td className="w-[37%] h-full">
+              <td className="w-[37%] h-full flex">
+                <span className="text-2xl flex items-center mr-2">Rp</span>
                 <TextInput
                   value={pengeluaran}
                   onChange={(e) => setPengeluaran(e.target.value)}
-                  className="h-full"
+                  className="h-full w-full"
                 />
               </td>
             </tr>
