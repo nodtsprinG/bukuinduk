@@ -130,7 +130,7 @@ const GenderCharts = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-2 gap-6">
       <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all">
         <h3 className="text-lg font-semibold mb-4">Distribusi Siswa per Jurusan</h3>
         <ReactApexChart
@@ -140,7 +140,7 @@ const GenderCharts = () => {
               ...commonOptions.chart,
               type: 'bar',
             },
-            plotOptions: { bar: { columnWidth: '45%', borderRadius: 5 } }
+            plotOptions: { bar: { columnWidth: '30%', borderRadius: 5 } }
           }}
           series={chartSeries}
           type="bar"

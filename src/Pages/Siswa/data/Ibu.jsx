@@ -2,8 +2,6 @@ import HeaderInput from "../../../Components/headerInputV2";
 import { useState, useEffect } from "react";
 import {
   TextInput,
-  IntegerInput,
-  RadioInput,
 } from "../../../Components/inputComponent";
 import Nextbefore from "../../../Components/nextbefore";
 import { useNavigate, useParams } from "react-router";
