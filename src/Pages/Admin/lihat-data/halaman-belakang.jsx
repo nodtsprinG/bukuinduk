@@ -39,7 +39,7 @@ const ERaport = () => {
 
   const fetchNilai = async () => {
     try {
-      const response = await axios.get(baseUrl + `/admin/nilai/${params.id}`, {
+      const response = await axios.get(baseUrl + `/admin/nilai/${localStorage.getItem("akun-id")}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
 
@@ -47,9 +47,9 @@ const ERaport = () => {
         setNilaiList(
           response.data[`Semester ${activeSemester}`].map((val) => ({
             sia: {
-              sakit: val.sia?.sakit ?? 0,
-              izin: val.sia?.izin ?? 0,
-              alpha: val.sia?.alpha ?? 0,
+              sakit: val.SIA?.sakit ?? 0,
+              izin: val.SIA?.izin ?? 0,
+              alpha: val.SIA?.alpha ?? 0,
             },
             mapel: {
               id: val.mapel_id,
@@ -86,9 +86,9 @@ const ERaport = () => {
   };
 
 
-  // const handleDelete = (index) => {
-  //   setNilaiList((prevList) => prevList.filter((_, i) => i !== index));
-  // };
+  const handleDelete = (index) => {
+    setNilaiList((prevList) => prevList.filter((_, i) => i !== index));
+  };
 
   const handleSave = async () => {
     try {
@@ -101,8 +101,9 @@ const ERaport = () => {
       await axios.post(
         `${baseUrl}/admin/nilai`,
         {
+          sia : nilaiList[0].sia,
           semester: activeSemester,
-          user_id: params.id,
+          user_id: localStorage.getItem("akun"),
           data,
         },
         {
@@ -137,10 +138,33 @@ const ERaport = () => {
     "Mata Pelajaran Pilihan",
   ];
 
+  const [pelajaranUmum, setPelajaranUmum] = useState(kelompokUmum)
+
+
+  useEffect(() => {
+    let filteredMapel;
+    if (activeSemester == '1' || activeSemester == '2') {
+      filteredMapel = kelompokUmum.filter(mapel => 
+        !['Mata Pelajaran Konsentrasi Keahlian', 'Projek Kreatif dan Kewirausahaan', 'Mata Pelajaran Pilihan'].includes(mapel)
+      );
+    } else if (activeSemester == '3' || activeSemester == '4') {
+      filteredMapel = kelompokUmum.filter(mapel => 
+        !['Seni Budaya', 'Informatika', 'Projek IPAS', 'Dasar Program Keahlian'].includes(mapel)
+      );
+    } else if (activeSemester == '5' || activeSemester == '6') {
+      filteredMapel = kelompokUmum.filter(mapel => 
+        !['Pendidikan Jasmani, Olahraga, dan Kesehatan', 'Seni Budaya', 'Informatika', 'Projek IPAS', 'Dasar Program Keahlian'].includes(mapel)
+      );
+    }
+
+    console.log(filteredMapel)
+
+    setPelajaranUmum(filteredMapel)
+  }, [activeSemester])
 
   const exportData = () => {
     axios
-      .get(`${baseUrl}/admin/export-raport-pdf/${params.id}`, {
+      .get(`${baseUrl}/admin/export-raport-pdf/${localStorage.getItem("akun-id")}`, {
         responseType: "blob",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -154,6 +178,38 @@ const ERaport = () => {
       });
   };
 
+  const exportExcel = () => {
+    axios
+    .get(`${baseUrl}/admin/export-raport-excel/${localStorage.getItem("akun-id")}`, {
+      responseType: "blob",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+    .then((response) => {
+      fileDownload(response.data, "nilai-siswa.xlsx");
+    })
+    .catch((error) => {
+      console.error("Download error:", error);
+    });
+  }
+
+  const exportDummy = () => {
+    axios
+    .get(`${baseUrl}/admin/export-raport-excel-dummy`, {
+      responseType: "blob",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+    .then((response) => {
+      fileDownload(response.data, "nilai-dummy.xlsx");
+    })
+    .catch((error) => {
+      console.error("Download error:", error);
+    });
+  }
+
   const handleFileChange = (e) => setFile(e.target.files[0]);
   const handleImport = async (e) => {
     e.preventDefault();
@@ -161,15 +217,18 @@ const ERaport = () => {
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("userId", localStorage.getItem("akun-id"));
     try {
-      await axios.post(`${baseUrl}/import-raport`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      await axios.post(`${baseUrl}/admin/import-individual-raport`, formData, {
+        headers: { "Content-Type": "multipart/form-data", "Authorization" : "Bearer " + localStorage.getItem("token") },
       });
       alert("File berhasil diunggah");
     } catch {
       alert("File gagal diunggah");
     }
   };
+
+  
 
   const handleSIAChange = (field, value) => {
     setNilaiList((prevList) => {
@@ -184,6 +243,8 @@ const ERaport = () => {
       };
       return updatedList;
     });
+
+    console.log(nilaiList)
   };
 
   return (
@@ -206,7 +267,13 @@ const ERaport = () => {
           Simpan
         </button>
         <button className="bg-red-500 text-white px-4 py-2 rounded-md" onClick={exportData}>
-          Ekspor
+          Ekspor PDF
+        </button>
+        <button className="bg-red-500 text-white px-4 py-2 rounded-md" onClick={exportDummy}>
+          Ekspor Dummy
+        </button>
+        <button className="bg-red-500 text-white px-4 py-2 rounded-md" onClick={exportExcel}>
+          Ekspor Excel
         </button>
         <form onSubmit={handleImport} className="flex gap-2">
           <input type="file" onChange={handleFileChange} className="border border-black rounded-md p-2" />
@@ -224,7 +291,7 @@ const ERaport = () => {
             </tr>
           </thead>
           <tbody>
-            {kelompokUmum.map((mapel, index) => {
+            {pelajaranUmum.map((mapel, index) => {
               // Find the matching item in nilaiList
               const nilaiItem = nilaiList.find(item => item.mapel?.nama === mapel) || {};
 
