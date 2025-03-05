@@ -9,6 +9,8 @@ import { baseUrl } from "../../Utils/constan";
 import fileDownload from "js-file-download";
 import { toast } from "react-toastify";
 import detailPreparing from "../../Utils/detailPreparing"
+import Modal from "../../Components/Modal";
+import DataDiriNav from "../../Components/DataDiriNav";
 
 const DataSiswa = () => {
     const navigate = useNavigate();
@@ -22,25 +24,25 @@ const DataSiswa = () => {
     const itemsPerPage = 10;
     const [file, setFile] = useState(null);
 
-    // useEffect(() => {
-    //     axios.get(`${baseUrl}/admin/akun`, {
-    //         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    //     }).then((res) => setSiswa(res.data));
-    //     if (!siswa) return;
-    //     let data = siswa.filter((s) =>
-    //         s.nama.toLowerCase().includes(searchKey.toLowerCase())
-    //     );
+    useEffect(() => {
+        axios.get(`${baseUrl}/admin/data-diri/pending`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }).then((res) => {
+            setSiswa(res.data.data)
+            let data = res.data.data
 
-    //     if (angkatans.length > 0) {
-    //         data = data.filter((s) => angkatans.includes(s.angkatan));
-    //     }
+            if (angkatans.length > 0) {
+                data = data.filter((s) => angkatans.includes(s.angkatan));
+            }
 
-    //     if (jurusans.length > 0) {
-    //         data = data.filter((s) => jurusans.includes(s.jurusan));
-    //     }
+            if (jurusans.length > 0) {
+                data = data.filter((s) => jurusans.includes(s.jurusan));
+            }
+            setFiltered(data);
+        });
+        
 
-    //     setFiltered(data);
-    // }, [siswa, searchKey, angkatans, jurusans]);
+    }, [ searchKey, angkatans, jurusans]);
 
     // useEffect(() => {
     //     if (!siswa) return;
@@ -117,16 +119,21 @@ const DataSiswa = () => {
             });
     };
 
+    const [detailOpen, setDetailOpen] = React.useState(false);
+    const [detailSiswaID, setDetailSiswaID] = React.useState({});
     const handleDetailClick = (id) => {
-        detailPreparing(id);
-        localStorage.setItem("akun-id", id);
-        navigate(`/admin/lihat/${id}/biodata`);
+        // detailPreparing(id);
+        setDetailOpen(!detailOpen)
+        setDetailSiswaID(filtered.find((val, index) => (val.id === id)));
+        // localStorage.setItem("akun-id", id);
+        // navigate(`/admin/lihat/${id}/biodata`);
     };
 
     const handleEditClick = (id) => {
         detailPreparing(id);
         navigate(`/admin/audit/${id}/biodata`);
     };
+
 
     return (
         <div className="flex h-screen font-body">
@@ -169,7 +176,7 @@ const DataSiswa = () => {
                             <tr key={s.id} className="text-center border">
                                 <td className="border px-4 py-2">{indexOfFirstItem + index + 1}</td>
                                 <td className="border px-4 py-2">{s.nisn}</td>
-                                <td className="border px-4 py-2">{s.nama}</td>
+                                <td className="border px-4 py-2">{s.data_diri_approved.nama_lengkap}</td>
                                 <td className="px-4 py-2 grid grid-cols-2 gap-2 justify-center">
                                     <button onClick={() => handleDetailClick(s.id)} className="bg-blue-500 rounded-sm p-2 text-white border">Lihat Detail</button>
                                     <button onClick={() => handleEditClick(s.id)} className="bg-green-800 rounded-sm p-2 text-white border">Perbarui</button>
@@ -186,6 +193,11 @@ const DataSiswa = () => {
                     <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)} className="px-4 py-2 mx-1 bg-gray-300 rounded disabled:opacity-50">Selanjutnya</button>
                 </div>
             </div>
+
+            <Modal isOpen={detailOpen} onClose={() => {setDetailOpen(false); console.log(detailSiswaID)}}>
+                <h1 className="font-bold text-2xl">Detail Perubahan</h1>
+                <DataDiriNav data={detailSiswaID}/>
+            </Modal>
         </div>
     );
 };

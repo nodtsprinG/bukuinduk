@@ -31,6 +31,7 @@ import Perkembangan from "./lihat-data/perkembangan"
 import Selesai from "./lihat-data/Selesai"
 import LHalamanBelakang from './lihat-data/halaman-belakang'
 import Logo from "../../assets/logosekolah.png"
+import PendingDetail from "./PendingDetail";
 const HomeAdmin = () => {
   const navigate = useNavigate();
   const check = () => {
@@ -98,6 +99,7 @@ const AdminRouting = () => {
       <Route exact path="/dataangkatan" element={<DataAngkatan />} />
       <Route exact path="/mapel" element={<DataMapel />} />
       <Route exact path="/pending" element={<Pending />} />
+      <Route exact path="/pending/:id" element={<PendingDetail />} />
     </Routes>
   );
 };
