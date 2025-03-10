@@ -18,6 +18,7 @@ const Navigation = () => {
 
   const Logout = () => {
     localStorage.clear();
+    window.alert("Anda telah logout");
     navigate("/admin/auth/login");
   };
 

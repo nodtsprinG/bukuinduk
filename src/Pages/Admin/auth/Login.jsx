@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios"
 import Logo from "../../../assets/logosekolah.png"
-import { baseUrl } from "../../../utils/constan";
+import { baseUrl } from "../../../Utils/constan";
 import GoBack from "../../../Components/goback"
 const Login = () => {
     const [email, setEmail] = useState("")
@@ -27,6 +27,7 @@ const Login = () => {
             email, password
         }).then((res) => {
             const { code } = res.data
+            window.alert("Berhasil login")
             navigate("/admin/auth/verification/" + code)
         })
     }

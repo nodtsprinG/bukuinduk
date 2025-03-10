@@ -1,110 +1,145 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import client from "../Utils/client";
 
-
-function DataDiriNav({data}) {
-    const excludeKeys =  ["data_diri_approved", "id", "nisn", "jurusan_id", "angkatan_id", "token", "jurusan", "angkatan"];
-    const filteredKeys = Object.keys(data).filter((val) => !excludeKeys.includes(val)).filter((val) => data[val]);
+function DataDiriNav({ data }) {
+    const excludeKeys = [
+        "data_diri_approved",
+        "id",
+        "nisn",
+        "jurusan_id",
+        "angkatan_id",
+        "token",
+        "jurusan",
+        "angkatan",
+    ];
+    const filteredKeys = Object.keys(data)
+        .filter((val) => !excludeKeys.includes(val))
+        .filter((val) => data[val]);
     const [active, setActive] = useState(filteredKeys[0] || "");
     const [oldData, setOldData] = useState({});
-    
+
     useEffect(() => {
-        client.get("/admin/akun/" + data.id)
-        .then((res) => {
-            setOldData(res.data)
-            console.log(res.data)
-        })
-    }, [])
+        client.get("/admin/akun/" + data.id).then((res) => {
+            setOldData(res.data);
+            console.log("Old Data:", res.data);
+        });
+    }, []);
 
-    function acceptChanges(e){
-        e.preventDefault()
-        client.post("/admin/data-diri/pending/" + data.id)
-        .then(() => {
-            alert("All data sucessfully changed")
-        })
+    function acceptChanges(e) {
+        e.preventDefault();
+        client.post("/admin/data-diri/pending/" + data.id).then(() => {
+            alert("Semua data berhasil diterima!");
+        });
     }
 
-    function rejectChanges(e){
-        e.preventDefault()
-        client.delete("/admin/data-diri/pending/" + data.id)
-        .then(() => {
-            alert("All data sucessfully changed")
-        })
+    function rejectChanges(e) {
+        e.preventDefault();
+        client.delete("/admin/data-diri/pending/" + data.id).then(() => {
+            alert("Semua data berhasil ditolak!");
+        });
     }
 
+    return (
+        <div className="p-4 bg-white rounded-lg shadow-md">
+            {/* Navigasi Tab */}
+            <div className="flex overflow-auto gap-2 mb-4 capitalize">
+                {filteredKeys.map((val, index) => {
+                    if (!data[val]) {
+                        return null;
+                    }
+                    return (
+                        <div
+                            key={index}
+                            onClick={() => setActive(val)}
+                            className={`px-2 text-xl cursor-pointer ${active === val
+                                ? "text-black border-b-2 border-b-blue-700"
+                                : "text-gray-500"
+                                } transition duration-150`}
+                        >
+                            {val.replace("_", " ")}
+                        </div>
+                    );
+                })}
+            </div>
 
+            <div className="max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 mb-4">
+                {/* Data Baru */}
+                <div className="font-bold text-blue-600 mb-2">Data Baru</div>
+                <table className="w-full mb-4 border-collapse capitalize">
+                    <tbody>
+                        {active &&
+                            data[active] &&
+                            typeof data[active] === "object" &&
+                            Object.keys(data[active]).map((val, index) => {
+                                if (["id", "user_id", "status_perubahan"].includes(val)) {
+                                    return null;
+                                }
+                                return (
+                                    <tr
+                                        key={index}
+                                        className={`border-b text-sm ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                                            }`}
+                                    >
+                                        <td className="p-2 w-[40%] text-gray-600">{val.replaceAll("_", " ")}</td>
+                                        <td className="p-2">:</td>
+                                        <td className="p-2 text-gray-800">{data[active][val]}</td>
+                                    </tr>
+                                );
+                            })}
+                    </tbody>
+                </table>
 
-  
-  return (
-    <>
-    <div className="flex overflow-auto gap-2">
-    {
-        filteredKeys.map((val, index) => {
-            if(!data[val]) {
-                return
-            }
-            return (
-                <div key={index} onClick={() => setActive(val)} className={`p-2 border-b-2 ${active === val ? "border-blue-600" : "border-transparent"} text-blue-600`}>
-                    {val.replace("_", " ")}
-                </div>
-            )
-        })
-    }
+                {/* Data Lama */}
+                <div className="font-bold text-blue-600 mb-2">Data Lama</div>
+                <table className="w-full mb-4 border-collapse capitalize">
+                    <tbody>
+                        {active &&
+                            data[active] &&
+                            typeof data[active] === "object" &&
+                            Object.keys(data[active]).map((val, index) => {
+                                if (["id", "user_id", "status_perubahan"].includes(val)) {
+                                    return null;
+                                }
+                                return (
+                                    <tr
+                                        key={index}
+                                        className={`border-b text-sm ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                                            }`}
+                                    >
+                                        <td className="p-2 w-[40%] text-gray-600">{val.replaceAll("_", " ")}</td>
+                                        <td className="p-2">:</td>
+                                        <td
+                                            className={`p-2 text-gray-800 ${oldData?.[active]?.[val] === data?.[active]?.[val]
+                                                ? ""
+                                                : "font-bold text-red-600"
+                                                }`}
+                                        >
+                                            {oldData[active] && oldData[active][val]}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                    </tbody>
+                </table>
+            </div>
 
-    </div>
-    <div className="h-[70%] overflow-auto">
-        <div className="font-bold mt-5">
-            Data Baru
+            {/* Tombol Aksi */}
+            <div className="flex justify-end gap-3">
+                <button
+                    onClick={rejectChanges}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition duration-150"
+                >
+                    Tolak
+                </button>
+                <button
+                    onClick={acceptChanges}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition duration-150"
+                >
+                    Terima
+                </button>
+            </div>
         </div>
-        <table className="w-full">
-                    {
-                    active && data[active] && typeof data[active] === "object" && (
-                        Object.keys(data[active]).map((val, index) => {
-                            if(["id", "user_id", "status_perubahan"].includes(val)) {
-                                return
-                            }
-                            return (
-                                <tr key={index} className={`p-2 `}>
-                                    <td className="w-[40%]">{val.replaceAll("_", " ")}</td>
-                                    <td> : </td>
-                                    <td>{data[active][val]}</td>
-                                </tr>
-                            )
-                        })
-                    )
-                }
-        </table>
-        <div className="font-bold mt-5">
-            Data Lama
-        </div>
-        <table className="w-full">
-                    {
-                    active && data[active] && typeof data[active] === "object" && (
-                        Object.keys(data[active]).map((val, index) => {
-                            if(["id", "user_id", "status_perubahan"].includes(val)) {
-                                return
-                            }
-                            return (
-                                <tr key={index} className={`p-2 `}>
-                                    <td className="w-[40%]">{val.replaceAll("_", " ")}</td>
-                                    <td> : </td>
-                                    <td className={`${oldData?.[active]?.[val] === data?.[active]?.[val] ? "" : "font-bold"}`}>{oldData?.[active]?.[val]}</td>
-                                </tr>
-                            )
-                        })
-                    )
-                }
-        </table>
-    </div>
-
-        <div className="flex w-full justify-end gap-3">
-            <button onClick={(e) => {rejectChanges(e)}} className="px-3 py-1 bg-red-600 border hover:bg-red-900 duration-150 text-white rounded">Tolak</button>
-            <button onClick={(e) => {acceptChanges(e)}} className="px-3 py-1 bg-green-600 border hover:bg-green-900 duration-150 text-white rounded">Terima</button>
-        </div>
-    </>
-
-  )
+    );
 }
 
-export default DataDiriNav
+export default DataDiriNav;

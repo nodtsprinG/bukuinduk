@@ -125,12 +125,12 @@ const GenderCharts = () => {
 
   const chartSeries = [
     { name: 'Total Siswa', data: chartData.totalSiswa },
-    { name: 'Siswa Laki-laki', data: chartData.siswaLaki },
-    { name: 'Siswa Perempuan', data: chartData.siswaPerempuan }
+    // { name: 'Siswa Laki-laki', data: chartData.siswaLaki },
+    // { name: 'Siswa Perempuan', data: chartData.siswaPerempuan }
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
       <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all">
         <h3 className="text-lg font-semibold mb-4">Distribusi Siswa per Jurusan</h3>
         <ReactApexChart

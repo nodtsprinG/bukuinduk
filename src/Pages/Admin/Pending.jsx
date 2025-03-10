@@ -139,8 +139,8 @@ const DataSiswa = () => {
         <div className="flex h-screen font-body">
             <Navigation />
             <div className="flex-1 p-6 bg-white text-black overflow-y-scroll">
-                <h1 className="text-3xl font-normal ml-2">Data Pending</h1>
-                <header className="flex justify-end gap-4 my-5">
+                <h1 className="text-3xl font-normal ml-2">Daftar Data Perubahan Data</h1>
+                {/* <header className="flex justify-end gap-4 my-5">
                     <button onClick={() => exportData()} className="bg-blue-500 rounded-sm py-1 px-2 text-white">Unduh Excel</button>
                     <button onClick={() => exportDataPDF()} className="bg-blue-500 rounded-sm py-1 px-2 text-white">Unduh PDF</button>
                     <button onClick={() => exportDataPDF()} className="bg-blue-500 rounded-sm py-1 px-2 text-white">Unduh Format</button>
@@ -159,7 +159,7 @@ const DataSiswa = () => {
                     <button onClick={() => setFilters(!filters)} className="border border-gray-400 rounded-sm text-black col-span-1 p-2 flex items-center justify-center">
                         <CiFilter className="mr-2" /> Filter
                     </button>
-                </div>
+                </div> */}
                 {filters && <FilterComponent stateAngkatan={setAngkatans} stateJurusan={setJurusans} />}
 
                 <table className="w-full mt-8 border border-gray-300">
@@ -177,9 +177,9 @@ const DataSiswa = () => {
                                 <td className="border px-4 py-2">{indexOfFirstItem + index + 1}</td>
                                 <td className="border px-4 py-2">{s.nisn}</td>
                                 <td className="border px-4 py-2">{s.data_diri_approved.nama_lengkap}</td>
-                                <td className="px-4 py-2 grid grid-cols-2 gap-2 justify-center">
-                                    <button onClick={() => handleDetailClick(s.id)} className="bg-blue-500 rounded-sm p-2 text-white border">Lihat Detail</button>
-                                    <button onClick={() => handleEditClick(s.id)} className="bg-green-800 rounded-sm p-2 text-white border">Perbarui</button>
+                                <td className="px-4 py-2 flex items-center justify-center">
+                                    <button onClick={() => handleDetailClick(s.id)} className="bg-yellow-500 rounded-sm p-2 text-white border">Menunggu Konfirmasi</button>
+                                    {/* <button onClick={() => handleEditClick(s.id)} className="bg-green-800 rounded-sm p-2 text-white border">Perbarui</button> */}
                                 </td>
                             </tr>
                         ))}

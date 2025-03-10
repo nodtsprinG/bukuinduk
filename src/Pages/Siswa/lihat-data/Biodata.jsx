@@ -12,6 +12,7 @@ import {
 import Nextbefore from "../../../Components/nextbefore";
 import HeaderInput from "../../../Components/headerInput";
 import DatePicker from "react-datepicker";
+import { Edit, Save } from "lucide-react";
 
 const Biodata = () => {
   const [siswa, setSiswa] = useState(null);
@@ -78,7 +79,7 @@ const Biodata = () => {
       });
       console.log("Response dari backend:", response.data);
       setIsEditing(false); // Kembali ke mode lihat setelah sukses
-      alert("Data berhasil diperbarui!");
+      window.alert("Tunggu Konfirmasi Admin!");
     } catch (err) {
       alert("Gagal menyimpan perubahan");
     }
@@ -92,17 +93,25 @@ const Biodata = () => {
       <div className="my-10 w-full"><Profil /></div>
       <div><InputHalaman /></div>
       {/* Tombol Edit / Simpan */}
-      <div className="flex justify-center">
-        {!isEditing ? (
-          <button onClick={handleEdit} className="bg-blue-600 text-white px-4 py-2 rounded">
-            Ubah Data
-          </button>
-        ) : (
-          <button onClick={handleSave} className="bg-green-800 text-white px-4 py-2 rounded">
-            Simpan
-          </button>
-        )}
-      </div>
+      <div className="flex justify-end my-4">
+          {!isEditing ? (
+            <button
+              onClick={handleEdit}
+              className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
+            >
+              <Edit className="w-5 h-5" />
+              Ubah
+            </button>
+          ) : (
+            <button
+              onClick={handleSave}
+              className="flex items-center gap-2 bg-green-800 text-white px-6 py-2 rounded-md hover:bg-green-900 transition duration-300 shadow-md hover:shadow-lg"
+            >
+              <Save className="w-5 h-5" />
+              Simpan
+            </button>
+          )}
+        </div>
       <HeaderInput title={"Data Diri Siswa"} word={"A"} form={"admin"} />
       <div className="bg-white p-6 flex items-center justify-center">
         <table className="w-3/4 font-body border-separate border-spacing-4">

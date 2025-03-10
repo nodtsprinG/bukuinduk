@@ -6,7 +6,7 @@ import {
 import Nextbefore from "../../../Components/nextbefore";
 import { useNavigate, useParams } from "react-router";
 
-import uploadAll from "../../../utils/uploadAll";
+import uploadAll from "../../../Utils/uploadAll";
 
 /* 
 
@@ -45,19 +45,23 @@ const Hobi = () => {
   };
 
   const nextButton = () => {
-    console.log(kesenian, olahraga, organisasi, lainlain);
-      if (params.action === "upload") {
-        localStorage.setItem("hobi-kesenian", kesenian ? kesenian : null);
-        localStorage.setItem("hobi-olahraga", olahraga ? olahraga : null);
-        localStorage.setItem("hobi-organisasi", organisasi ? organisasi : null);
-        localStorage.setItem("hobi-lainlain", lainlain ? lainlain : null);
-      }
-      uploadAll()
-      navigate("/siswa");
+    // Simpan data ke localStorage secara ringkas
+    const hobiKeys = ["kesenian", "olahraga", "organisasi", "lainlain"];
+    const hobiValues = [kesenian, olahraga, organisasi, lainlain];
+  
+    hobiKeys.forEach((key, index) => {
+      localStorage.setItem(`hobi-${key}`, hobiValues[index] || null);
+    });
+  
+    uploadAll()
+      .then(() => console.log("Data berhasil diupload"))
+      .catch((error) => console.error("Gagal mengupload data:", error));
+    navigate(`/siswa`)
   };
+  
   return (
     <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-[24px]">
-      <HeaderInput title={"Hobi"} word={"H"} form={"siswa"} lastpage={true}/>
+      <HeaderInput title={"Hobi Siswa"} word={"H"} form={"siswa"} lastpage={true}/>
       <div className="bg-white p-6 flex items-center justify-center">
         <table className="w-3/4 font-body border-separate border-spacing-4 ">
           <tbody>

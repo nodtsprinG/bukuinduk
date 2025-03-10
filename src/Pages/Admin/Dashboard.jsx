@@ -46,7 +46,7 @@ const Dashboard = () => {
 
         {/* Grafik */}
         <div className="mt-5 bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">Statistik Gender</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">Statistik Siswa</h2>
           <GenderCharts maleCount={dashboard.count_laki} femaleCount={dashboard.count_perempuan} />
         </div>
       </div>

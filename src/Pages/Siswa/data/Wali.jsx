@@ -189,11 +189,12 @@ const Wali = () => {
               <td className="w-[63%] h-full">
                 <label className="py-1 ">h. Pengeluaran per Bulan (*Rp)</label>
               </td>
-              <td className="w-[37%] h-full">
+              <td className="w-[50%] h-full flex">
+                <span className="text-2xl flex items-center mr-2">Rp</span>
                 <TextInput
                   value={pengeluaran}
                   onChange={(e) => setPengeluaran(e.target.value)}
-                  className="h-full"
+                  className="h-full w-full"
                 />
               </td>
             </tr>

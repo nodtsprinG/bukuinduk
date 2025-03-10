@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router";
+// import { useParams } from "react-router";
 import fileDownload from "js-file-download";
 import { baseUrl } from "../../../Utils/constan";
 import Profil from "../../../Components/profileCard"
@@ -12,7 +12,7 @@ const ERaport = () => {
   const [nilaiList, setNilaiList] = useState([]);
   const [file, setFile] = useState(null);
 
-  const params = useParams();
+  // const params = useParams();
 
   useEffect(() => {
     fetchMapel();
@@ -86,9 +86,9 @@ const ERaport = () => {
   };
 
 
-  const handleDelete = (index) => {
-    setNilaiList((prevList) => prevList.filter((_, i) => i !== index));
-  };
+  // const handleDelete = (index) => {
+  //   setNilaiList((prevList) => prevList.filter((_, i) => i !== index));
+  // };
 
   const handleSave = async () => {
     try {
@@ -103,7 +103,7 @@ const ERaport = () => {
         {
           sia : nilaiList[0].sia,
           semester: activeSemester,
-          user_id: localStorage.getItem("akun"),
+          user_id: localStorage.getItem("akun-id"),
           data,
         },
         {
@@ -203,7 +203,7 @@ const ERaport = () => {
       },
     })
     .then((response) => {
-      fileDownload(response.data, "nilai-dummy.xlsx");
+      fileDownload(response.data, "format-siswa.xlsx");
     })
     .catch((error) => {
       console.error("Download error:", error);
@@ -250,7 +250,7 @@ const ERaport = () => {
   return (
     <div className="p-4 bg-gray-100 min-h-screen text-[20px]">
       <Profil />
-      <div><PilihHalaman /></div>
+      <div className="mt-4"><PilihHalaman /></div>
       <h1 className="text-2xl font-bold my-4">E - Raport (Semester {activeSemester})</h1>
 
       <div className="flex gap-2 mb-4 flex-wrap">
@@ -267,13 +267,13 @@ const ERaport = () => {
           Simpan
         </button>
         <button className="bg-red-500 text-white px-4 py-2 rounded-md" onClick={exportData}>
-          Ekspor PDF
+          Unduh PDF
         </button>
         <button className="bg-red-500 text-white px-4 py-2 rounded-md" onClick={exportDummy}>
-          Ekspor Dummy
+          Unduh Format
         </button>
         <button className="bg-red-500 text-white px-4 py-2 rounded-md" onClick={exportExcel}>
-          Ekspor Excel
+          Unduh Excel
         </button>
         <form onSubmit={handleImport} className="flex gap-2">
           <input type="file" onChange={handleFileChange} className="border border-black rounded-md p-2" />

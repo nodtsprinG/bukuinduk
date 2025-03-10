@@ -21,6 +21,7 @@ const Verify = () => {
             }).then((res) => {
                 const { token } = res.data
                 localStorage.setItem("token", token)
+                window.alert("Selamat Datang")
                 navigate("/admin/dashboard")
             })
         }

@@ -208,7 +208,7 @@ const Ibu = () => {
               <td className="w-[63%] h-full">
                 <label className="py-1 ">h. Pengeluaran per Bulan (*Rp)</label>
               </td>
-              <td className="w-[37%] h-full flex">
+              <td className="w-[50%] h-full flex">
                 <span className="text-2xl flex items-center mr-2">Rp</span>
                 <TextInput
                   value={pengeluaran}

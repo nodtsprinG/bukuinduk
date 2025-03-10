@@ -1,3 +1,10 @@
+export const isAkunFilled = () => {
+  return (
+    localStorage.getItem("akun-nisn") &&
+    localStorage.getItem("akun-jurusanId") &&
+    localStorage.getItem("akun-angkatanId")
+  );
+};
 export const isBiodataFilled = () => {
   return (
     localStorage.getItem("biodata-nama") &&
@@ -21,6 +28,32 @@ export const isTempattinggalFilled = () => {
     localStorage.getItem("tempattinggal-telp") &&
     localStorage.getItem("tempattinggal-tinggal") &&
     localStorage.getItem("tempattinggal-jarak")
+  );
+};
+export const isKesehatanFilled = () => {
+  return (
+    localStorage.getItem("kesehatan-goldarah") &&
+    localStorage.getItem("kesehatan-penyakit") &&
+    localStorage.getItem("kesehatan-jasmani") &&
+    localStorage.getItem("kesehatan-tinggi") &&
+    localStorage.getItem("kesehatan-berat")
+  );
+};
+export const isPendidikanFilled = () => {
+  return (
+    localStorage.getItem("pendidikan-tanggal") &&
+    localStorage.getItem("pendidikan-tamatan") &&
+    localStorage.getItem("pendidikan-tanggal-ijazah") &&
+    localStorage.getItem("pendidikan-nomor-ijazah") &&
+    localStorage.getItem("pendidikan-tanggal-skhun") &&
+    localStorage.getItem("pendidikan-nomor-skhun") &&
+    localStorage.getItem("pendidikan-sebelumnyalamabelajar") &&
+    localStorage.getItem("pendidikan-darisekolah") &&
+    localStorage.getItem("pendidikan-alasan") &&
+    localStorage.getItem("pendidikan-kelas") &&
+    localStorage.getItem("pendidikan-bidangkeahlian") &&
+    localStorage.getItem("pendidikan-programkeahlian") &&
+    localStorage.getItem("pendidikan-paketkeahlian")
   );
 };
 export const isAyahFilled = () => {
@@ -52,8 +85,43 @@ export const isIbuFilled = () => {
   );
 };
 export const isWaliFilled = () => {
-  return true
+  return (
+    localStorage.getItem("wali-nama")?.trim() &&
+    localStorage.getItem("wali-tempatlahir")?.trim() &&
+    localStorage.getItem("wali-tanggallahir")?.trim() &&
+    localStorage.getItem("wali-agama")?.trim() &&
+    localStorage.getItem("wali-kewarganegaraan")?.trim() &&
+    localStorage.getItem("wali-pendidikan")?.trim() &&
+    localStorage.getItem("wali-pekerjaan")?.trim() &&
+    localStorage.getItem("wali-pengeluaran")?.trim() &&
+    localStorage.getItem("wali-alamatdantelpon")?.trim()
+  );
 };
+export const isHobiFilled = () => {
+  return (
+    localStorage.getItem("hobi-kesenian")?.trim() &&
+    localStorage.getItem("hobi-olahraga")?.trim() &&
+    localStorage.getItem("hobi-organisasi")?.trim() &&
+    localStorage.getItem("hobi-lainlain")?.trim()
+  );
+};
+export const isPerkembangansiswaFilled = () => {
+  return (
+    localStorage.getItem("perkembangan-beasiswa") &&
+
+    // Meninggalkan Sekolah
+    localStorage.getItem("perkembangan-meninggalkansekolah-tanggal") &&
+    localStorage.getItem("perkembangan-meninggalkansekolah-alasan") &&
+
+    // Akhir Pendidikan
+    localStorage.getItem("perkembangan-akhirpendidikan-tamat") &&
+    localStorage.getItem("perkembangan-akhirpendidikan-no-ijazah") &&
+    localStorage.getItem("perkembangan-akhirpendidikan-tanggal-ijazah") &&
+    localStorage.getItem("perkembangan-akhirpendidikan-no-skhun") &&
+    localStorage.getItem("perkembangan-akhirpendidikan-tanggal-skhun")
+  );
+};
+
 export const isSelesaipendidikanFilled = () => {
   return (
     localStorage.getItem("selesaipendidikan-melanjutkan") &&
@@ -62,46 +130,8 @@ export const isSelesaipendidikanFilled = () => {
     localStorage.getItem("selesaipendidikan-penghasilan")
   );
 };
-export const isPerkembangansiswaFilled = () => {
-  return (
-    localStorage.getItem("perkembangan-beasiswa") &&
-    localStorage.getItem("perkembangan-meninggalkansekolah") &&
-    localStorage.getItem("perkembangan-akhirpendidikan")
-  );
-};
-export const isHobiFilled = () => {
-  return true;
-};
-export const isPendidikanFilled = () => {
-  return (
-    localStorage.getItem("pendidikan-tanggal") &&
-    localStorage.getItem("pendidikan-tamatan") &&
-    localStorage.getItem("pendidikan-tanggal-ijazah") &&
-    localStorage.getItem("pendidikan-nomor-ijazah") &&
-    localStorage.getItem("pendidikan-nomor-skhun") &&
-    localStorage.getItem("pendidikan-sebelumnyalamabelajar") &&
-    localStorage.getItem("pendidikan-darisekolah") &&
-    localStorage.getItem("pendidikan-alasan") &&
-    localStorage.getItem("pendidikan-kelas") &&
-    localStorage.getItem("pendidikan-bidangkeahlian") &&
-    localStorage.getItem("pendidikan-programkeahlian") &&
-    localStorage.getItem("pendidikan-paketkeahlian")
-  );
-};
-export const isKesehatanFilled = () => {
-  return (
-    localStorage.getItem("kesehatan-goldarah") &&
-    localStorage.getItem("kesehatan-penyakit") &&
-    localStorage.getItem("kesehatan-jasmani") &&
-    localStorage.getItem("kesehatan-tinggi") &&
-    localStorage.getItem("kesehatan-berat")
-  );
-};
 
-export const isAkunFilled = () => {
-  return (
-    localStorage.getItem("akun-nisn") &&
-    localStorage.getItem("akun-jurusanId") &&
-    localStorage.getItem("akun-angkatanId")
-  );
-};
+
+
+
+

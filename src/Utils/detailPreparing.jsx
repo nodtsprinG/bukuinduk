@@ -69,8 +69,10 @@ const detailPreparing = async (id) => {
 
     setLocalStorage("pendidikan-tanggal", data.pendidikan?.diterima_tanggal);
     setLocalStorage("pendidikan-tamatan", data.pendidikan?.sebelumnya_tamatan_dari);
-    setLocalStorage("pendidikan-nomorijazah", data.pendidikan?.sebelumnya_tanggal_dan_ijazah);
-    setLocalStorage("pendidikan-skhun", data.pendidikan?.sebelumnya_tanggal_skhun_dan_);
+    setLocalStorage("pendidikan-tanggal-ijazah", data.pendidikan?.sebelumnya_tanggal_ijazah);
+    setLocalStorage("pendidikan-nomor-ijazah", data.pendidikan?.sebelumnya_no_ijazah);
+    setLocalStorage("pendidikan-tanggal-skhun", data.pendidikan?.sebelumnya_tanggal_skhun);
+    setLocalStorage("pendidikan-nomor-skhun", data.pendidikan?.sebelumnya_no_skhun);
     setLocalStorage("pendidikan-sebelumnyalamabelajar", data.pendidikan?.sebelumnya_lama_belajar);
     setLocalStorage("pendidikan-darisekolah", data.pendidikan?.pindahan_dari_sekolah);
     setLocalStorage("pendidikan-alasan", data.pendidikan?.pindahan_alasan);
@@ -91,8 +93,13 @@ const detailPreparing = async (id) => {
     setLocalStorage("selesaipendidikan-penghasilan", data.setelah_pendidikan?.bekerja_penghasilan);
 
     setLocalStorage("perkembangan-beasiswa", data.perkembangan?.menerima_bea_siswa_tahun_kelas_dari);
-    setLocalStorage("perkembangan-meninggalkansekolah", data.perkembangan?.meninggalkan_sekolah_ini_alasan);
-    setLocalStorage("perkembangan-akhirpendidikan", data.perkembangan?.akhir_pendidikan_tamat_belajar_lulus_tahun);
+    setLocalStorage("perkembangan-meninggalkansekolah-tanggal", data.perkembangan?.meninggalkan_sekolah_ini_tanggal);
+    setLocalStorage("perkembangan-meninggalkansekolah-alasan", data.perkembangan?.meninggalkan_sekolah_ini_alasan);
+    setLocalStorage("perkembangan-akhirpendidikan-tamat", data.perkembangan?.akhir_pendidikan_tamat_belajar_lulus_tahun);
+    setLocalStorage("perkembangan-akhirpendidikan-no-ijazah", data.perkembangan?.akhir_pendidikan_no_ijazah);
+    setLocalStorage("perkembangan-akhirpendidikan-tanggal-ijazah", data.perkembangan?.akhir_pendidikan_tanggal_ijazah);
+    setLocalStorage("perkembangan-akhirpendidikan-no-skhun", data.perkembangan?.akhir_pendidikan_no_skhun);
+    setLocalStorage("perkembangan-akhirpendidikan-tanggal-skhun", data.perkembangan?.akhir_pendidikan_tanggal_skhun);
 
     return true;
   } catch (err) {
