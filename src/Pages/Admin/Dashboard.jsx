@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaFemale, FaMale, FaDatabase, FaUser, FaBars } from "react-icons/fa";
-import Navigation from "../../components/nav";
-import { baseUrl } from "../../Utils/constan";
+import Navigation from "../../Components/nav";
+import { baseUrl } from "../../utils/constan";
 import GenderCharts from "../../Components/GenderCharts";
 import { Toaster } from "react-hot-toast";
 
@@ -33,13 +33,13 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className={`flex-1 p-8 transition-all duration-300 ${isNavOpen ? "ml-72 lg:ml-80" : "ml-5"}`}>
-        <h1 className="text-3xl font-semibold text-blue-700">Dashboard</h1>
+        <h1 className="text-3xl font-semibold text-gray-800">Beranda</h1>
         <hr className="border-t-2 mt-4" />
 
         {/* Statistik Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
           <StatCard icon={<FaUser />} title="Total Siswa" value={dashboard.count_siswa} color="bg-purple-500" />
-          <StatCard icon={<FaDatabase />} title="Data di Inputkan" value={dashboard.count_datainputed} color="bg-green-500" />
+          <StatCard icon={<FaDatabase />} title="Data di Inputkan" value={dashboard.count_datainputed} color="bg-green-900" />
           <StatCard icon={<FaMale />} title="Siswa Laki-Laki" value={dashboard.count_laki} color="bg-blue-500" />
           <StatCard icon={<FaFemale />} title="Siswa Perempuan" value={dashboard.count_perempuan} color="bg-pink-500" />
         </div>

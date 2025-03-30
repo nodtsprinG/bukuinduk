@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios"
-import Logo from "../../../assets/logosekolah.png"
 import { baseUrl } from "../../../utils/constan";
-import GoBack from "../../../components/goback"
+import { useEffect } from "react";
+// import GoBack from "../../../components/goback"
 import detailPreparing from "../../../utils/detailForSiswa";
 const Login = () => {
   const [nisn, setNisn] = useState("")
@@ -46,33 +46,70 @@ const Login = () => {
     }
   };
 
-  return (
-    <div className="flex items-center justify-center bg-homepage bg-no-repeat w-screen h-screen">
-      <div className="flex flex-row items-center justify-center w-11/12">
-        <div className="flex flex-col items-center justify-center w-1/2">
-          <img src={Logo} alt="Logo Sekolah" className="w-44" />
-          <p className="font-header text-white font-bold text-3xl text-center mt-3">Buku Induk</p>
-        </div>
-        <div className="bg-[#D9D9D9] w-1/2 px-10 py-9 rounded-md border-4 border-[#A4A4A4]">
-          {/* <p className="font-body opacity-30 text-sm">Langkah 1 dari 2</p> */}
-          <p className="font-header font-bold text-3xl mt-2">Masuk</p>
-          <div className="flex flex-col mt-10 pt-10 border-t border-black">
-            <label className="opacity-20">NISN</label>
-            <input onChange={(e) => setNisn(e.currentTarget.value)} className="bg-transparent border-b border-black focus:outline-none p-2"></input>
-            <label className="opacity-20 pt-5">Tanggal Lahir</label>
-            <input onChange={(e) => setTanggalLahir(e.currentTarget.value)} className="bg-transparent border-b border-black focus:outline-none p-2" type="date"></input>
-            <div className="flex flex-row pt-10 w-full">
-              <div className="flex flex-row justify-start items-center w-1/2">
-                <GoBack to={"/siswa"} className="font-header font-bold bg-[#0083FB] px-4 py-2 text-l text-white rounded-md" />
-              </div>
-              <div className="flex flex-row justify-end items-center w-1/2">
-                <button onClick={verify} className="font-header font-bold bg-[#0083FB] px-4 py-2 text-l text-white rounded-md">Masuk</button>
-              </div>
+  const [nama, setNama] = useState("");
+    const [logo, setLogo] = useState(null);
+    useEffect(() => {
+        axios.get(baseUrl + "/data-sekolah")
+            .then((res) => {
+                console.log("Data user:", res.data); // Debugging
+                setNama(res.data.nama);
+                setLogo(res.data.logo);
+            })
+            .catch((err) => console.error("Gagal mengambil data sekolah:", err));
+    }, []);
 
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-800 to-gray-900 px-4">
+      <div className="flex flex-col md:flex-row items-center w-full max-w-3xl bg-white shadow-2xl rounded-lg overflow-hidden">
+        
+        {/* Bagian Kiri - Logo */}
+        <div className="flex flex-col items-center justify-center w-full md:w-1/2 py-10 px-6">
+          <img
+            src={`data:image/png;base64,${logo}`}
+            alt="Logo Sekolah"
+            className="w-40 h-40 rounded-full shadow-lg"
+          />
+          <p className="text-black font-bold text-2xl mt-4 text-center">{nama}</p>
+        </div>
+
+        {/* Bagian Kanan - Form Login */}
+        <div className="w-full md:w-1/2 px-10 py-12">
+          <p className="font-header font-bold text-3xl">Masuk</p>
+          <div className="flex flex-col mt-4 border-t border-gray-400 pt-6">
+            <label className="text-gray-700 font-semibold">NISN</label>
+            <input
+              type="text"
+              onChange={(e) => setNisn(e.target.value)}
+              className="bg-transparent border border-gray-400 rounded-md p-2 mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              placeholder="Masukkan NISN"
+            />
+            
+            <label className="text-gray-700 font-semibold mt-4">
+              Tanggal Lahir
+            </label>
+            <input
+              type="date"
+              onChange={(e) => setTanggalLahir(e.target.value)}
+              className="bg-transparent border border-gray-400 rounded-md p-2 mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+            
+            <div className="flex flex-row pt-8 w-full">
+              <button
+                onClick={() => navigate("/")}
+                className="font-header font-bold bg-gray-500 px-4 py-2 text-white rounded-md hover:bg-gray-700 transition-all"
+              >
+                Kembali
+              </button>
+              <button
+                onClick={verify}
+                className="ml-auto font-header font-bold bg-blue-600 px-4 py-2 text-white rounded-md hover:bg-blue-800 transition-all"
+              >
+                Masuk
+              </button>
             </div>
           </div>
-
         </div>
+
       </div>
     </div>
   )

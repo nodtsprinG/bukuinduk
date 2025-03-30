@@ -139,7 +139,7 @@ const DataSiswa = () => {
         <div className="flex h-screen font-body">
             <Navigation />
             <div className="flex-1 p-6 bg-white text-black overflow-y-scroll">
-                <h1 className="text-3xl font-normal ml-2">Daftar Data Perubahan Data</h1>
+                <h1 className="text-3xl font-normal ml-2">Daftar Data Pengajuan Perubahan</h1>
                 {/* <header className="flex justify-end gap-4 my-5">
                     <button onClick={() => exportData()} className="bg-blue-500 rounded-sm py-1 px-2 text-white">Unduh Excel</button>
                     <button onClick={() => exportDataPDF()} className="bg-blue-500 rounded-sm py-1 px-2 text-white">Unduh PDF</button>

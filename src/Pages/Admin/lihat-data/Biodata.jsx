@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { baseUrl } from "../../../Utils/constan";
+import { baseUrl } from "../../../utils/constan";
 import Profil from "../../../Components/profileCard";
 import InputHalaman from "../../../Components/pilihHalaman";
 import {
@@ -21,6 +22,18 @@ const Biodata = () => {
   const [isEditing, setIsEditing] = useState(false); // State untuk mode edit
   const navigate = useNavigate();
   const { id } = useParams();
+  const [role, setRole] = useState(""); // State untuk menyimpan role pengguna
+
+  useEffect(() => {
+    axios.get(baseUrl + "/auth/me", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
+    .then((res) => {
+      console.log("Role pengguna:", res.data); // Debugging
+      setRole(res.data.role); // Pastikan state diperbarui
+    }) // Ambil role dari response API
+    .catch((err) => console.error("Gagal mengambil data user:", err));
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,6 +99,7 @@ const Biodata = () => {
   };
 
   const downloadPdf = async () => {
+    const nama = siswa.data_diri.nama_lengkap
     console.log(baseUrl, id)
     const response = await axios.get(`${baseUrl}/admin/export-pdf/${id}`, {
       headers: {
@@ -98,7 +112,7 @@ const Biodata = () => {
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'file.pdf'); // Nama file yang diunduh
+    link.setAttribute('download', `${nama}.pdf`); // Nama file yang diunduh
     document.body.appendChild(link);
     link.click();
 
@@ -120,7 +134,7 @@ const Biodata = () => {
           {!isEditing ? (
             <button
               onClick={handleEdit}
-              className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
+              className="flex items-center gap-2 px-6 py-2 rounded-md transition duration-300 shadow-md hover:shadow-lg bg-blue-600 hover:bg-blue-700 text-white"
             >
               <Edit className="w-5 h-5" />
               Ubah

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { baseUrl } from "../../../Utils/constan";
-import Profil from "../../../Components/profileCard";
+import { baseUrl } from "../../../utils/constan";
+import Profil from "../../../components/lihatprofil";
 import InputHalaman from "../../../Components/pilihHalamanV2";
 import {
   TextInput,
@@ -11,6 +11,7 @@ import {
 } from "../../../Components/inputComponent";
 import Nextbefore from "../../../Components/nextbefore";
 import HeaderInput from "../../../Components/headerInput";
+import { Edit, Save } from "lucide-react";
 // import DatePicker from "react-datepicker";
 
 const TempatTinggal = () => {
@@ -70,8 +71,10 @@ const TempatTinggal = () => {
 
   const handleSave = async () => {
     try {
-      console.log("Data yang dikirim ke backend:", siswa);
-      const response = await axios.put(baseUrl + `/siswa/data-diri`, {
+      const tempatTinggal = siswa.tempat_tinggal
+      delete siswa.tempat_tinggal.id;
+      console.log("Data yang dikirim ke backend", tempatTinggal)
+      const response = await axios.put(baseUrl + `/siswa/data-diri`, tempatTinggal,{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
@@ -79,7 +82,7 @@ const TempatTinggal = () => {
       });
       console.log("Response dari backend:", response.data);
       setIsEditing(false); // Kembali ke mode lihat setelah sukses
-      alert("Data berhasil diperbarui!");
+      window.alert("Tunggu Konfirmasi Admin!");
     } catch (err) {
       alert("Gagal menyimpan perubahan");
     }
@@ -92,6 +95,25 @@ const TempatTinggal = () => {
     <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-2xl">
       <div className="my-10 w-full"><Profil /></div>
       <div><InputHalaman /></div>
+      <div className="flex justify-end my-4">
+        {!isEditing ? (
+          <button
+            onClick={handleEdit}
+            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
+          >
+            <Edit className="w-5 h-5" />
+            Ubah
+          </button>
+        ) : (
+          <button
+            onClick={handleSave}
+            className="flex items-center gap-2 bg-green-800 text-white px-6 py-2 rounded-md hover:bg-green-900 transition duration-300 shadow-md hover:shadow-lg"
+          >
+            <Save className="w-5 h-5" />
+            Simpan
+          </button>
+        )}
+      </div>
       <HeaderInput title={"Tempat Tinggal Siswa"} word={"B"} form={"admin"} />
       <div className="bg-white p-6 flex items-center justify-center">
         <table className="w-3/4 font-body border-separate border-spacing-4">
@@ -108,16 +130,16 @@ const TempatTinggal = () => {
                 <td className="w-[37%] h-full">
                   {type === "integer" ? (
                     <div className="flex items-center">
-                    <IntegerInput
-                      value={siswa.tempat_tinggal[field]}
-                      onChange={(e) => isEditing && handleChange(e, field)}
-                      className="h-full"
-                      disabled={!isEditing}
-                    />
-                    <span className="ml-2 text-lg text-black">
-                      Km
-                    </span>
-                  </div>
+                      <IntegerInput
+                        value={siswa.tempat_tinggal[field]}
+                        onChange={(e) => isEditing && handleChange(e, field)}
+                        className="h-full"
+                        disabled={!isEditing}
+                      />
+                      <span className="ml-2 text-lg text-black">
+                        Km
+                      </span>
+                    </div>
                   ) : type === "radio" ? (
                     <RadioInput
                       value={siswa.tempat_tinggal[field]}
@@ -165,19 +187,6 @@ const TempatTinggal = () => {
             </tr>
           </tbody>
         </table>
-      </div>
-
-      {/* Tombol Edit / Simpan */}
-      <div className="flex justify-center mt-4">
-        {!isEditing ? (
-          <button onClick={handleEdit} className="bg-blue-500 text-white px-4 py-2 rounded">
-            Edit
-          </button>
-        ) : (
-          <button onClick={handleSave} className="bg-green-500 text-white px-4 py-2 rounded">
-            Simpan
-          </button>
-        )}
       </div>
 
       <div>

@@ -1,5 +1,7 @@
 import { Routes, Route, useNavigate } from "react-router";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { baseUrl } from "../../utils/constan";
 
 import CariNisn from "./search/cariNISN";
 import DataSiswa from "./search/dataSiswa";
@@ -15,7 +17,6 @@ import Pendidikan from "./data/Pendidikan";
 import TempatTinggal from "./data/Tempattinggal";
 import Wali from "./data/Wali";
 import TambahAkun from "./data/Main";
-import GoBack from "../../Components/goback"
 
 // ========================== import halaman liat data
 import Lbiodata from "./lihat-data/Biodata"
@@ -26,12 +27,9 @@ import Libu from "./lihat-data/Ibu"
 import Lwali from "./lihat-data/Wali"
 import Lpendidikan from "./lihat-data/Pendidikan"
 import Lhobi from "./lihat-data/Hobi"
-import Perkembangan from "./lihat-data/perkembangan"
 import HalamanBelakang from "./lihat-data/halaman-belakang"
 
 import resetAll from "../../Utils/resetAll";
-
-import Logo from "../../assets/logosekolah.png"
 
 const HomeSiswa = () => {
   const navigate = useNavigate();
@@ -39,34 +37,65 @@ const HomeSiswa = () => {
     resetAll();
     navigate("/siswa/data/upload/akun");
   };
-
-
+  const LihatData = () => {
+    navigate("/siswa/login")
+  }
+  const Kembali = () => {
+    navigate("/")
+  }
+  const [nama, setNama] = useState("");
+  const [logo, setLogo] = useState(null);
+  useEffect(() => {
+    axios.get(baseUrl + "/data-sekolah")
+      .then((res) => {
+        console.log("Data user:", res.data); // Debugging
+        setNama(res.data.nama);
+        setLogo(res.data.logo);
+      })
+      .catch((err) => console.error("Gagal mengambil data sekolah:", err));
+  }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center bg-homepage bg-no-repeat w-screen h-screen">
-      <img src={Logo} alt="Logo Sekolah" className="w-40 h-40"/>
-      <div className="text-white">
-        <p className="font-header font-bold text-center text-2xl mt-5">
+    <div className="flex flex-col justify-center items-center bg-gradient-to-b from-gray-600 to-gray-900 w-screen h-screen">
+      {/* Logo Sekolah */}
+      <img
+        src={`data:image/png;base64,${logo}`}
+        alt="Logo Sekolah"
+        className="w-40 h-40 rounded-full shadow-lg"
+      />
+
+      {/* Judul */}
+      <div className="text-white text-center mt-5 max-w-md">
+        <p className="font-header font-semibold text-xl opacity-80">
           "Buku Induk Virtual Akses Data dengan Mudah"
         </p>
-        <p className="font-header font-bold text-center text-4xl">
-          Data Buku Induk Siswa SMKN 2 SINGOSARI
+        <p className="font-header font-bold text-3xl mt-2">
+          Data Buku Induk Siswa {nama}
         </p>
-        <div className="flex flex-col items-center mt-6 w-screen">
-          <button
-            onClick={preparingAddData}
-            className="block font-body font-bold bg-[#D9D9D9] text-center w-[715px] py-3 rounded-md text-black my-1 text-sm"
-          >
-            Daftar
-          </button>
-          <Link
-            to={"/siswa/login"}
-            className="block font-body font-bold bg-[#0C7FDA] text-center w-[715px] py-3 rounded-md text-white my-1 text-sm"
-          >
-            Masuk
-          </Link>
-          <GoBack to={"/"} className="block font-body font-bold bg-gray-900 text-center w-[715px] py-3 rounded-md text-white my-1 text-sm" />
-        </div>
+      </div>
+
+      {/* Tombol Aksi */}
+      <div className="flex flex-col items-center mt-6 w-full max-w-md">
+        <button
+          onClick={preparingAddData}
+          className="w-full py-3 text-sm font-bold rounded-lg bg-blue-600 text-white transition-all hover:bg-white hover:text-black shadow-md"
+        >
+          Daftar
+        </button>
+
+        <button
+          onClick={LihatData}
+          className="w-full py-3 text-sm font-bold rounded-lg bg-blue-600 text-white mt-2 transition-all hover:bg-white hover:text-black shadow-md"
+        >
+          Masuk
+        </button>
+
+        <button
+          onClick={Kembali}
+          className="w-full py-3 text-sm font-bold rounded-lg bg-blue-600 text-white mt-2 transition-all hover:bg-white hover:text-black shadow-md"
+        >
+          Kembali
+        </button>
       </div>
     </div>
   );
@@ -101,7 +130,6 @@ const LihatData = () => {
       <Route exact path="/wali" element={<Lwali />} />
       <Route exact path="/hobi" element={<Lhobi />} />
       <Route exact path="/perkembangan" element={<Lhobi />} />
-      <Route exact path="/hobi" element={<Perkembangan />} />
       <Route exact path="/halaman-belakang" element={<HalamanBelakang />} />
     </Routes>
   );

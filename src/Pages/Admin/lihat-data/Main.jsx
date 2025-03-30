@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import Logo from "../../../assets/logosekolah.png";
-import { baseUrl } from "../../../Utils/constan";
+import { baseUrl } from "../../../utils/constan";
 
 const TambahAkun = () => {
   const params = useParams();

@@ -1,9 +1,9 @@
 // ========================== Import library
-// import axios from "axios";
+import axios from "axios";
 
-// ========================== Import state
+import { useState, useEffect } from "react";
 
-// ========================== import react-router
+import { baseUrl } from "../../utils/constan";
 import { Routes, Route, useNavigate } from "react-router";
 // import { Link } from "react-router-dom";
 
@@ -17,7 +17,9 @@ import Pending from "./Pending"
 import DataJurusan from "./data/DataJurusan";
 import DataAngkatan from "./data/DataAngkatan";
 import DataSiswa from "./data/DataSiswa";
-import DataMapel from "./data/DataMapel"
+import DataMapel from "./data/DataMapel";
+import DataPetugas from "./data/DataPetugas"
+import DataSekolah from "./data/DataSekolah"
 
 import Lbiodata from "./lihat-data/Biodata"
 import LtempatTinggal from "./lihat-data/TempatTinggal"
@@ -30,8 +32,8 @@ import Lhobi from "./lihat-data/Hobi"
 import Perkembangan from "./lihat-data/perkembangan"
 import Selesai from "./lihat-data/Selesai"
 import LHalamanBelakang from './lihat-data/halaman-belakang'
-import Logo from "../../assets/logosekolah.png"
 import PendingDetail from "./PendingDetail";
+import TambahSiswa from "./PendingDetail"
 const HomeAdmin = () => {
   const navigate = useNavigate();
   const check = () => {
@@ -41,22 +43,49 @@ const HomeAdmin = () => {
       navigate("/admin/auth/login");
     }
   };
+  const Kembali = () => {
+    navigate ("/");
+  }
+
+  const [nama, setNama] = useState("");
+  const [logo, setLogo] = useState(null);
+  useEffect(() => {
+    axios.get(baseUrl + "/data-sekolah")
+      .then((res) => {
+        console.log("Data user:", res.data); // Debugging
+        setNama(res.data.nama);
+        setLogo(res.data.logo);
+      })
+      .catch((err) => console.error("Gagal mengambil data sekolah:", err));
+  }, []);
+
   return (
-    <div className="flex flex-col justify-center items-center bg-gray-500 bg-no-repeat w-screen h-screen">
-      <img src={Logo} alt="Logo Sekolah" className="w-40 h-40"/>
+    <div className="flex flex-col justify-center items-center bg-gradient-to-b from-gray-600 to-gray-900 w-screen h-screen">
+      {/* Gunakan logo dari API jika tersedia, jika tidak pakai default */}
+      <img
+        src={`data:image/png;base64,${logo}`}
+        alt="Logo Sekolah"
+        className="w-40 h-40 rounded-full shadow-lg"
+      />
       <div className="text-white">
         <p className="font-header font-bold text-center text-2xl">
           "Buku Induk Virtual Akses Data dengan Mudah"
         </p>
         <p className="font-header font-bold text-center text-4xl">
-          Data Buku Induk Siswa SMKN 2 SINGOSARI
+          Data Buku Induk Siswa {nama}
         </p>
         <div className="flex flex-col items-center mt-6 w-screen">
           <button
             onClick={check}
-            className="block font-body font-bold bg-[#0C7FDA] text-center w-[715px] py-3 rounded-md text-white my-1 text-sm"
+            className="block font-body font-bold bg-blue-600 text-center w-[715px] py-3 rounded-md text-white my-1 hover:bg-white hover:text-black text-sm"
           >
             Masuk
+          </button>
+          <button
+            onClick={Kembali}
+            className="block font-body font-bold bg-blue-600 text-center w-[715px] py-3 rounded-md text-white my-1 hover:bg-white hover:text-black text-sm"
+          >
+            Kembali
           </button>
         </div>
       </div>
@@ -93,11 +122,14 @@ const AdminRouting = () => {
       <Route exact path="/auth/verification/:code" element={<Verify />} />
       {/* [#] Halaman Input Data */}
       <Route exact path="/lihat/:id/*" element={<LihatData />} />
+      <Route exact path="/tambah" element={<TambahSiswa />} />
       {/* [#] Data Jurusan */}
       <Route exact path="/datajurusan" element={<DataJurusan />} />
+      <Route exact path="/data-sekolah" element={<DataSekolah />} />
       <Route exact path="/datasiswa" element={<DataSiswa />} />
       <Route exact path="/dataangkatan" element={<DataAngkatan />} />
       <Route exact path="/mapel" element={<DataMapel />} />
+      <Route exact path="/petugas" element={<DataPetugas />} />
       <Route exact path="/pending" element={<Pending />} />
       <Route exact path="/pending/:id" element={<PendingDetail />} />
     </Routes>

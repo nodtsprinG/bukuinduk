@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import Logo from "../../../assets/logosekolah.png"
 import axios from "axios";
-import GoBack from "../../../Components/goback";
+// import GoBack from "../../../components/goback";
 
-import { baseUrl } from "../../../Utils/constan";
+import { baseUrl } from "../../../utils/constan";
 
 const TambahAkun = () => {
   const params = useParams();
@@ -56,64 +56,58 @@ const TambahAkun = () => {
   };
 
   return (
-    <div className="flex items-center justify-center bg-homepage bg-no-repeat w-screen h-screen text-[24px]">
-      <div className="flex flex-row items-center justify-center w-11/12">
-        <div className="flex flex-col items-center justify-center w-1/2">
-          <img src={Logo} alt="logo" className="w-44 aspect-square" />
-          <p className="font-header text-white font-bold text-3xl text-center mt-3">
-            Buku Induk
-          </p>
+    <div className="flex items-center justify-center bg-gradient-to-b from-gray-800 to-gray-900 w-screen h-screen">
+      <div className="bg-white p-10 rounded-lg shadow-lg flex flex-row w-3/5">
+
+        <div className="flex flex-col items-center justify-center w-1/2 border-r border-r-gray-400 pr-6">
+          <img src={Logo} alt="Logo Sekolah" className="w-32 aspect-square" />
+          <p className="text-xl font-bold mt-3">SMKN 2 Singosari</p>
         </div>
-        <div className="bg-[#D9D9D9] w-1/2 px-10 py-9 rounded-md border-4 border-[#A4A4A4]">
-          <p className="font-header font-bold text-3xl mt-2">Tambah Akun</p>
-          <div className="flex flex-col mt-10 pt-10 border-t border-black">
-            <label className="opacity-20">NISN</label>
-            <input
-              value={nisn}
-              onChange={(e) => setNisn(e.target.value)}
-              className="bg-transparent border-b border-black focus:outline-none p-2"
-            ></input>
-            <label className="opacity-20 pt-5">Jurusan</label>
-            <select
-              value={jurusanId}
-              onChange={(e) => setJurusanId(e.target.value)}
-              className="bg-transparent border-b border-black focus:outline-none p-2"
-              defaultValue={"default"}
+
+        <div className="flex flex-col w-1/2 pl-6">
+          <p className="text-2xl font-bold mb-4">Tambah Akun</p>
+          <label className="text-gray-600 text-sm">NISN</label>
+          <input
+            value={nisn}
+            onChange={(e) => setNisn(e.target.value)}
+            className="border border-gray-300 rounded p-2 mb-4 focus:outline-none focus:ring focus:ring-gray-300"
+            placeholder="Masukkan NISN"
+          />
+          <label className="text-gray-600 text-sm">Jurusan</label>
+          <select
+            value={jurusanId}
+            onChange={(e) => setJurusanId(e.target.value)}
+            className="border border-gray-300 rounded p-2 mb-4 focus:outline-none focus:ring focus:ring-gray-300"
+          >
+            <option value="default" hidden>Pilih Jurusan</option>
+            {jurusan.map((jrs) => (
+              <option key={jrs.id} value={jrs.id}>{jrs.nama}</option>
+            ))}
+          </select>
+          <label className="text-gray-600 text-sm">Angkatan</label>
+          <select
+            value={angkatan_id}
+            onChange={(e) => setAngkatan_id(e.target.value)}
+            className="border border-gray-300 rounded p-2 mb-4 focus:outline-none focus:ring focus:ring-gray-300"
+          >
+            <option value="default" hidden>Pilih Angkatan</option>
+            {angkatan.map((ank) => (
+              <option key={ank.id} value={ank.id}>{ank.tahun}</option>
+            ))}
+          </select>
+          <div className="flex justify-between mt-4">
+            <button
+              onClick={() => navigate("/siswa")}
+              className="bg-gray-500 text-white px-4 py-2 rounded-md"
             >
-              <option value={"default"} hidden>
-                Pilih
-              </option>
-              {jurusan.map((jrs) => {
-                return <option value={jrs.id}>{jrs.nama}</option>;
-              })}
-            </select>
-            <label className="opacity-20 pt-5">Angkatan</label>
-            <select
-              value={angkatan_id}
-              onChange={(e) => setAngkatan_id(e.target.value)}
-              className="bg-transparent border-b border-black focus:outline-none p-2"
-              defaultValue={"default"}
+              Kembali
+            </button>
+            <button
+              onClick={daftar}
+              className="bg-blue-600 text-white px-4 py-2 rounded-md"
             >
-              <option value={"default"} hidden>
-                Pilih
-              </option>
-              {angkatan.map((ank) => {
-                return <option value={ank.id}>{ank.tahun}</option>;
-              })}
-            </select>
-            <div className="flex flex-row pt-10 w-full">
-              <div className="flex flex-row justify-start items-center w-1/2">
-                <GoBack to={"/siswa"} className="font-header font-bold bg-[#0083FB] px-4 py-2 text-l text-white rounded-md" />
-              </div>
-              <div className="flex flex-row justify-end items-center w-1/2">
-                <button
-                  onClick={daftar}
-                  className="font-header font-bold bg-[#0083FB] p-2 text-l text-white rounded-md"
-                >
-                  Tambah Akun
-                </button>
-              </div>
-            </div>
+              Tambah Akun
+            </button>
           </div>
         </div>
       </div>

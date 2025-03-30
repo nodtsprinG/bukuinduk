@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios"
-import Logo from "../../../assets/logosekolah.png"
-import { baseUrl } from "../../../Utils/constan";
-import GoBack from "../../../Components/goback"
+import { baseUrl } from "../../../utils/constan";
 const Login = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -11,13 +9,13 @@ const Login = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        if(localStorage.getItem('token')) {
+        if (localStorage.getItem('token')) {
             navigate("/admin/dashboard")
         }
     })
 
     const verify = () => {
-        if(email.length == 0) {
+        if (email.length == 0) {
             alert("Email kosong")
         } else if (password.length == 0) {
             alert("Password kosong")
@@ -32,32 +30,61 @@ const Login = () => {
         })
     }
 
+    const [nama, setNama] = useState("");
+    const [logo, setLogo] = useState(null);
+    useEffect(() => {
+        axios.get(baseUrl + "/data-sekolah")
+            .then((res) => {
+                console.log("Data user:", res.data); // Debugging
+                setNama(res.data.nama);
+                setLogo(res.data.logo);
+            })
+            .catch((err) => console.error("Gagal mengambil data sekolah:", err));
+    }, []);
+
     return (
-        <div className="flex items-center justify-center bg-[#ACABAF] bg-no-repeat w-screen h-screen">
-            <div className="flex flex-row items-center justify-center w-11/12">
-                <div className="flex flex-col items-center justify-center w-1/2">
-                    <img src={Logo} alt="Logo Sekolah" className="w-44"/>
-                    <p className="font-header text-white font-bold text-3xl text-center mt-3">Buku Induk</p>
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-700 to-gray-900 px-4">
+            <div className="flex flex-col md:flex-row items-center w-full max-w-4xl bg-white shadow-2xl rounded-lg overflow-hidden">
+                {/* Bagian Kiri - Logo */}
+                <div className="flex flex-col items-center justify-center w-full md:w-1/2 py-10 px-6">
+                    <img src={`data:image/png;base64,${logo}`} alt="Logo Sekolah" className="w-40 h-40 rounded-full shadow-lg" />
+                    <p className="text-black font-bold text-2xl mt-4 text-center">{nama}</p>
                 </div>
-                <div className="bg-[#D9D9D9] w-1/2 px-10 py-9 rounded-md border-4 border-[#A4A4A4]">
-                    <p className="font-body opacity-30 text-sm">Langkah 1 dari 2</p>
-                    <p className="font-header font-bold text-3xl mt-2">Masuk</p>
-                    <div className="flex flex-col mt-10 pt-10 border-t border-black">
-                        <label className="opacity-20">Alamat email</label>
-                        <input onChange={(e) => setEmail(e.currentTarget.value)} className="bg-transparent border-b border-black focus:outline-none p-2"></input>
-                        <label className="opacity-20 pt-5">Kata sandi</label>
-                        <input onChange={(e) => setPassword(e.currentTarget.value)} className="bg-transparent border-b border-black focus:outline-none p-2" type="password"></input>
-                        <div className="flex flex-row pt-10 w-full">
-                            <div className="flex flex-row justify-start items-center w-1/2">
-                                <GoBack to={'/'} className="font-header font-bold bg-[#0083FB] px-4 py-2 text-l text-white rounded-sm" />
-                            </div>
-                            <div className="flex flex-row justify-end items-center w-1/2">
-                                <button onClick={verify} className="font-header font-bold bg-[#0083FB] px-4 py-2 text-l text-white rounded-sm">Masuk</button>
-                            </div>
-                            
+
+                {/* Bagian Kanan - Form Login */}
+                <div className="w-full md:w-1/2 px-10 py-12">
+                    <p className="text-gray-500 text-sm">Langkah 1 dari 2</p>
+                    <p className="text-gray-800 font-bold text-3xl mt-2">Masuk</p>
+                    <div className="mt-8">
+                        <label className="text-gray-600 text-sm font-semibold">Alamat Email</label>
+                        <input
+                            type="email"
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full mt-1 p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            placeholder="Masukkan email Anda"
+                        />
+                        <label className="text-gray-600 text-sm font-semibold mt-4 block">Kata Sandi</label>
+                        <input
+                            type="password"
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full mt-1 p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            placeholder="Masukkan kata sandi"
+                        />
+                        <div className="flex justify-between items-center mt-6">
+                            <button
+                                onClick={() => navigate('/')}
+                                className="bg-gray-500 text-white px-5 py-2 rounded-md hover:bg-gray-600 transition duration-300"
+                            >
+                                Kembali
+                            </button>
+                            <button
+                                onClick={verify}
+                                className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition duration-300"
+                            >
+                                Masuk
+                            </button>
                         </div>
                     </div>
-                    
                 </div>
             </div>
         </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import client from "../Utils/client";
+import client from "../Utils/client"
 
 function DataDiriNav({ data }) {
     const excludeKeys = [
@@ -62,65 +62,64 @@ function DataDiriNav({ data }) {
                 })}
             </div>
 
-            <div className="max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 mb-4">
+            <div className="max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 mb-6">
                 {/* Data Baru */}
-                <div className="font-bold text-blue-600 mb-2">Data Baru</div>
-                <table className="w-full mb-4 border-collapse capitalize">
-                    <tbody>
-                        {active &&
-                            data[active] &&
-                            typeof data[active] === "object" &&
-                            Object.keys(data[active]).map((val, index) => {
-                                if (["id", "user_id", "status_perubahan"].includes(val)) {
-                                    return null;
-                                }
-                                return (
-                                    <tr
-                                        key={index}
-                                        className={`border-b text-sm ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                                            }`}
-                                    >
-                                        <td className="p-2 w-[40%] text-gray-600">{val.replaceAll("_", " ")}</td>
-                                        <td className="p-2">:</td>
-                                        <td className="p-2 text-gray-800">{data[active][val]}</td>
-                                    </tr>
-                                );
-                            })}
-                    </tbody>
-                </table>
-
-                {/* Data Lama */}
-                <div className="font-bold text-blue-600 mb-2">Data Lama</div>
-                <table className="w-full mb-4 border-collapse capitalize">
-                    <tbody>
-                        {active &&
-                            data[active] &&
-                            typeof data[active] === "object" &&
-                            Object.keys(data[active]).map((val, index) => {
-                                if (["id", "user_id", "status_perubahan"].includes(val)) {
-                                    return null;
-                                }
-                                return (
-                                    <tr
-                                        key={index}
-                                        className={`border-b text-sm ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                                            }`}
-                                    >
-                                        <td className="p-2 w-[40%] text-gray-600">{val.replaceAll("_", " ")}</td>
-                                        <td className="p-2">:</td>
-                                        <td
-                                            className={`p-2 text-gray-800 ${oldData?.[active]?.[val] === data?.[active]?.[val]
-                                                ? ""
-                                                : "font-bold text-red-600"
+                <div className="mb-6">
+                    <div className="font-bold text-blue-600 mb-2">Data Baru</div>
+                    <table className="w-full table-fixed mb-4 border-collapse shadow rounded-lg overflow-hidden capitalize">
+                        <tbody>
+                            {active &&
+                                data[active] &&
+                                typeof data[active] === "object" &&
+                                Object.keys(data[active]).map((val, index) => {
+                                    if (["id", "user_id", "status_perubahan"].includes(val)) return null;
+                                    return (
+                                        <tr
+                                            key={index}
+                                            className={`text-sm ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
                                                 }`}
                                         >
-                                            {oldData[active] && oldData[active][val]}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                    </tbody>
-                </table>
+                                            <td className="p-2 w-1/3 text-gray-600 border-b">{val.replaceAll("_", " ")}</td>
+                                            <td className="p-2 w-10 border-b text-center">:</td>
+                                            <td className="p-2 w-2/3 text-gray-800 border-b">{data[active][val]}</td>
+                                        </tr>
+                                    );
+                                })}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Data Lama */}
+                <div className="mb-4">
+                    <div className="font-bold text-blue-600 mb-2">Data Lama</div>
+                    <table className="w-full table-fixed mb-4 border-collapse shadow rounded-lg overflow-hidden capitalize">
+                        <tbody>
+                            {active &&
+                                data[active] &&
+                                typeof data[active] === "object" &&
+                                Object.keys(data[active]).map((val, index) => {
+                                    if (["id", "user_id", "status_perubahan"].includes(val)) return null;
+                                    const isDifferent = oldData?.[active]?.[val] !== data?.[active]?.[val];
+                                    return (
+                                        <tr
+                                            key={index}
+                                            className={`text-sm ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                                                }`}
+                                        >
+                                            <td className="p-2 w-1/3 text-gray-600 border-b">{val.replaceAll("_", " ")}</td>
+                                            <td className="p-2 w-10 border-b text-center">:</td>
+                                            <td
+                                                className={`p-2 w-2/3 border-b ${isDifferent ? "font-semibold text-red-500" : "text-gray-800"
+                                                    }`}
+                                            >
+                                                {oldData[active] && oldData[active][val]}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {/* Tombol Aksi */}

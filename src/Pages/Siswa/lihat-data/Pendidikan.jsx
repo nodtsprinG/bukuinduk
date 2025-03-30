@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
-import { baseUrl } from "../../../Utils/constan";
-import Profil from "../../../Components/profileCard";
+import { useNavigate } from "react-router-dom";
+import { baseUrl } from "../../../utils/constan";
+import Profil from "../../../components/lihatprofil";
 import InputHalaman from "../../../Components/pilihHalamanV2";
 import {
   TextInput,
@@ -12,6 +12,7 @@ import {
 import Nextbefore from "../../../Components/nextbefore";
 import HeaderInput from "../../../Components/headerInput";
 import DatePicker from "react-datepicker";
+import { Edit, Save } from "lucide-react";
 
 const Pendidikan = () => {
   const [siswa, setSiswa] = useState(null);
@@ -19,7 +20,7 @@ const Pendidikan = () => {
   const [error, setError] = useState("");
   const [isEditing, setIsEditing] = useState(false); // State untuk mode edit
   const navigate = useNavigate();
-  const { id } = useParams();
+  const id = localStorage.getItem("akun-id")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,7 +31,7 @@ const Pendidikan = () => {
           return;
         }
 
-        const response = await axios.get(`${baseUrl}/siswa/lihat-data`, {
+        const response = await axios.get(`${baseUrl}/siswa/data-diri`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
 
@@ -69,8 +70,10 @@ const Pendidikan = () => {
 
   const handleSave = async () => {
     try {
-      console.log("Data yang dikirim ke backend:", siswa);
-      const response = await axios.put(baseUrl + `/siswa/data-diri/`, {
+      const pendidikan = siswa.pendidikan
+      delete siswa.pendidikan.id
+      console.log("Data yang dikirim ke backend:", pendidikan);
+      const response = await axios.put(baseUrl + `/siswa/data-diri/`, pendidikan, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
@@ -78,7 +81,7 @@ const Pendidikan = () => {
       });
       console.log("Response dari backend:", response.data);
       setIsEditing(false); // Kembali ke mode lihat setelah sukses
-      alert("Data berhasil diperbarui!");
+      window.alert("Tunggu Konfirmasi Admin!");
     } catch (err) {
       alert("Gagal menyimpan perubahan");
     }
@@ -92,13 +95,21 @@ const Pendidikan = () => {
       <div className="my-10 w-full"><Profil /></div>
       <div><InputHalaman /></div>
       {/* Tombol Edit / Simpan */}
-      <div className="flex justify-center">
+      <div className="flex justify-end my-4">
         {!isEditing ? (
-          <button onClick={handleEdit} className="bg-blue-600 text-white px-4 py-2 rounded">
-            Ubah Data
+          <button
+            onClick={handleEdit}
+            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
+          >
+            <Edit className="w-5 h-5" />
+            Ubah
           </button>
         ) : (
-          <button onClick={handleSave} className="bg-green-800 text-white px-4 py-2 rounded">
+          <button
+            onClick={handleSave}
+            className="flex items-center gap-2 bg-green-800 text-white px-6 py-2 rounded-md hover:bg-green-900 transition duration-300 shadow-md hover:shadow-lg"
+          >
+            <Save className="w-5 h-5" />
             Simpan
           </button>
         )}
@@ -144,6 +155,7 @@ const Pendidikan = () => {
                     <DatePicker
                       value={siswa.pendidikan[field]}
                       onChange={(e) => isEditing && handleChange(e, field)}
+                      dateFormat={"dd-MM-yyyy"}
                       className="h-full w-1/2 px-4 py-2 bg-[#DEE0E1] rounded-lg"
                       disabled={!isEditing}
                     />

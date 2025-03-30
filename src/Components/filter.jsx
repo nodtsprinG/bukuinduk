@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { CiFilter } from "react-icons/ci";
 import axios from "axios";
-import { baseUrl } from "../Utils/constan";
+import { baseUrl } from "../utils/constan";
 
 const FilterComponent = ({ stateAngkatan, stateJurusan }) => {
   const [angkatan, setAngkatan] = useState([]);
@@ -17,20 +17,20 @@ const FilterComponent = ({ stateAngkatan, stateJurusan }) => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-      .then((res) => {
-        setJurusan(res.data);
-        return axios.get(baseUrl + "/admin/angkatan", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-      })
-      .then((res) => {
-        setAngkatan(res.data);
-      });
-    console.log("Filtered Jurusan:", jurusan);
-    console.log("Filtered Angkatan:", angkatan);
+      .then((res) => setJurusan(res.data))
+      .catch((err) => console.error("Error fetching jurusan:", err));
   }, []);
+  
+  useEffect(() => {
+    axios
+      .get(baseUrl + "/admin/angkatan", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((res) => setAngkatan(res.data.map(item => ({ tahun: item.tahun }) )))
+      .catch((err) => console.error("Error fetching angkatan:", err));
+  }, []);  
 
   const handleApply = () => {
     const filteredJurusan = jurusan.map((jrs) => ({

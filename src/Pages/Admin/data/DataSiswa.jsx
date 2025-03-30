@@ -1,14 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Navigation from "../../../components/nav";
-import { data, useNavigate } from "react-router-dom";
+import Navigation from "../../../Components/nav";
+import { Link, useNavigate } from "react-router-dom";
 import { CiFilter } from "react-icons/ci";
 import FilterComponent from "../../../components/filter";
-import { baseUrl } from "../../../Utils/constan";
+import { baseUrl } from "../../../utils/constan";
 import fileDownload from "js-file-download";
-import { toast } from "react-toastify";
 import detailPreparing from "../../../Utils/detailPreparing";
+import { FaDownload, FaFilePdf, FaFileExcel, FaRegFile, FaPlus } from "react-icons/fa";
+import Swal from "sweetalert2";
+import {
+  isAkunFilled,
+  isBiodataFilled,
+  isTempattinggalFilled,
+  isKesehatanFilled,
+  isPendidikanFilled,
+  isAyahFilled,
+  isIbuFilled,
+  isHobiFilled,
+} from "../../../Utils/DataComplete";
 
 const DataSiswa = () => {
   const navigate = useNavigate();
@@ -17,13 +28,12 @@ const DataSiswa = () => {
   const [searchKey, setSearchKey] = useState("");
   const [jurusans, setJurusans] = useState([]);
   const [angkatans, setAngkatans] = useState([]);
+  const [jurusanList, setJurusanList] = useState([]);
+  const [angkatanList, setAngkatanList] = useState([]);
   const [filters, setFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [file, setFile] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalOpen2, setIsModalOpen2] = useState(false);
-  const [isModalOpen3, setIsModalOpen3] = useState(false);
 
   useEffect(() => {
     axios
@@ -34,6 +44,24 @@ const DataSiswa = () => {
         setSiswa(res.data);
         console.log(res.data);
       })
+  }, []);
+
+  useEffect(() => {
+    // Ambil daftar jurusan
+    axios
+      .get(`${baseUrl}/admin/jurusan`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
+      .then((res) => setJurusanList(res.data))
+      .catch((err) => console.error("Error fetching jurusan:", err));
+
+    // Ambil daftar angkatan
+    axios
+      .get(`${baseUrl}/admin/angkatan`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
+      .then((res) => setAngkatanList(res.data))
+      .catch((err) => console.error("Error fetching angkatan:", err));
   }, []);
 
   useEffect(() => {
@@ -65,9 +93,18 @@ const DataSiswa = () => {
 
   const handleFileChange = (e) => setFile(e.target.files[0]);
 
+  //Import Halaman Depan
   const handleImport = async (e) => {
     e.preventDefault();
-    if (!file) return alert("Pilih data terlebih dahulu");
+    if (!file) {
+      Swal.fire({
+        title: "Peringatan!",
+        text: "Pilih data terlebih dahulu",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
 
     const formData = new FormData();
     formData.append("file", file);
@@ -75,18 +112,35 @@ const DataSiswa = () => {
       await axios.post(`${baseUrl}/import-excel`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      alert("File berhasil diunggah");
+      Swal.fire({
+        title: "Berhasil!",
+        text: "File berhasil diunggah",
+        icon: "success",
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
     } catch {
-      alert("File gagal diunggah");
+      Swal.fire({
+        title: "Gagal!",
+        text: "File gagal diunggah",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
-  };const handleImportBelakang = async (e) => {
+  };
+
+  //Import Halaman Belakang Raport Bulk
+  const handleImportBelakang = async (e) => {
     e.preventDefault();
     if (!file) return alert("Pilih data terlebih dahulu");
 
     const formData = new FormData();
     formData.append("file", file);
     try {
-      await axios.post(`${baseUrl}/import-exce`, formData, {
+      await axios.post(`${baseUrl}/import-raport?&semester=${semester}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert("File berhasil diunggah");
@@ -95,13 +149,21 @@ const DataSiswa = () => {
     }
   };
 
+  // Ekpor PDF Rapor
   const exportDataPDFHalBelakang = (e) => {
-    if (!semester || !jurusanId || !angkatanId) {
-      alert("Pilih semester, jurusan, dan angkatan terlebih dahulu!");
+    if (!jurusanId || !angkatanId) {
+      Swal.fire({
+        title: "Peringatan!",
+        text: "Pilih jurusan, dan angkatan terlebih dahulu!",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
       return;
     }
-    // const semester = prompt("Masukkan semester 1-5")
-    const url = `${baseUrl}/admin/export-raport-pdf?&semester=${semester}&jurusanId=${jurusanId}&angkatanId=${angkatanId}`;
+    const jurusanNama = jurusanList.find((j) => j.id === parseInt(jurusanId))?.nama || "Jurusan-Tidak-Diketahui";
+    const angkatanNama = angkatanList.find((a) => a.id === parseInt(angkatanId))?.tahun || "Angkatan-Tidak-Diketahui";
+
+    const url = `${baseUrl}/admin/export-raport-pdf?&jurusanId=${jurusanId}&angkatanId=${angkatanId}`;
 
     axios
       .get(url, {
@@ -109,22 +171,87 @@ const DataSiswa = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then((response) => {
-        fileDownload(response.data, `nilai-siswa-semester-${semester}-jurusan-${jurusanId}-angkatan-${angkatanId}.xlsx`);
-        window.alert(`Berhasil mengunduh raport semester ${semester} dari jurusan ${jurusanId}`);
+        fileDownload(response.data, `Nilai Siswa Jurusan ${jurusanNama} Angkatan ${angkatanNama}.pdf`);
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Berhasil mengunduh file",
+          icon: "success",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
       })
       .catch((error) => {
         console.error("Download error:", error);
-        toast.error("Gagal mengekspor PDF!");
+        Swal.fire({
+          title: "Gagal!",
+          text: "Gagal mengekspor PDF!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       });
   };
 
+  //Ekspor Excel Rapor
   const exportDataExcelHalBelakang = (e) => {
-    if (!semester || !jurusanId || !angkatanId) {
-      alert("Pilih semester, jurusan, dan angkatan terlebih dahulu!");
+    if (!jurusanId || !angkatanId) {
+      Swal.fire({
+        title: "Peringatan!",
+        text: "Pilih jurusan, dan angkatan terlebih dahulu!",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+    const jurusanNama = jurusanList.find((j) => j.id === parseInt(jurusanId))?.nama || "Jurusan-Tidak-Diketahui";
+    const angkatanNama = angkatanList.find((a) => a.id === parseInt(angkatanId))?.tahun || "Angkatan-Tidak-Diketahui";
+    // const semester = prompt("Masukkan semester 1-5")
+    const url = `${baseUrl}/admin/export-raport-excel?&jurusanId=${jurusanId}&angkatanId=${angkatanId}&semester=${semester}`;
+
+    axios
+      .get(url, {
+        responseType: "blob",
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
+      .then((response) => {
+        fileDownload(response.data, `Nilai Siswa Jurusan ${jurusanNama} Angkatan ${angkatanNama}.xlsx Semester ${semester}`);
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Berhasil mengunduh file",
+          icon: "success",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
+      })
+      .catch((error) => {
+        console.error("Download error:", error);
+        Swal.fire({
+          title: "Gagal!",
+          text: "Gagal mengekspor PDF!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      });
+  };
+
+  //Elspor Format Rapor
+  const exportDataExcelHalBelakangDummy = (e) => {
+    if (!semester) {
+      Swal.fire({
+        title: "Peringatan!",
+        text: "Pilih semester terlebih dahulu!",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
       return;
     }
     // const semester = prompt("Masukkan semester 1-5")
-    const url = `${baseUrl}/admin/export-raport-excel?&semester=${semester}&jurusanId=${jurusanId}&angkatanId=${angkatanId}`;
+    const url = `${baseUrl}/admin/export-raport-template?&semester=${semester}`;
 
     axios
       .get(url, {
@@ -132,101 +259,108 @@ const DataSiswa = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then((response) => {
-        fileDownload(response.data, `nilai-siswa-semester-${semester}-jurusan-${jurusanId}-angkatan-${angkatanId}.xlsx`);
-        window.alert(`Berhasil mengunduh raport semester ${semester} dari jurusan ${jurusanId}`);
+        fileDownload(response.data, `Format Rapor Siswa Semester ${semester}.xlsx`);
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Berhasil mengunduh format",
+          icon: "success",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
       })
       .catch((error) => {
         console.error("Download error:", error);
-        toast.error("Gagal mengekspor PDF!");
+        Swal.fire({
+          title: "Gagal!",
+          text: "Gagal mengekspor PDF!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       });
   };
 
-  const exportDataExcelHalBelakangDummy = (e) => {
-    // e.preventDefault()
-    const searchQuery = searchKey;
-    const jurusanQuery = jurusans
-      .filter((x) => x.checked)
-      .map((x) => x.nama)
-      .join(",");
-    const angkatanQuery = angkatans
-      .filter((x) => x.checked)
-      .map((x) => x.tahun)
-      .join(",");
-
-    // const semester = prompt("Masukkan semester 1-5")
-    const url = `${baseUrl}/admin/export-raport-template?semester=${1}&jurusan=${jurusanQuery}&angkatan=${angkatanQuery}`;
-
+  // Ekspor PDF Halaman Depan
+  const exportDataPDFdpan = () => {
+    const jurusanNama = jurusanList.find((j) => j.id === parseInt(jurusanId))?.nama || "Jurusan-Tidak-Diketahui";
+    const angkatanNama = angkatanList.find((a) => a.id === parseInt(angkatanId))?.tahun || "Angkatan-Tidak-Diketahui";
     axios
-      .get(url, {
-        responseType: "blob",
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
+      .get(
+        `${baseUrl}/admin/export-pdf?&jurusanId=${jurusanId}&angkatanId=${angkatanId}`,
+        {
+          responseType: "blob",
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      )
       .then((response) => {
-        fileDownload(response.data, "nilai-siswa.xlsx");
-        window.alert("Ekspor PDF berhasil");
+        // Membuat nama file dinamis berdasarkan filter yang dipilih
+        const fileName = `Data jurusan ${jurusanNama || "Semua-Jurusan"}- angkatan ${angkatanNama || "Semua-Angkatan"
+          }.pdf`;
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Berhasil mengunduh file",
+          icon: "success",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
+        fileDownload(response.data, fileName);
       })
       .catch((error) => {
         console.error("Download error:", error);
-        toast.error("Gagal mengekspor PDF!");
+        Swal.fire({
+          title: "Gagal!",
+          text: "Gagal mengekspor PDF!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       });
   };
 
-  const exportDataPDFdpan = (e) => {
-    // e.preventDefault()
-    const searchQuery = searchKey;
 
-    // const semester = prompt("Masukkan semester 1-5")
-    const url = `${baseUrl}/admin/export-pdf?jurusan=${jurusanId}&angkatan=${angkatanId}`;
-
-    axios
-      .get(url, {
-        responseType: "blob",
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-      .then((response) => {
-        fileDownload(response.data, `data-siswa-${jurusanId}-angkatan-${angkatanId}.pdf`);
-        window.alert("Ekspor PDF berhasil");
-      })
-      .catch((error) => {
-        console.error("Download error:", error);
-        toast.error("Gagal mengekspor PDF!");
-      });
-  };
-
+  // Ekspor Excel halaman Depan
   const exportDataExcel = (e) => {
     // const semester = prompt("Masukkan semester 1-5")
-    const url = `${baseUrl}/admin/export-excel?&semester=${1}&jurusanId=${1}&angkatanId=${1}`;
-
+    const url = `${baseUrl}/admin/export-excel?&jurusanId=${jurusanId}&angkatanId=${angkatanId}`;
+    const jurusanNama = jurusanList.find((j) => j.id === parseInt(jurusanId))?.nama || "Jurusan-Tidak-Diketahui";
+    const angkatanNama = angkatanList.find((a) => a.id === parseInt(angkatanId))?.tahun || "Angkatan-Tidak-Diketahui";
     axios
       .get(url, {
         responseType: "blob",
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then((response) => {
-        fileDownload(response.data, "nilai-siswa.xlsx");
-        window.alert("Ekspor PDF berhasil");
+        fileDownload(response.data, `Data Jurusan ${jurusanNama} Angkatan ${angkatanNama}.xlsx`);
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Berhasil mengunduh file",
+          icon: "success",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
       })
       .catch((error) => {
         console.error("Download error:", error);
-        window.alert("Gagal mengekspor PDF!");
+        Swal.fire({
+          title: "Gagal!",
+          text: "Gagal mengekspor file!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       });
   };
 
+  // Ekspor Format Halaman Depan
   const exportDataExcelDepanDummy = (e) => {
-    // e.preventDefault()
-    const searchQuery = searchKey;
-    const jurusanQuery = jurusans
-      .filter((x) => x.checked)
-      .map((x) => x.nama)
-      .join(",");
-    const angkatanQuery = angkatans
-      .filter((x) => x.checked)
-      .map((x) => x.tahun)
-      .join(",");
-
     // const semester = prompt("Masukkan semester 1-5")
-    const url = `${baseUrl}/admin/export-excel-kosong`;
-
+    const url = `${baseUrl}/admin/export-excel-template`;
     axios
       .get(url, {
         responseType: "blob",
@@ -234,148 +368,126 @@ const DataSiswa = () => {
       })
       .then((response) => {
         fileDownload(response.data, "format-halaman-depan.xlsx");
-        toast.success("Berhasil mengunduh format");
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Berhasil mengunduh format",
+          icon: "success",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
       })
       .catch((error) => {
         console.error("Download error:", error);
-        toast.error("Gagal negunduh format!");
+        Swal.fire({
+          title: "Gagal!",
+          text: "Gagal mengekspor PDF!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       });
   };
-
   const handleDetailClick = (id) => {
     detailPreparing(id);
     localStorage.setItem("akun-id", id);
     navigate(`/admin/lihat/${id}/biodata`);
   };
 
-  const [selected, setSelected] = useState("Option 1");
   const [open, setOpen] = useState(false);
-  const [open2, setOpen2] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(null);
+  const [isModalOpen1, setIsModalOpen1] = useState(null);
   const [semester, setSemester] = useState("");
   const [jurusanId, setJurusanId] = useState("");
   const [angkatanId, setAngkatanId] = useState("");
 
-  const options = ["Option 1", "Option 2", "Option 3", "Option 4"];
+  const semesterOptions = ["1", "2", "3", "4", "5", "6"];
 
-  const renderModalBelakang = () => (
-    <div className="fixed inset-0 flex items-center justify-center bg-transparent">
+  const exportFunctions = {
+    excelDepan: exportDataExcel,
+    pdfDepan: exportDataPDFdpan,
+    excelBelakang: exportDataExcelHalBelakang,
+    pdfBelakang: exportDataPDFHalBelakang,
+    formatBelakang: exportDataExcelHalBelakangDummy
+  };
+
+  const handleExport = (type) => {
+    exportFunctions[type]?.();
+    setIsModalOpen(null);
+  };
+
+  const renderModal = (type, hasSemester = false) => (
+    <div className="fixed inset-0 flex items-center justify-center bg-transparent bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-80">
         <h2 className="text-xl mb-4">Pilih Data Export</h2>
-
-        <label className="block mb-2">Semester:</label>
-        <select
-          value={semester}
-          onChange={(e) => setSemester(e.target.value)}
-          className="w-full mb-4 p-2 border rounded"
-        >
-          <option value="">Pilih Semester</option>
-          <option value="1">Semester 1</option>
-          <option value="2">Semester 2</option>
-          <option value="3">Semester 3</option>
-          <option value="4">Semester 4</option>
-          <option value="5">Semester 5</option>
-          <option value="6">Semester 6</option>
-        </select>
-
-        <label className="block mb-2">Jurusan : </label>
+        {hasSemester && (
+          <>
+            <label className="block mb-2">Semester:</label>
+            <select value={semester} onChange={(e) => setSemester(e.target.value)} className="w-full mb-4 p-2 border rounded">
+              <option value="">Pilih Semester</option>
+              {semesterOptions.map((s, index) => (
+                <option key={index} value={s}>{`Semester ${s}`}</option>
+              ))}
+            </select>
+          </>
+        )}
+        {/* Jurusan */}
+        <label className="block mb-2">Jurusan:</label>
         <select
           value={jurusanId}
           onChange={(e) => setJurusanId(e.target.value)}
           className="w-full mb-4 p-2 border rounded"
         >
           <option value="">Pilih Jurusan</option>
-          <option value="1">Rekayasa Perangkat Lunak</option>
-          <option value="2">Desain Komunikasi Visual</option>
-          <option value="3">Audio Video</option>
-          <option value="4">Broadcasting</option>
-          <option value="5">Animasi</option>
-          <option value="6">Teknik Komputer dan Jaringan</option>
-          <option value="7">Elektronika Industri</option>
-          <option value="8">Mekatronika</option>
+          {jurusanList.map((j) => (
+            <option key={j.id} value={j.id}>
+              {j.nama}
+            </option>
+          ))}
         </select>
-
-        <label className="block mb-2">Angkatan : </label>
+        {/* Angkatan */}
+        <label className="block mb-2">Angkatan:</label>
         <select
           value={angkatanId}
           onChange={(e) => setAngkatanId(e.target.value)}
           className="w-full mb-4 p-2 border rounded"
         >
           <option value="">Pilih Angkatan</option>
-          <option value="1">2022</option>
-          <option value="2">2023</option>
-          <option value="3">2024</option>
+          {angkatanList.map((a) => (
+            <option key={a.id} value={a.id}>
+              {a.tahun}
+            </option>
+          ))}
         </select>
-
         <div className="flex justify-end">
-          <button
-            onClick={() => setIsModalOpen(false)}
-            className="px-4 py-2 mr-2 bg-gray-300 rounded"
-          >
-            Batal
-          </button>
-          <button
-            onClick={exportDataExcelHalBelakang}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            Export
-          </button>
+          <button onClick={() => setIsModalOpen(null)} className="px-4 py-2 mr-2 bg-gray-300 rounded">Batal</button>
+          <button onClick={() => handleExport(type)} className="px-4 py-2 bg-blue-500 text-white rounded">Export</button>
         </div>
       </div>
     </div>
   );
 
-  const renderModalDepan = () => (
-    <div className="fixed inset-0 flex items-center justify-center bg-transparent">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-        <h2 className="text-xl mb-4">Pilih Data</h2>
-
-        <label className="block mb-2">Jurusan : </label>
-        <select
-          value={jurusanId}
-          onChange={(e) => setJurusanId(e.target.value)}
-          className="w-full mb-4 p-2 border rounded"
-        >
-          <option value="">Pilih Jurusan</option>
-          <option value="1">Rekayasa Perangkat Lunak</option>
-          <option value="2">Desain Komunikasi Visual</option>
-          <option value="3">Audio Video</option>
-          <option value="4">Broadcasting</option>
-          <option value="5">Animasi</option>
-          <option value="6">Teknik Komputer dan Jaringan</option>
-          <option value="7">Elektronika Industri</option>
-          <option value="8">Mekatronika</option>
-        </select>
-
-        <label className="block mb-2">Angkatan : </label>
-        <select
-          value={angkatanId}
-          onChange={(e) => setAngkatanId(e.target.value)}
-          className="w-full mb-4 p-2 border rounded"
-        >
-          <option value="">Pilih Angkatan</option>
-          <option value="1">2022</option>
-          <option value="2">2023</option>
-          <option value="3">2024</option>
-        </select>
-
-        <div className="flex justify-end">
-          <button
-            onClick={() => setIsModalOpen2(false)}
-            className="px-4 py-2 mr-2 bg-gray-300 rounded"
-          >
-            Batal
-          </button>
-          <button
-            onClick={exportDataPDFdpan}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            Export
-          </button>
-        </div>
-      </div>
-    </div>
+  const modalImport = (type, hasSemester = false) => (
+    setIsModalOpen1(true)
   );
 
+  const isDataComplete = (siswa) => {
+    return (
+      isAkunFilled(siswa) &&
+      isBiodataFilled(siswa) &&
+      isTempattinggalFilled(siswa) &&
+      isKesehatanFilled(siswa) &&
+      isPendidikanFilled(siswa) &&
+      isAyahFilled(siswa) &&
+      isIbuFilled(siswa) &&
+      isHobiFilled(siswa)
+    );
+  };
+
+  const tambah = () => {
+    navigate("/admin/tambah")
+  }
 
   return (
     <div className="flex h-screen font-body">
@@ -383,88 +495,137 @@ const DataSiswa = () => {
       <div className="flex-1 p-6 bg-white text-black overflow-y-scroll">
         <h1 className="text-3xl font-normal ml-2">Data Siswa</h1>
         <header className="flex justify-end gap-4 my-5">
+
           <div className="relative inline-block text-left">
+            {/* Tombol Utama */}
             <button
-              onClick={() => {
-                setOpen2(!open2);
-              }}
-              className="px-4 py-2 bg-blue-500 text-white rounded-sm shadow-md"
+              onClick={() => setOpen(!open)}
+              className="px-2 py-2 flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white rounded-sm transition-all"
             >
-              Halaman Depan
+              <FaDownload className="text-sm" />
+              Unduh Buku Induk
             </button>
-            <div
-              className={`absolute mt-2 w-40 bg-white border rounded-sm shadow-lg ${!open2 ? "hidden" : "block"
-                }`}
-            >
-              <button
-                className={`block w-full px-4 py-2 text-left hover:bg-blue-500 hover:text-white transition `}
-                onClick={() => setIsModalOpen2(true)}
-              >
-                Unduh PDF
-              </button>
-              {isModalOpen2 && renderModalDepan()}
-              <button
-                className={`block w-full px-4 py-2 text-left hover:bg-blue-500 hover:text-white transition `}
-                onClick={(e) => exportDataExcel(e)}
-              >
-                Unduh Excel
-              </button>
-              <button
-                className={`block w-full px-4 py-2 text-left hover:bg-blue-500 hover:text-white transition `}
-                onClick={(e) => exportDataExcelDepanDummy(e)}
-              >
-                Unduh Format
-              </button>
-            </div>
+
+            {/* Dropdown */}
+            {open && !isModalOpen && (
+              <div className="absolute mt-2 w-52 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                {/* Halaman Depan */}
+                <div className="px-4 py-2 font-semibold text-gray-700 bg-gray-100 rounded-t-lg">
+                  Halaman Depan
+                </div>
+                <button
+                  className="flex items-center gap-2 px-4 py-2 w-full text-left text-gray-600 hover:bg-gray-200 transition"
+                  onClick={() => setIsModalOpen("pdfDepan")}
+                >
+                  <FaFilePdf className="text-red-500" /> Unduh PDF
+                </button>
+                <button
+                  className="flex items-center gap-2 px-4 py-2 w-full text-left text-gray-600 hover:bg-gray-200 transition"
+                  onClick={() => setIsModalOpen("excelDepan")}
+                >
+                  <FaFileExcel className="text-green-500" /> Unduh Excel
+                </button>
+                <button
+                  className="flex items-center gap-2 px-4 py-2 w-full text-left text-gray-600 hover:bg-gray-200 transition"
+                  onClick={() => exportDataExcelDepanDummy()}
+                >
+                  <FaRegFile className="text-green-500" /> Unduh Format
+                </button>
+                <hr className="border-gray-300" />
+
+                {/* Halaman Belakang */}
+                <div className="px-4 py-2 font-semibold text-gray-700 bg-gray-100">
+                  Halaman Belakang
+                </div>
+                <button
+                  className="flex items-center gap-2 px-4 py-2 w-full text-left text-gray-600 hover:bg-gray-200 transition"
+                  onClick={() => setIsModalOpen("pdfBelakang")}
+                >
+                  <FaFilePdf className="text-red-500" /> Unduh PDF
+                </button>
+                <button
+                  className="flex items-center gap-2 px-4 py-2 w-full text-left text-gray-600 hover:bg-gray-200 transition rounded-b-lg"
+                  onClick={() => setIsModalOpen("excelBelakang")}
+                >
+                  <FaFileExcel className="text-green-500" /> Unduh Excel
+                </button>
+                <button
+                  className="flex items-center gap-2 px-4 py-2 w-full text-left text-gray-600 hover:bg-gray-200 transition rounded-b-lg"
+                  onClick={() => setIsModalOpen("formatBelakang")}
+                >
+                  <FaRegFile className="text-green-500" /> Unduh Format
+                </button>
+              </div>
+            )}
+
+            {/* Modal */}
+            {isModalOpen && renderModal(isModalOpen, isModalOpen.includes("Belakang"))}
           </div>
-          <div className="relative inline-block text-left">
-            <button
-              onClick={() => {
-                setOpen(!open);
-              }}
-              className="px-4 py-2 bg-blue-500 text-white rounded-sm shadow-md"
-            >
-              Halaman Belakang
-            </button>
-            <div
-              className={`absolute mt-2 w-40 bg-white border rounded-sm shadow-lg ${!open ? "hidden" : "block"
-                }`}
-            >
-              <button
-                className={`block w-full px-4 py-2 text-left hover:bg-blue-500 hover:text-white transition `}
-                onClick={(e) => exportDataPDFHalBelakang(e)}
-              >
-                Unduh PDF
-              </button>
-              <button
-                className={`block w-full px-4 py-2 text-left hover:bg-blue-500 hover:text-white transition `}
-                onClick={() => setIsModalOpen(true)}
-              >
-                Unduh Excel
-              </button>
-              {isModalOpen && renderModalBelakang()}
-              <button
-                className={`block w-full px-4 py-2 text-left hover:bg-blue-500 hover:text-white transition `}
-                onClick={(e) => exportDataExcelHalBelakangDummy(e)}
-              >
-                Unduh Format
-              </button>
-            </div>
-          </div>
-          <form onSubmit={handleImport} className="flex gap-5">
+          <form className="flex gap-5">
+            {/* Input File */}
             <input
               type="file"
               onChange={handleFileChange}
-              className="border border-black rounded-sm py-1 px-2 file:bg-gray-300 file:rounded file:border file:border-black file:p-1 placeholder:ml-2"
+              className="border border-black py-1 px-2 file:bg-gray-400 file:border file:border-gray-700 file:text-white file:p-1 file:mr-8"
             />
+
+            {/* Tombol Unggah Halaman Depan */}
             <button
-              type="submit"
-              className="bg-blue-500 rounded-sm py-1 px-2 text-white"
+              type="button"
+              onClick={handleImport}
+              className="bg-blue-700 rounded-md py-1 px-2 text-white hover:bg-blue-800"
             >
-              Unggah Excel
+              Unggah Data
             </button>
+
+            {/* Tombol Unggah Halaman Belakang */}
+            <button
+              type="button"
+              onClick={() => modalImport()}
+              className="bg-green-700 rounded-md py-1 px-2 text-white hover:bg-green-800"
+            >
+              Unggah Rapor
+            </button>
+            {isModalOpen1 && (
+              <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+                  <h2 className="text-xl mb-4">Pilih Semester</h2>
+
+                  <label className="block mb-2">Semester:</label>
+                  <select
+                    value={semester}
+                    onChange={(e) => setSemester(e.target.value)}
+                    className="w-full mb-4 p-2 border rounded"
+                  >
+                    <option value="">Pilih Semester</option>
+                    {semesterOptions.map((s, index) => (
+                      <option key={index} value={s}>{`Semester ${s}`}</option>
+                    ))}
+                  </select>
+
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => setIsModalOpen1(false)}
+                      className="px-4 py-2 mr-2 bg-gray-300 rounded"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleImportBelakang();
+                        setIsModalOpen1(false);
+                      }}
+                      className="px-4 py-2 bg-blue-700 text-white rounded"
+                    >
+                      Impor
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </form>
         </header>
+
         <div className="grid grid-cols-10 gap-5 mt-6">
           <input
             type="search"
@@ -486,7 +647,15 @@ const DataSiswa = () => {
           />
         )}
 
-        <table className="w-full mt-8 border border-gray-300">
+        <button
+          onClick={tambah}
+          className="p-2 flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white text-normal rounded-sm mt-4"
+        >
+          <FaPlus className="text-sm" />
+          Tambah Siswa
+        </button>
+
+        <table className="w-full mt-4 border border-gray-300">
           <thead className="bg-gray-200 border p-2">
             <tr>
               <th className="border p-2">No</th>
@@ -506,11 +675,13 @@ const DataSiswa = () => {
                 <td className="px-4 py-2 justify-center">
                   <button
                     onClick={() => handleDetailClick(s.id)}
-                    className="bg-blue-500 rounded-sm p-2 text-white border"
+                    className={`rounded-sm p-2 text-white border ${isDataComplete(s) ? "bg-blue-700 hover:bg-blue-800" : "bg-gray-400"
+                      }`}
                   >
                     Detail Siswa
                   </button>
                 </td>
+
               </tr>
             ))}
           </tbody>

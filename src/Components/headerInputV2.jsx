@@ -161,7 +161,7 @@ const HeaderInput = ({ title, word, form}) => {
             <HeaderButton
               key={i}
               to={
-                form == "admin"
+                form == "siswa"
                   ? `/${form}/lihat/${params.id}/${t.b}`
                   : `/${form}/data/${params.action}/${t.b}`
               }

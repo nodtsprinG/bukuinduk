@@ -2,15 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 // import { useParams } from "react-router";
 import fileDownload from "js-file-download";
-import { baseUrl } from "../../../Utils/constan";
+import { baseUrl } from "../../../utils/constan";
 import Profil from "../../../Components/profileCard"
 import PilihHalaman from "../../../Components/pilihHalaman"
+import { Edit, Save } from "lucide-react"
 
 const ERaport = () => {
   const [activeSemester, setActiveSemester] = useState(1);
   const [mapelList, setMapelList] = useState([]);
   const [nilaiList, setNilaiList] = useState([]);
   const [file, setFile] = useState(null);
+  const [editing, setIsEditing] = useState(false)
 
   // const params = useParams();
 
@@ -65,8 +67,6 @@ const ERaport = () => {
     }
   };
 
-
-
   const handleInputChange = (index, field, value, mapel) => {
     const newNilaiList = [...nilaiList];
     console.log(nilaiList)
@@ -101,7 +101,7 @@ const ERaport = () => {
       await axios.post(
         `${baseUrl}/admin/nilai`,
         {
-          sia : nilaiList[0].sia,
+          sia: nilaiList[0].sia,
           semester: activeSemester,
           user_id: localStorage.getItem("akun-id"),
           data,
@@ -112,12 +112,16 @@ const ERaport = () => {
           },
         }
       );
-
+      setIsEditing(false)
       alert("Data berhasil disimpan!");
     } catch (error) {
       console.error("Error saving nilai:", error);
       alert("Terjadi kesalahan saat menyimpan data.");
     }
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true); // Aktifkan mode edit
   };
 
   const kelompokUmum = [
@@ -135,7 +139,7 @@ const ERaport = () => {
     "Dasar Program Keahlian",
     "Mata Pelajaran Konsentrasi Keahlian",
     "Projek Kreatif dan Kewirausahaan",
-    "Mata Pelajaran Pilihan",
+    // "Mata Pelajaran Pilihan",
   ];
 
   const [pelajaranUmum, setPelajaranUmum] = useState(kelompokUmum)
@@ -144,15 +148,15 @@ const ERaport = () => {
   useEffect(() => {
     let filteredMapel;
     if (activeSemester == '1' || activeSemester == '2') {
-      filteredMapel = kelompokUmum.filter(mapel => 
-        !['Mata Pelajaran Konsentrasi Keahlian', 'Projek Kreatif dan Kewirausahaan', 'Mata Pelajaran Pilihan'].includes(mapel)
+      filteredMapel = kelompokUmum.filter(mapel =>
+        !['Mata Pelajaran Konsentrasi Keahlian', 'Projek Kreatif dan Kewirausahaan'].includes(mapel)
       );
     } else if (activeSemester == '3' || activeSemester == '4') {
-      filteredMapel = kelompokUmum.filter(mapel => 
+      filteredMapel = kelompokUmum.filter(mapel =>
         !['Seni Budaya', 'Informatika', 'Projek IPAS', 'Dasar Program Keahlian'].includes(mapel)
       );
     } else if (activeSemester == '5' || activeSemester == '6') {
-      filteredMapel = kelompokUmum.filter(mapel => 
+      filteredMapel = kelompokUmum.filter(mapel =>
         !['Pendidikan Jasmani, Olahraga, dan Kesehatan', 'Seni Budaya', 'Informatika', 'Projek IPAS', 'Dasar Program Keahlian'].includes(mapel)
       );
     }
@@ -180,34 +184,34 @@ const ERaport = () => {
 
   const exportExcel = () => {
     axios
-    .get(`${baseUrl}/admin/export-raport-excel/${localStorage.getItem("akun-id")}`, {
-      responseType: "blob",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-    .then((response) => {
-      fileDownload(response.data, "nilai-siswa.xlsx");
-    })
-    .catch((error) => {
-      console.error("Download error:", error);
-    });
+      .get(`${baseUrl}/admin/export-raport-excel/${localStorage.getItem("akun-id")}`, {
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        fileDownload(response.data, "nilai-siswa.xlsx");
+      })
+      .catch((error) => {
+        console.error("Download error:", error);
+      });
   }
 
   const exportDummy = () => {
     axios
-    .get(`${baseUrl}/admin/export-raport-excel-dummy`, {
-      responseType: "blob",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-    .then((response) => {
-      fileDownload(response.data, "format-siswa.xlsx");
-    })
-    .catch((error) => {
-      console.error("Download error:", error);
-    });
+      .get(`${baseUrl}/admin/export-raport-excel-dummy`, {
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        fileDownload(response.data, "format-nilai-siswa.xlsx");
+      })
+      .catch((error) => {
+        console.error("Download error:", error);
+      });
   }
 
   const handleFileChange = (e) => setFile(e.target.files[0]);
@@ -220,7 +224,7 @@ const ERaport = () => {
     formData.append("userId", localStorage.getItem("akun-id"));
     try {
       await axios.post(`${baseUrl}/admin/import-individual-raport`, formData, {
-        headers: { "Content-Type": "multipart/form-data", "Authorization" : "Bearer " + localStorage.getItem("token") },
+        headers: { "Content-Type": "multipart/form-data", "Authorization": "Bearer " + localStorage.getItem("token") },
       });
       alert("File berhasil diunggah");
     } catch {
@@ -228,7 +232,7 @@ const ERaport = () => {
     }
   };
 
-  
+
 
   const handleSIAChange = (field, value) => {
     setNilaiList((prevList) => {
@@ -247,6 +251,36 @@ const ERaport = () => {
     console.log(nilaiList)
   };
 
+  const handleOptionMPP = (index, field, value) => {
+    const newNilaiList = [...nilaiList];
+    const mpp = newNilaiList.findIndex((val) => val?.type === "mpp");
+    if (mpp === -1 && field === "mapel") {
+      const mapel = mapelList.find((val) => val.id == value).nama;
+      newNilaiList.push({
+        type: "mpp",
+        mapel: {
+          id: value,
+          nama: mapel,
+        },
+        nilai: "",
+        keterangan: "",
+      });
+      setNilaiList(newNilaiList);
+      return;
+    }
+    if (field !== "mapel") {
+      newNilaiList[mpp][field] = value;
+    } else {
+      const mapel = mapelList.find((val) => val.id == value).nama;
+      newNilaiList[mpp]["mapel"] = {
+        id: value,
+        nama: mapel,
+      };
+    }
+    setNilaiList(newNilaiList);
+    console.log(newNilaiList);
+  };
+
   return (
     <div className="p-4 bg-gray-100 min-h-screen text-[20px]">
       <Profil />
@@ -263,22 +297,37 @@ const ERaport = () => {
             Semester {index + 1}
           </button>
         ))}
-        <button onClick={handleSave} className="bg-blue-500 text-white px-4 py-2 rounded-md">
-          Simpan
-        </button>
+
         <button className="bg-red-500 text-white px-4 py-2 rounded-md" onClick={exportData}>
           Unduh PDF
         </button>
-        <button className="bg-red-500 text-white px-4 py-2 rounded-md" onClick={exportDummy}>
+        <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={exportDummy}>
           Unduh Format
         </button>
-        <button className="bg-red-500 text-white px-4 py-2 rounded-md" onClick={exportExcel}>
+        <button className="bg-green-700 text-white px-4 py-2 rounded-md" onClick={exportExcel}>
           Unduh Excel
         </button>
         <form onSubmit={handleImport} className="flex gap-2">
           <input type="file" onChange={handleFileChange} className="border border-black rounded-md p-2" />
           <button type="submit" className="bg-green-800 rounded-md px-4 py-2 text-white">Impor</button>
         </form>
+        {!editing ? (
+          <button
+            onClick={handleEdit}
+            className={`flex items-center gap-2 px-6 py-2 rounded-md transition duration-300 shadow-md hover:shadow-lg bg-blue-600 hover:bg-blue-700 text-white`}
+          >
+            <Edit className="w-5 h-5" />
+            Ubah
+          </button>
+        ) : (
+          <button
+            onClick={handleSave}
+            className="flex items-center gap-2 bg-green-800 text-white px-6 py-2 rounded-md hover:bg-green-900 transition duration-300 shadow-md hover:shadow-lg"
+          >
+            <Save className="w-5 h-5" />
+            Simpan
+          </button>
+        )}
       </div>
 
       <div className="bg-white p-4 flex">
@@ -328,8 +377,58 @@ const ERaport = () => {
                     </button>
                   </td> */}
                 </tr>
+
               );
             })}
+            {activeSemester > 2 && (
+              <tr>
+                <td className="border border-gray-400 p-2">
+                  <div className="grid grid-cols-2">
+                    <label className="flex items-center justify-start">
+                      Mata Pelajaran Pilihan :
+                    </label>
+                    <select
+                      className="w-full mt-1 p-2 border rounded-sm"
+                      value={
+                        nilaiList.find((obj) => obj?.mapel?.nama.includes("@"))?.mapel.id || ""
+                      }
+                      onChange={(e) => handleOptionMPP(1, "mapel", e.target.value, "")}
+                    >
+                      <option value="" className="text-gray-500 rounded">Pilih Mapel</option>
+                      {mapelList
+                        .filter((subject) => subject.nama.includes("@"))
+                        .map((mapel) => (
+                          <option key={mapel.id} value={mapel.id}>
+                            {mapel.nama.replace("@", "")}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                </td>
+                <td className="border border-gray-400 p-2">
+                  <input
+                    type="number"
+                    className="w-full h-full outline-none"
+                    placeholder="Nilai"
+                    value={
+                      nilaiList.find((obj) => obj?.mapel?.nama.includes("@"))?.nilai || ""
+                    }
+                    onChange={(e) => handleOptionMPP(1, "nilai", e.target.value, "")}
+                  />
+                </td>
+                <td className="border border-gray-400 px-4 py-2">
+                  <textarea
+                    className="w-full h-full outline-none"
+                    placeholder="Deskripsi"
+                    value={
+                      nilaiList.find((obj) => obj?.mapel?.nama.includes("@"))?.keterangan ||
+                      ""
+                    }
+                    onChange={(e) => handleOptionMPP(1, "keterangan", e.target.value, "")}
+                  />
+                </td>
+              </tr>
+            )}
           </tbody>
 
         </table>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { baseUrl } from "../../../Utils/constan";
+import { baseUrl } from "../../../utils/constan";
 import Profil from "../../../Components/profileCard";
 import InputHalaman from "../../../Components/pilihHalaman";
 import {
@@ -21,6 +21,7 @@ const Biodata = () => {
   const [isEditing, setIsEditing] = useState(false); // State untuk mode edit
   const navigate = useNavigate();
   const { id } = useParams();
+  
 
   useEffect(() => {
     const fetchData = async () => {

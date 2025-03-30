@@ -2,12 +2,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { baseUrl } from "../../../Utils/constan";
-import Profil from "../../../Components/profileCard";
+import { baseUrl } from "../../../utils/constan";
+import Profil from "../../../components/lihatprofil";
 import InputHalaman from "../../../Components/pilihHalamanV2";
 import { TextInput } from "../../../Components/inputComponent";
 import Nextbefore from "../../../Components/nextbefore";
 import HeaderInput from "../../../Components/headerInput";
+import { Edit, Save } from "lucide-react";
 
 const Biodata = () => {
   const [siswa, setSiswa] = useState(null);
@@ -15,7 +16,7 @@ const Biodata = () => {
   const [error, setError] = useState("");
   const [isEditing, setIsEditing] = useState(false); // State untuk mode edit
   const navigate = useNavigate();
-  const { id } = useParams();
+  const id = localStorage.getItem("akun-id")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,20 +66,29 @@ const Biodata = () => {
 
   const handleSave = async () => {
     try {
-      console.log("Struktur siswa:", JSON.stringify(siswa, null, 2));
-      const response = await axios.put(baseUrl + `/admin/data-diri/${id}`, siswa, {
+      delete siswa.hobi_siswa.id
+      const hobi = {
+        ...siswa.hobi_siswa,
+        status_perubahan: "pending", // Tambahkan status perubahan
+      };
+  
+      console.log("Struktur siswa yang dikirim:", JSON.stringify(hobi, null, 2));
+  
+      const response = await axios.put(baseUrl + `/siswa/data-diri`, { hobi }, { 
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         },
       });
+  
       console.log("Response dari backend:", response.data);
       setIsEditing(false); // Kembali ke mode lihat setelah sukses
-      alert("Data berhasil diperbarui!");
+      window.alert("Tunggu Konfirmasi Admin!");
     } catch (err) {
       alert("Gagal menyimpan perubahan");
     }
   };
+  
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -87,14 +97,21 @@ const Biodata = () => {
     <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-2xl">
       <div className="my-10 w-full"><Profil /></div>
       <div><InputHalaman /></div>
-      {/* Tombol Edit / Simpan */}
-      <div className="flex justify-center">
+      <div className="flex justify-end my-4">
         {!isEditing ? (
-          <button onClick={handleEdit} className="bg-blue-600 text-white px-4 py-2 rounded">
-            Ubah Data
+          <button
+            onClick={handleEdit}
+            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
+          >
+            <Edit className="w-5 h-5" />
+            Ubah
           </button>
         ) : (
-          <button onClick={handleSave} className="bg-green-800 text-white px-4 py-2 rounded">
+          <button
+            onClick={handleSave}
+            className="flex items-center gap-2 bg-green-800 text-white px-6 py-2 rounded-md hover:bg-green-900 transition duration-300 shadow-md hover:shadow-lg"
+          >
+            <Save className="w-5 h-5" />
             Simpan
           </button>
         )}

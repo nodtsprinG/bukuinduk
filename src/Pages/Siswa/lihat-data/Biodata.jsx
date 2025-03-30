@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { baseUrl } from "../../../Utils/constan";
+import { baseUrl } from "../../../utils/constan";
 import Profil from "../../../components/lihatprofil";
 import InputHalaman from "../../../Components/pilihHalamanV2";
 import {
@@ -13,6 +13,7 @@ import Nextbefore from "../../../Components/nextbefore";
 import HeaderInput from "../../../Components/headerInput";
 import DatePicker from "react-datepicker";
 import { Edit, Save } from "lucide-react";
+import Swal from "sweetalert2";
 
 const Biodata = () => {
   const [siswa, setSiswa] = useState(null);
@@ -47,7 +48,23 @@ const Biodata = () => {
   }, [id]);
 
   const backButton = () => {
-    navigate("/admin/dashboard");
+    Swal.fire({
+      title:"Konfirmasi Keluar",
+      text: "Apakah Anda yakin ingin keluar?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Iya",
+      cancelButtonText: "Batal",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.clear();
+        Swal.fire("Berhasil Keluar", "Anda telah keluar.", "success").then(() => {
+          navigate("/siswa/login");
+        });
+      }
+    });
   };
 
   const nextButton = () => {
@@ -70,13 +87,21 @@ const Biodata = () => {
 
   const handleSave = async () => {
     try {
-      console.log("Data yang dikirim ke backend:", siswa);
-      const response = await axios.put(baseUrl + `/siswa/data-diri`, {
+      delete siswa.data_diri.id
+      const biodata = {
+        ...siswa.data_diri,
+        status_perubahan: "pending", // Tambahkan status perubahan
+      };
+
+      console.log("Struktur siswa yang dikirim:", JSON.stringify(biodata));
+
+      const response = await axios.put(baseUrl + `/siswa/data-diri`, biodata, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         },
       });
+
       console.log("Response dari backend:", response.data);
       setIsEditing(false); // Kembali ke mode lihat setelah sukses
       window.alert("Tunggu Konfirmasi Admin!");
@@ -84,6 +109,7 @@ const Biodata = () => {
       alert("Gagal menyimpan perubahan");
     }
   };
+
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -94,24 +120,24 @@ const Biodata = () => {
       <div><InputHalaman /></div>
       {/* Tombol Edit / Simpan */}
       <div className="flex justify-end my-4">
-          {!isEditing ? (
-            <button
-              onClick={handleEdit}
-              className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
-            >
-              <Edit className="w-5 h-5" />
-              Ubah
-            </button>
-          ) : (
-            <button
-              onClick={handleSave}
-              className="flex items-center gap-2 bg-green-800 text-white px-6 py-2 rounded-md hover:bg-green-900 transition duration-300 shadow-md hover:shadow-lg"
-            >
-              <Save className="w-5 h-5" />
-              Simpan
-            </button>
-          )}
-        </div>
+        {!isEditing ? (
+          <button
+            onClick={handleEdit}
+            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
+          >
+            <Edit className="w-5 h-5" />
+            Ubah
+          </button>
+        ) : (
+          <button
+            onClick={handleSave}
+            className="flex items-center gap-2 bg-green-800 text-white px-6 py-2 rounded-md hover:bg-green-900 transition duration-300 shadow-md hover:shadow-lg"
+          >
+            <Save className="w-5 h-5" />
+            Simpan
+          </button>
+        )}
+      </div>
       <HeaderInput title={"Data Diri Siswa"} word={"A"} form={"admin"} />
       <div className="bg-white p-6 flex items-center justify-center">
         <table className="w-3/4 font-body border-separate border-spacing-4">

@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { baseUrl } from "../../../Utils/constan";
+import { baseUrl } from "../../../utils/constan";
 import Profil from "../../../Components/profileCard";
 import InputHalaman from "../../../Components/pilihHalaman";
 import {
@@ -21,6 +22,18 @@ const TempatTinggal = () => {
   const [isEditing, setIsEditing] = useState(false); // State untuk mode edit
   const navigate = useNavigate();
   const { id } = useParams();
+  const [role, setRole] = useState(""); // State untuk menyimpan role pengguna
+
+  useEffect(() => {
+    axios.get(baseUrl + "/auth/me", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
+      .then((res) => {
+        console.log("Role pengguna:", res.data); // Debugging
+        setRole(res.data.role); // Pastikan state diperbarui
+      }) // Ambil role dari response API
+      .catch((err) => console.error("Gagal mengambil data user:", err));
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -114,17 +127,17 @@ const TempatTinggal = () => {
     <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-2xl">
       <div className="my-10 w-full"><Profil /></div>
       <div><InputHalaman /></div>
-        {/* Tombol Edit / Simpan dan Unduh */}
+      {/* Tombol Edit / Simpan dan Unduh */}
       <div className="flex items-center justify-end gap-5 my-5">
         <div className="flex justify-end my-4">
           {!isEditing ? (
             <button
-              onClick={handleEdit}
-              className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
-            >
-              <Edit className="w-5 h-5" />
-              Ubah
-            </button>
+            onClick={handleEdit}
+            className="flex items-center gap-2 px-6 py-2 rounded-md transition duration-300 shadow-md hover:shadow-lg bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            <Edit className="w-5 h-5" />
+            Ubah
+          </button>
           ) : (
             <button
               onClick={handleSave}
@@ -145,86 +158,86 @@ const TempatTinggal = () => {
           </button>
         </div>
       </div>
-        <HeaderInput title={"Tempat Tinggal Siswa"} word={"B"} form={"admin"} />
-        <div className="bg-white p-6 flex items-center justify-center">
-          <table className="w-3/4 font-body border-separate border-spacing-4">
-            <tbody>
-              {[
-                { label: "Alamat", field: "alamat" },
-                { label: "Telepon", field: "no_telepon" },
-                { label: "Jarak ke Sekolah", field: "jarak_ke_sekolah", type: "integer" },
-              ].map(({ label, field, type }, index) => (
-                <tr key={index}>
-                  <td className="w-[63%] h-full">
-                    <label className="py-1">{label}</label>
-                  </td>
-                  <td className="w-[37%] h-full">
-                    {type === "integer" ? (
-                      <div className="flex items-center">
-                        <IntegerInput
-                          value={siswa.tempat_tinggal[field]}
-                          onChange={(e) => isEditing && handleChange(e, field)}
-                          className="h-full"
-                          disabled={!isEditing}
-                        />
-                        <span className="ml-2 text-lg text-black">
-                          Km
-                        </span>
-                      </div>
-                    ) : type === "radio" ? (
-                      <RadioInput
-                        value={siswa.tempat_tinggal[field]}
-                        onChange={(e) => isEditing && handleChange(e, field)}
-                        className="h-full"
-                        disabled={!isEditing}
-                      />
-                    ) : (
-                      <TextInput
-                        value={siswa.tempat_tinggal[field]}
-                        onChange={(e) => isEditing && handleChange(e, field)}
-                        className="h-full"
-                        disabled={!isEditing}
-                      />
-                    )}
-                  </td>
-                </tr>
-              ))}
-
-              <tr>
+      <HeaderInput title={"Tempat Tinggal Siswa"} word={"B"} form={"admin"} />
+      <div className="bg-white p-6 flex items-center justify-center">
+        <table className="w-3/4 font-body border-separate border-spacing-4">
+          <tbody>
+            {[
+              { label: "Alamat", field: "alamat" },
+              { label: "Telepon", field: "no_telepon" },
+              { label: "Jarak ke Sekolah", field: "jarak_ke_sekolah", type: "integer" },
+            ].map(({ label, field, type }, index) => (
+              <tr key={index}>
                 <td className="w-[63%] h-full">
-                  <label className="py-1">Tinggal dengan</label>
+                  <label className="py-1">{label}</label>
                 </td>
                 <td className="w-[37%] h-full">
-                  <select
-                    name="anak_yatim"
-                    value={siswa.tempat_tinggal.tinggal_dengan || ""}
-                    className="w-full bg-[#DEE0E1] text-black p-2 rounded shadow-md"
-                    onChange={(e) =>
-                      isEditing &&
-                      setSiswa((prev) => ({
-                        ...prev,
-                        tempat_tinggal: { ...prev.tempat_tinggal, tinggal_dengan: e.target.value },
-                      }))
-                    }
-                    disabled={!isEditing} // Hanya bisa diubah saat mode edit
-                  >
-                    <option value="" hidden>Pilih</option>
-                    <option value="ortu">Orang Tua</option>
-                    <option value="saudara">Saudara</option>
-                    <option value="wali">Wali</option>
-                    <option value="lainnya">Lainnya</option>
-                  </select>
+                  {type === "integer" ? (
+                    <div className="flex items-center">
+                      <IntegerInput
+                        value={siswa.tempat_tinggal[field]}
+                        onChange={(e) => isEditing && handleChange(e, field)}
+                        className="h-full"
+                        disabled={!isEditing}
+                      />
+                      <span className="ml-2 text-lg text-black">
+                        Km
+                      </span>
+                    </div>
+                  ) : type === "radio" ? (
+                    <RadioInput
+                      value={siswa.tempat_tinggal[field]}
+                      onChange={(e) => isEditing && handleChange(e, field)}
+                      className="h-full"
+                      disabled={!isEditing}
+                    />
+                  ) : (
+                    <TextInput
+                      value={siswa.tempat_tinggal[field]}
+                      onChange={(e) => isEditing && handleChange(e, field)}
+                      className="h-full"
+                      disabled={!isEditing}
+                    />
+                  )}
                 </td>
               </tr>
-            </tbody>
-          </table>
-        </div>
+            ))}
 
-        <div>
-          <Nextbefore next={nextButton} back={backButton} />
-        </div>
+            <tr>
+              <td className="w-[63%] h-full">
+                <label className="py-1">Tinggal dengan</label>
+              </td>
+              <td className="w-[37%] h-full">
+                <select
+                  name="anak_yatim"
+                  value={siswa.tempat_tinggal.tinggal_dengan || ""}
+                  className="w-full bg-[#DEE0E1] text-black p-2 rounded shadow-md"
+                  onChange={(e) =>
+                    isEditing &&
+                    setSiswa((prev) => ({
+                      ...prev,
+                      tempat_tinggal: { ...prev.tempat_tinggal, tinggal_dengan: e.target.value },
+                    }))
+                  }
+                  disabled={!isEditing} // Hanya bisa diubah saat mode edit
+                >
+                  <option value="" hidden>Pilih</option>
+                  <option value="ortu">Orang Tua</option>
+                  <option value="saudara">Saudara</option>
+                  <option value="wali">Wali</option>
+                  <option value="lainnya">Lainnya</option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      );
+
+      <div>
+        <Nextbefore next={nextButton} back={backButton} />
+      </div>
+    </div>
+  );
 };
 
-      export default TempatTinggal;
+export default TempatTinggal;
