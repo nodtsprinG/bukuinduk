@@ -93,9 +93,9 @@ const Biodata = () => {
         status_perubahan: "pending", // Tambahkan status perubahan
       };
 
-      console.log("Struktur siswa yang dikirim:", JSON.stringify(biodata));
+      console.log("Struktur siswa yang dikirim:", JSON.stringify(biodata, null, 2));
 
-      const response = await axios.put(baseUrl + `/siswa/data-diri`, biodata, {
+      const response = await axios.put(baseUrl + `/siswa/data-diri`, { data_diri: biodata }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
@@ -104,9 +104,21 @@ const Biodata = () => {
 
       console.log("Response dari backend:", response.data);
       setIsEditing(false); // Kembali ke mode lihat setelah sukses
-      window.alert("Tunggu Konfirmasi Admin!");
+      Swal.fire({
+        icon: "info",
+        title: "Menunggu Konfirmasi",
+        text: "Perubahan data Anda sedang menunggu konfirmasi.",
+        showConfirmButton: false,
+        timer: 3000,
+      })
     } catch (err) {
-      alert("Gagal menyimpan perubahan");
+      Swal.fire({
+        icon: "error",
+        title: "Terjadi Kesalahan",
+        text: "Silakan coba lagi.",
+        showConfirmButton: false,
+        timer: 3000,
+      })
     }
   };
 

@@ -1,40 +1,38 @@
-import { MdPendingActions } from "react-icons/md";
-import { RiAdminFill, RiLogoutBoxLine } from "react-icons/ri";
-import { VscGraph, VscOrganization } from "react-icons/vsc";
-import { PiStudent } from "react-icons/pi";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { LuBookOpenText } from "react-icons/lu";
-import { ImHome } from "react-icons/im";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { baseUrl } from "../utils/constan";
-import { School } from "lucide-react";
-
+import { 
+  FaHome,
+  FaSchool, 
+  FaUserGraduate,
+  FaUserCog,
+  FaSignOutAlt,
+  FaBook,
+  FaLayerGroup,
+  FaHistory
+} from "react-icons/fa";
+import { MdPendingActions } from "react-icons/md";
 const Navigation = () => {
   const navigate = useNavigate();
   const [logo, setLogo] = useState(null);
-  const [role, setRole] = useState(""); // Menyimpan role
-  const [nama, setNama] = useState(""); // Menyimpan nama sekolah
+  const [role, setRole] = useState("");
+  const [nama, setNama] = useState("");
 
-  // 🔥 Ambil data pengguna dari API
   useEffect(() => {
     axios.get(baseUrl + "/auth/me", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
-      .then((res) => {
-        console.log("Data user:", res.data); // Debugging
-        setRole(res.data.role);
-      })
+      .then((res) => setRole(res.data.role))
       .catch((err) => console.error("Gagal mengambil data user:", err));
-  }, [role]);
+  }, []);
 
   useEffect(() => {
     axios.get(baseUrl + "/admin/data-sekolah", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((res) => {
-        console.log("Data user:", res.data); // Debugging
         setNama(res.data.nama);
         setLogo(res.data.logo);
       })
@@ -49,125 +47,72 @@ const Navigation = () => {
 
   const Logout = () => {
     Swal.fire({
-        title: "Konfirmasi Keluar",
-        text: "Apakah Anda yakin ingin keluar?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Iya",
-        cancelButtonText: "Batal",
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6"
+      title: "Konfirmasi Keluar",
+      text: "Apakah Anda yakin ingin keluar?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Iya",
+      cancelButtonText: "Batal",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
     }).then((result) => {
-        if (result.isConfirmed) {
-            localStorage.clear();
-            Swal.fire("Berhasil Keluar", "Anda telah keluar.", "success").then(() => {
-                navigate("/admin/auth/login");
-            });
-        }
+      if (result.isConfirmed) {
+        localStorage.clear();
+        Swal.fire("Berhasil Keluar", "Anda telah keluar.", "success").then(() => {
+          navigate("/admin/auth/login");
+        });
+      }
     });
-};
+  };
+
+  const menuItems = [
+    { to: "/admin/Dashboard", icon: <FaHome size={20} />, label: "Beranda" },
+    { to: "/admin/data-sekolah", icon: <FaSchool size={20} />, label: "Data Sekolah" },
+    { to: "/admin/datajurusan", icon: <FaLayerGroup size={20} />, label: "Data Jurusan" },
+    { to: "/admin/dataangkatan", icon: <FaHistory size={20} />, label: "Data Angkatan" },
+    { to: "/admin/mapel", icon: <FaBook size={20} />, label: "Mata Pelajaran" },
+    { to: "/admin/datasiswa", icon: <FaUserGraduate size={20} />, label: "Data Siswa" },
+    role !== "petugas" && { to: "/admin/petugas", icon: <FaUserCog size={20} />, label: "Petugas" },
+    role !== "petugas" && { to: "/admin/pending", icon: <MdPendingActions size={20} />, label: "Pending Data" }
+  ].filter(Boolean);
 
   return (
-    <nav className="h-full w-72 bg-gradient-to-b from-gray-900 to-blue-950 text-white p-6 flex flex-col">
-      {/* Logo & Brand */}
-      <div className="flex items-center space-x-3 mb-4">
-        <label>
-          <img src={`data:image/png;base64,${logo}`} alt="Logo Sekolah" className="w-16 h-16 bg-transparent rounded-full p-1 shadow-md" />
-        </label>
+    <nav className="h-full w-72 bg-gray-900 text-white p-6 flex flex-col">
+      <div className="flex items-center space-x-3 mb-6">
+        <img 
+          src={`data:image/png;base64,${logo}`} 
+          alt="Logo Sekolah" 
+          className="w-14 h-14 rounded-full shadow-md object-cover" 
+        />
         <div>
           <h1 className="text-lg font-bold capitalize">{nama || "Admin"}</h1>
           <h2 className="text-sm text-gray-300 capitalize">{role}</h2>
         </div>
       </div>
 
-      {/* Menu Items */}
-      <ul className="space-y-4 flex-1">
-        <li>
-          <Link
-            to="/admin/Dashboard"
-            className="flex items-center space-x-3 p-3 rounded-lg transition duration-300 hover:bg-gray-700"
-          >
-            <ImHome size={20} />
-            <span className="text-sm font-medium">Beranda</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/admin/data-sekolah"
-            className="flex items-center space-x-3 p-3 rounded-lg transition duration-300 hover:bg-gray-700"
-          >
-            <School size={20} />
-            <span className="text-sm font-medium">Data Sekolah</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/admin/datajurusan"
-            className="flex items-center space-x-3 p-3 rounded-lg transition duration-300 hover:bg-gray-700"
-          >
-            <VscOrganization size={20} />
-            <span className="text-sm font-medium">Data Jurusan</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/admin/dataangkatan"
-            className="flex items-center space-x-3 p-3 rounded-lg transition duration-300 hover:bg-gray-700"
-          >
-            <VscGraph size={20} />
-            <span className="text-sm font-medium">Data Angkatan</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/admin/mapel"
-            className="flex items-center space-x-3 p-3 rounded-lg transition duration-300 hover:bg-gray-700"
-          >
-            <LuBookOpenText size={20} />
-            <span className="text-sm font-medium">Mata Pelajaran</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/admin/datasiswa"
-            className="flex items-center space-x-3 p-3 rounded-lg transition duration-300 hover:bg-gray-700"
-          >
-            <PiStudent size={20} />
-            <span className="text-sm font-medium">Data Siswa</span>
-          </Link>
-        </li>
-        {role !== "petugas" && (
-          <li>
-            <Link
-              to="/admin/petugas"
+      <ul className="space-y-2 flex-1">
+        {menuItems.map((item, index) => (
+          <li key={index}>
+            <Link 
+              to={item.to} 
               className="flex items-center space-x-3 p-3 rounded-lg transition duration-300 hover:bg-gray-700"
             >
-              <RiAdminFill size={20} />
-              <span className="text-sm font-medium">Petugas</span>
+              {item.icon}
+              <span className="text-sm font-medium">{item.label}</span>
             </Link>
           </li>
-        )}
-        {role !== "petugas" && (
-          <li>
-            <Link
-              to="/admin/pending"
-              className="flex items-center space-x-3 p-3 rounded-lg transition duration-300 hover:bg-gray-700"
-            >
-              <MdPendingActions size={20} />
-              <span className="text-sm font-medium">Pending Data</span>
-            </Link>
-          </li>
-        )}
-        <li className="mt-[100px]">
-          <button
-            onClick={Logout}
-            className="flex w-full space-x-3 p-3 rounded-lg bg-transparent hover:bg-red-700 transition duration-300"
-          >
-            <RiLogoutBoxLine size={20} />
-            <span className="text-sm font-medium">Logout</span>
-          </button>
-        </li>
+        ))}
       </ul>
+
+      <div className="mt-auto">
+        <button 
+          onClick={Logout} 
+          className="flex w-full items-center space-x-3 p-3 rounded-lg bg-red-600 hover:bg-red-700 transition duration-300"
+        >
+          <FaSignOutAlt size={20} />
+          <span className="text-sm font-medium">Logout</span>
+        </button>
+      </div>
     </nav>
   );
 };

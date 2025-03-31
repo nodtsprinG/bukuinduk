@@ -49,7 +49,7 @@ const GenderCharts = () => {
         }
         
         const colorPalette = [
-          '#000000', '#F68D2D', '#FFCE56', '#4BC0C0', '#9966FF', 
+          '#000000', '#F68D2D', '#FFCE56', '#4BC0C0', '#FF0000', 
           '#FF9F40', '#8AC24A', '#EA5F89'
         ];
         

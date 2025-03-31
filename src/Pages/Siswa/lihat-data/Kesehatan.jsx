@@ -11,6 +11,7 @@ import {
 import Nextbefore from "../../../Components/nextbefore";
 import HeaderInput from "../../../Components/headerInput";
 import { Edit, Save } from "lucide-react";
+import Swal from "sweetalert2";
 
 // import DatePicker from "react-datepicker";
 
@@ -70,20 +71,38 @@ const Kesehatan = () => {
 
   const handleSave = async () => {
     try {
-      const kesehatan = siswa.kesehatan
       delete siswa.kesehatan.id
-      console.log("Data yang dikirim ke backend:", kesehatan);
-      const response = await axios.put(baseUrl + `/siswa/data-diri`, kesehatan, {
+      const kesehatan = {
+        ...siswa.kesehatan,
+        status_perubahan: "pending", // Tambahkan status perubahan
+      };
+
+      console.log("Struktur siswa yang dikirim:", JSON.stringify(kesehatan, null, 2));
+
+      const response = await axios.put(baseUrl + `/siswa/data-diri`, { kesehatan: kesehatan }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         },
       });
+
       console.log("Response dari backend:", response.data);
       setIsEditing(false); // Kembali ke mode lihat setelah sukses
-      window.alert("Tunggu Konfirmasi Admin!");
+      Swal.fire({
+        icon: "info",
+        title: "Menunggu Konfirmasi",
+        text: "Perubahan data Anda sedang menunggu konfirmasi.",
+        showConfirmButton: false,
+        timer: 3000,
+      })
     } catch (err) {
-      alert("Gagal menyimpan perubahan");
+      Swal.fire({
+        icon: "error",
+        title: "Terjadi Kesalahan",
+        text: "Silakan coba lagi.",
+        showConfirmButton: false,
+        timer: 3000,
+      })
     }
   };
 

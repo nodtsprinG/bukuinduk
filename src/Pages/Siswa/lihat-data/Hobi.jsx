@@ -74,7 +74,7 @@ const Biodata = () => {
   
       console.log("Struktur siswa yang dikirim:", JSON.stringify(hobi, null, 2));
   
-      const response = await axios.put(baseUrl + `/siswa/data-diri`, { hobi }, { 
+      const response = await axios.put(baseUrl + `/siswa/data-diri`, hobi , { 
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",

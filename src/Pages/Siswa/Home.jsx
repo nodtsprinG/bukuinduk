@@ -29,7 +29,7 @@ import Lpendidikan from "./lihat-data/Pendidikan"
 import Lhobi from "./lihat-data/Hobi"
 import HalamanBelakang from "./lihat-data/halaman-belakang"
 
-import resetAll from "../../Utils/resetAll";
+import {resetAll} from "../../utils/resetAll";
 
 const HomeSiswa = () => {
   const navigate = useNavigate();

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -485,9 +486,9 @@ const DataSiswa = () => {
     );
   };
 
-  const tambah = () => {
-    navigate("/admin/tambah")
-  }
+  const tambah = (id) => {
+    navigate("/admin/tambah", { state: { id } });
+  };
 
   return (
     <div className="flex h-screen font-body">
@@ -646,9 +647,8 @@ const DataSiswa = () => {
             stateJurusan={setJurusans}
           />
         )}
-
         <button
-          onClick={tambah}
+          onClick={() => tambah(siswa.id)}
           className="p-2 flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white text-normal rounded-sm mt-4"
         >
           <FaPlus className="text-sm" />

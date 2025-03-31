@@ -55,6 +55,11 @@ const TambahAkun = () => {
     }
   };
 
+  const back = () => {
+    localStorage.clear();
+    navigate("/siswa/login")
+  }
+
   return (
     <div className="flex items-center justify-center bg-gradient-to-b from-gray-800 to-gray-900 w-screen h-screen">
       <div className="bg-white p-10 rounded-lg shadow-lg flex flex-row w-3/5">
@@ -97,7 +102,7 @@ const TambahAkun = () => {
           </select>
           <div className="flex justify-between mt-4">
             <button
-              onClick={() => navigate("/siswa")}
+              onClick={back}
               className="bg-gray-500 text-white px-4 py-2 rounded-md"
             >
               Kembali

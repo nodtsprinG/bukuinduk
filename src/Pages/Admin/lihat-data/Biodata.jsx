@@ -60,6 +60,11 @@ const Biodata = () => {
   }, [id]);
 
   const backButton = () => {
+    const token = localStorage.getItem("token"); // Simpan token sebelum clear
+    localStorage.clear(); // Hapus semua data
+    if (token) {
+        localStorage.setItem("token", token); // Simpan kembali token
+    }
     navigate("/admin/dashboard");
   };
 

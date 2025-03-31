@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import axios from "axios"
 import { baseUrl } from "../../../utils/constan";
 import { useEffect } from "react";
@@ -63,7 +63,7 @@ const Login = () => {
       <div className="flex flex-col md:flex-row items-center w-full max-w-3xl bg-white shadow-2xl rounded-lg overflow-hidden">
         
         {/* Bagian Kiri - Logo */}
-        <div className="flex flex-col items-center justify-center w-full md:w-1/2 py-10 px-6">
+        <div className="flex flex-col items-center justify-center w-full md:w-1/2 py-10 px-6 border-r border-gray-400">
           <img
             src={`data:image/png;base64,${logo}`}
             alt="Logo Sekolah"
@@ -74,8 +74,8 @@ const Login = () => {
 
         {/* Bagian Kanan - Form Login */}
         <div className="w-full md:w-1/2 px-10 py-12">
-          <p className="font-header font-bold text-3xl">Masuk</p>
-          <div className="flex flex-col mt-4 border-t border-gray-400 pt-6">
+          <h2 className="font-header font-bold text-2xl">Masuk</h2>
+          <div className="flex flex-col mt-4 space-y-2">
             <label className="text-gray-700 font-semibold">NISN</label>
             <input
               type="text"
@@ -92,8 +92,15 @@ const Login = () => {
               onChange={(e) => setTanggalLahir(e.target.value)}
               className="bg-transparent border border-gray-400 rounded-md p-2 mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
             />
-            
-            <div className="flex flex-row pt-8 w-full">
+            <div className="text-right">
+              <Link 
+                to="/siswa/data/upload/akun" 
+                className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+              >
+                Belum punya akun? Daftar
+              </Link>
+            </div>
+            <div className="flex flex-row my-6 w-full">
               <button
                 onClick={() => navigate("/")}
                 className="font-header font-bold bg-gray-500 px-4 py-2 text-white rounded-md hover:bg-gray-700 transition-all"

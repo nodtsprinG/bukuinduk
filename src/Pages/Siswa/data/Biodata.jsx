@@ -14,6 +14,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 // CSS Modules, react-datepicker-cssmodules.css//
 import "react-datepicker/dist/react-datepicker-cssmodules.css";
+import Swal from "sweetalert2";
 
 /* 
 
@@ -116,15 +117,19 @@ const Biodata = () => {
         localStorage.setItem("biodata-agama", agama);
         localStorage.setItem("biodata-kewarganegaraan", kewarganegaraan);
         localStorage.setItem("biodata-anakke", anakke);
-        localStorage.setItem("biodata-kandung", kandung || "");
-        localStorage.setItem("biodata-angkat", angkat || "");
-        localStorage.setItem("biodata-tiri", tiri || "");
+        localStorage.setItem("biodata-kandung", kandung || 0);
+        localStorage.setItem("biodata-angkat", angkat || 0);
+        localStorage.setItem("biodata-tiri", tiri || 0);
         localStorage.setItem("biodata-status", status);
         localStorage.setItem("biodata-bahasa", bahasa);
       }
       navigate(`/siswa/data/${params.action}/tempattinggal`);
     } else {
-      alert("Semua data belum terisi");
+      Swal.fire({
+        icon: "error",
+        text: "Semua data belum terisi",
+        showCloseButton: true,
+      })
     }
   };
 
