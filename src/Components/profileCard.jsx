@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { baseUrl } from "../Utils/constan";
+import { baseUrl } from "../utils/constan";
 
 const StudentInfo = () => {
     const [siswa, setSiswa] = useState(null);
@@ -60,7 +60,7 @@ const StudentInfo = () => {
                         type="text"
                         value={siswa.data_diri.nama_lengkap}
                         readOnly
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-md"
                     />
                 </div>
                 <div>
@@ -69,7 +69,7 @@ const StudentInfo = () => {
                         type="text"
                         value={siswa.angkatan.tahun}
                         readOnly
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-md"
                     />
                 </div>
                 <div>
@@ -78,7 +78,7 @@ const StudentInfo = () => {
                         type="text"
                         value={siswa.nisn}
                         readOnly
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-md"
                     />
                 </div>
                 <div>
@@ -87,7 +87,7 @@ const StudentInfo = () => {
                         type="text"
                         value={siswa.jurusan.nama}
                         readOnly
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-md"
                     />
                 </div>
             </div>

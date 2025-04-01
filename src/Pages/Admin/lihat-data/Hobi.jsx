@@ -9,6 +9,7 @@ import { TextInput } from "../../../Components/inputComponent";
 import Nextbefore from "../../../Components/nextbefore";
 import HeaderInput from "../../../Components/headerInput";
 import { Edit, Save, Download } from "lucide-react"; // Import ikon
+import Swal from "sweetalert2";
 
 const Biodata = () => {
   const [siswa, setSiswa] = useState(null);
@@ -79,114 +80,133 @@ const Biodata = () => {
 
   const handleSave = async () => {
     try {
-      console.log("Struktur siswa:", JSON.stringify(siswa, null, 2));
-      const response = await axios.put(baseUrl + `/admin/data-diri/${id}`, siswa, {
+
+      const hobi = {
+        ...siswa.hobi_siswa, // Tambahkan status perubahan
+        status_perubahan: "approved",
+      };
+
+      console.log("Struktur siswa yang dikirim:", JSON.stringify(hobi, null, 2));
+
+      const response = await axios.put(baseUrl + `/admin/data-diri/${id}`, { hobi }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         },
       });
+
       console.log("Response dari backend:", response.data);
       setIsEditing(false); // Kembali ke mode lihat setelah sukses
-      alert("Data berhasil diperbarui!");
+      Swal.fire({
+        icon: 'success',
+        title: 'Data Berhasil diperbarui',
+        confirmButtonText: 'OK',
+      })
     } catch (err) {
-      alert("Gagal menyimpan perubahan");
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        text: 'Gagal menyimpan perubahan',
+        confirmButtonText: 'OK',
+      })
     }
   };
 
   const downloadPdf = async () => {
-    console.log(baseUrl, id)
-    const response = await axios.get(`${baseUrl}/admin/export-pdf/${id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      responseType: 'blob', // Untuk menerima data dalam format blob (binary large object)
-    });
-    console.log(localStorage.getItem("token"))
-    // Buat URL dari blob yang diterima
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'file.pdf'); // Nama file yang diunduh
-    document.body.appendChild(link);
-    link.click();
+    try {
+      const nama = siswa?.data_diri?.nama_lengkap || "Dokumen";
+      const token = localStorage.getItem("token");
 
-    // Hapus URL dan elemen link setelah selesai
-    link.parentNode.removeChild(link);
-    window.URL.revokeObjectURL(url);
+      if (!token) {
+        console.error("Token tidak ditemukan!");
+        return alert("Anda belum login!");
+      }
+
+      if (!id) {
+        console.error("ID tidak valid!");
+        return alert("Terjadi kesalahan, ID tidak ditemukan.");
+      }
+
+      console.log(`Mengunduh PDF untuk: ${nama}`);
+
+      const response = await axios.get(`${baseUrl}/admin/export-pdf/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: "blob", // Format binary agar bisa di-download
+      });
+
+      // Buat URL dari Blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${nama}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup setelah download
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Gagal mengunduh PDF:", error);
+      alert("Terjadi kesalahan saat mengunduh PDF. Coba lagi nanti!");
+    }
   };
+
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-2xl">
-      <div className="my-10 w-full"><Profil /></div>
-      <div><InputHalaman /></div>
+    <div className="bg-gray-100 w-screen px-10 pb-6 h-screen overflow-y-auto text-xl">
+      {/* Profil dan Input Halaman */}
+      <div className="my-10 w-full flex flex-col gap-6">
+        <Profil />
+        <InputHalaman />
+      </div>
+
       {/* Tombol Edit / Simpan dan Unduh */}
-      <div className="flex items-center justify-end gap-5 my-5">
-        <div className="flex justify-end my-4">
-          {!isEditing ? (
-            <button
-              onClick={handleEdit}
-              disabled={role === "petugas"}
-              className={`flex items-center gap-2 px-6 py-2 rounded-md transition duration-300 shadow-md hover:shadow-lg
-                ${role === "petugas" ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}
-              `}
-            >
-              <Edit className="w-5 h-5" />
-              Ubah
-            </button>
-          ) : (
-            <button
-              onClick={handleSave}
-              className="flex items-center gap-2 bg-green-800 text-white px-6 py-2 rounded-md hover:bg-green-900 transition duration-300 shadow-md hover:shadow-lg"
-            >
-              <Save className="w-5 h-5" />
-              Simpan
-            </button>
-          )}
-        </div>
-        <div>
-          <button
-            onClick={downloadPdf}
-            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
-          >
-            <Download className="w-5 h-5" />
-            Unduh
-          </button>
-        </div>
+      <div className="flex items-center justify-end gap-4 my-6">
+        <button
+          onClick={isEditing ? handleSave : handleEdit}
+          className={`flex items-center gap-2 px-6 py-2 rounded-md shadow-md hover:shadow-lg transition duration-300 text-white ${isEditing ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"}`}
+        >
+          {isEditing ? <Save className="w-5 h-5" /> : <Edit className="w-5 h-5" />}
+          {isEditing ? "Simpan" : "Ubah"}
+        </button>
+        <button
+          onClick={downloadPdf}
+          className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
+        >
+          <Download className="w-5 h-5" />
+          Unduh
+        </button>
       </div>
+
+      {/* Form Data Diri */}
       <HeaderInput title={"Hobi Siswa"} word={"H"} form={"admin"} />
-      <div className="bg-white p-6 flex items-center justify-center">
-        <table className="w-3/4 font-body border-separate border-spacing-4">
-          <tbody>
-            {[
-              { label: "Kesenian", field: "kesenian" },
-              { label: "Olahraga", field: "olahraga" },
-              { label: "Organisasi", field: "organisasi" },
-              { label: "Lainnya", field: "lain_lain" },
-            ].map(({ label, field, type }, index) => (
-              <tr key={index}>
-                <td className="w-[63%] h-full">
-                  <label className="py-1">{label}</label>
-                </td>
-                <td className="w-[37%] h-full">
-                  {(
-                    <TextInput
-                      value={siswa.hobi_siswa[field] || ""}
-                      onChange={(e) => isEditing && handleChange(e, field)}
-                      className="h-full"
-                      disabled={!isEditing}
-                    />
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="bg-white shadow-md p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[
+            { label: "Kesenian", field: "kesenian" },
+            { label: "Olahraga", field: "olahraga" },
+            { label: "Organisasi", field: "organisasi" },
+            { label: "Lainnya", field: "lain_lain" },
+          ].map(({ label, field, type }, index) => (
+            <div key={index} className="flex flex-col">
+              <label className="text-gray-700 font-medium mb-1">{label}</label>
+              {(
+                <TextInput
+                  value={siswa.hobi_siswa[field]}
+                  onChange={(e) => isEditing && handleChange(e, field)}
+                  className="input-field"
+                  disabled={!isEditing}
+                />
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-      <div>
+      {/* Tombol Next & Back */}
+      <div className="grid grid-cols-2 space-x-4">
         <Nextbefore next={nextButton} back={backButton} />
       </div>
     </div>

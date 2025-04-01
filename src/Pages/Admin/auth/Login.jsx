@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios"
 import { baseUrl } from "../../../utils/constan";
+import Swal from "sweetalert2";
 const Login = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -16,16 +17,32 @@ const Login = () => {
 
     const verify = () => {
         if (email.length == 0) {
-            alert("Email kosong")
+            Swal.fire({
+                icon: 'error',
+                title: 'Email Kosong',
+                text: 'Silakan masukkan email Anda!',
+                showConfirmButton: true,
+            })
         } else if (password.length == 0) {
-            alert("Password kosong")
+            Swal.fire({
+                icon: 'error',
+                title: 'Password Kosong',
+                text: 'Silakan masukkan password Anda!',
+                showConfirmButton: true,
+            })
         }
         console.log(email, password)
         axios.post(baseUrl + "/auth/login-admin", {
             email, password
         }).then((res) => {
             const { code } = res.data
-            window.alert("Berhasil login")
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil Masuk',
+                text: 'Silakan tunggu sebentar...',
+                showConfirmButton: false,
+                timer: 1500
+            })
             navigate("/admin/auth/verification/" + code)
         })
     }

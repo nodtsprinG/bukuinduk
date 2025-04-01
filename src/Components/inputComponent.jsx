@@ -1,37 +1,25 @@
 import "react-datepicker/dist/react-datepicker.css";
-// CSS Modules, react-datepicker-cssmodules.css//
 import "react-datepicker/dist/react-datepicker-cssmodules.css";
 
-/* 
-
-=====================================================================================================
-                    I N P U T _ C O M P O N E N T
-  >> Developed By. Ananda Eka <<
-
-[#] Note : Mengikuti desain
-
-=====================================================================================================
-
-*/
-
-export const TextInput = ({ onChange, value }) => {
+export const TextInput = ({ onChange, value, placeholder = "Masukkan teks..." }) => {
   return (
     <input
       value={value}
       onChange={onChange}
-      className="bg-[#DEE0E1] py-2 px-2 w-full focus:outline-none rounded-lg"
+      placeholder={placeholder}
+      className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-full rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
       type="text"
     />
   );
 };
 
-export const IntegerInput = ({ onChange, value }) => {
+export const IntegerInput = ({ onChange, value, placeholder = "0" }) => {
   return (
     <input
       value={value === null ? "" : value}
       onChange={onChange}
-      allowNull={true}
-      className="bg-[#DEE0E1] py-2 px-2 w-[50%] focus:outline-none rounded-[10px]"
+      placeholder={placeholder}
+      className="bg-white border text-center border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[25%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
       type="number"
     />
   );
@@ -39,29 +27,35 @@ export const IntegerInput = ({ onChange, value }) => {
 
 export const RadioInput = ({ onChange, value }) => {
   return (
-    <div className="flex w-full space-x-4 text-[24px]">
-      <div className="flex items-center">
+    <div className="flex w-full space-x-6 text-lg">
+      <label className="flex items-center space-x-2 cursor-pointer">
         <input
-          value={"laki-laki"}
+          value="laki-laki"
           onChange={onChange}
           checked={value === "laki-laki"}
-          className="bg-[#DEE0E1] py-2 px-2 rounded-lg transform scale-150"
+          className="hidden"
           type="radio"
           name="gender"
         />
-        <p className="ml-2">Laki-laki</p>
-      </div>
-      <div className="flex items-center">
+        <div className={`w-5 h-5 border-2 rounded-full flex items-center justify-center ${value === "laki-laki" ? "border-blue-600" : "border-gray-400"}`}>
+          {value === "laki-laki" && <div className="w-3 h-3 bg-blue-600 rounded-full"></div>}
+        </div>
+        <span>Laki-laki</span>
+      </label>
+      <label className="flex items-center space-x-2 cursor-pointer">
         <input
-          value={"perempuan"}
+          value="perempuan"
           onChange={onChange}
           checked={value === "perempuan"}
-          className="bg-[#DEE0E1] py-2 px-2 rounded-lg transform scale-150"
+          className="hidden"
           type="radio"
           name="gender"
         />
-        <p className="ml-2">Perempuan</p>
-      </div>
+        <div className={`w-5 h-5 border-2 rounded-full flex items-center justify-center ${value === "perempuan" ? "border-pink-600" : "border-gray-400"}`}>
+          {value === "perempuan" && <div className="w-3 h-3 bg-pink-600 rounded-full"></div>}
+        </div>
+        <span>Perempuan</span>
+      </label>
     </div>
   );
 };

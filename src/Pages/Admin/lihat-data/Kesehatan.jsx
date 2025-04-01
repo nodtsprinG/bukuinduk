@@ -11,6 +11,7 @@ import {
 import Nextbefore from "../../../Components/nextbefore";
 import HeaderInput from "../../../Components/headerInput";
 import { Edit, Save, Download } from "lucide-react"; // Import ikon
+import Swal from "sweetalert2";
 // import DatePicker from "react-datepicker";
 
 const Kesehatan = () => {
@@ -69,42 +70,77 @@ const Kesehatan = () => {
 
   const handleSave = async () => {
     try {
-      console.log("Data yang dikirim ke backend:", siswa);
-      const response = await axios.put(baseUrl + `/admin/data-diri/${id}`, siswa, {
+
+      const kesehatan = {
+        ...siswa.kesehatan, // Tambahkan status perubahan
+        status_perubahan: "approved",
+      };
+
+      console.log("Struktur siswa yang dikirim:", JSON.stringify(kesehatan, null, 2));
+
+      const response = await axios.put(baseUrl + `/admin/data-diri/${id}`, { kesehatan }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         },
       });
+
       console.log("Response dari backend:", response.data);
       setIsEditing(false); // Kembali ke mode lihat setelah sukses
-      alert("Data berhasil diperbarui!");
+      Swal.fire({
+        icon: 'success',
+        title: 'Data Berhasil diperbarui',
+        confirmButtonText: 'OK',
+      })
     } catch (err) {
-      alert("Gagal menyimpan perubahan");
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        text: 'Gagal menyimpan perubahan',
+        confirmButtonText: 'OK',
+      })
     }
   };
 
   const downloadPdf = async () => {
-    console.log(baseUrl, id)
-    const response = await axios.get(`${baseUrl}/admin/export-pdf/${id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      responseType: 'blob', // Untuk menerima data dalam format blob (binary large object)
-    });
-    console.log(localStorage.getItem("token"))
-    // Buat URL dari blob yang diterima
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'file.pdf'); // Nama file yang diunduh
-    document.body.appendChild(link);
-    link.click();
+    try {
+      const nama = siswa?.data_diri?.nama_lengkap || "Dokumen";
+      const token = localStorage.getItem("token");
 
-    // Hapus URL dan elemen link setelah selesai
-    link.parentNode.removeChild(link);
-    window.URL.revokeObjectURL(url);
+      if (!token) {
+        console.error("Token tidak ditemukan!");
+        return alert("Anda belum login!");
+      }
+
+      if (!id) {
+        console.error("ID tidak valid!");
+        return alert("Terjadi kesalahan, ID tidak ditemukan.");
+      }
+
+      console.log(`Mengunduh PDF untuk: ${nama}`);
+
+      const response = await axios.get(`${baseUrl}/admin/export-pdf/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: "blob", // Format binary agar bisa di-download
+      });
+
+      // Buat URL dari Blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${nama}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup setelah download
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Gagal mengunduh PDF:", error);
+      alert("Terjadi kesalahan saat mengunduh PDF. Coba lagi nanti!");
+    }
   };
+
 
   const getUnit = (field) => {
     switch (field) {
@@ -123,111 +159,93 @@ const Kesehatan = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-2xl">
-      <div className="my-10 w-full"><Profil /></div>
-      <div><InputHalaman /></div>
-      {/* Tombol Edit / Simpan dan Unduh */}
-      <div className="flex items-center justify-end gap-5 my-5">
-        <div className="flex justify-end my-4">
-          {!isEditing ? (
-            <button
-              onClick={handleEdit}
-              className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
-            >
-              <Edit className="w-5 h-5" />
-              Ubah
-            </button>
-          ) : (
-            <button
-              onClick={handleSave}
-              className="flex items-center gap-2 bg-green-800 text-white px-6 py-2 rounded-md hover:bg-green-900 transition duration-300 shadow-md hover:shadow-lg"
-            >
-              <Save className="w-5 h-5" />
-              Simpan
-            </button>
-          )}
-        </div>
-        <div>
-          <button
-            onClick={downloadPdf}
-            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
-          >
-            <Download className="w-5 h-5" />
-            Unduh
-          </button>
-        </div>
+    <div className="bg-gray-100 w-screen px-10 pb-6 h-screen overflow-y-auto text-xl">
+      {/* Profil dan Input Halaman */}
+      <div className="my-10 w-full flex flex-col gap-6">
+        <Profil />
+        <InputHalaman />
       </div>
-      <HeaderInput title={"Kesehatan Siswa"} word={"C"} form={"admin"} />
-      <div className="bg-white p-6 flex items-center justify-center">
-        <table className="w-3/4 font-body border-separate border-spacing-4">
-          <tbody>
-            {[
-              { label: "Penyakit", field: "penyakit_pernah_diderita" },
-              { label: "Kelainan Jasmani", field: "kelainan_jasmani" },
-              { label: "Tinggi Badan (cm)", field: "tinggi", type: "integer" },
-              { label: "Berat Badan", field: "berat_badan", type: "integer" },
-            ].map(({ label, field, type }, index) => (
-              <tr key={index}>
-                <td className="w-[63%] h-full">
-                  <label className="py-1">{label}</label>
-                </td>
-                <td className="w-[37%] h-full">
-                  {type === "integer" ? (
-                    <div className="flex items-center">
-                      <IntegerInput
-                        value={siswa.kesehatan[field]}
-                        onChange={(e) => isEditing && handleChange(e, field)}
-                        className="h-full"
-                        disabled={!isEditing}
-                      />
-                      <span className="ml-2 text-lg text-black">
-                        {getUnit(field)}
-                      </span>
-                    </div>
-                  ) : (
-                    <TextInput
-                      value={siswa.kesehatan[field]}
-                      onChange={(e) => isEditing && handleChange(e, field)}
-                      className="h-full"
-                      disabled={!isEditing}
-                    />
-                  )}
-                </td>
-              </tr>
-            ))}
 
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Golongan Darah</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <select
-                  name="anak_yatim"
-                  value={siswa.kesehatan.gol_darah || ""}
-                  className="w-full bg-[#DEE0E1] text-black p-2 rounded shadow-md"
-                  onChange={(e) =>
-                    isEditing &&
-                    setSiswa((prev) => ({
-                      ...prev,
-                      kesehatan: { ...prev.kesehatan, gol_darah: e.target.value },
-                    }))
-                  }
-                  disabled={!isEditing} // Hanya bisa diubah saat mode edit
-                >
-                  <option value="" hidden>Pilih</option>
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="AB">AB</option>
-                  <option value="O">O</option>
-                  <option value="lainnya">Lainnya</option>
-                  <option value="tidak_diketahui">Tidak diketahui</option>
-                </select>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      {/* Tombol Edit / Simpan dan Unduh */}
+      <div className="flex items-center justify-end gap-4 my-6">
+        <button
+          onClick={isEditing ? handleSave : handleEdit}
+          className={`flex items-center gap-2 px-6 py-2 rounded-md shadow-md hover:shadow-lg transition duration-300 text-white ${isEditing ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"}`}
+        >
+          {isEditing ? <Save className="w-5 h-5" /> : <Edit className="w-5 h-5" />}
+          {isEditing ? "Simpan" : "Ubah"}
+        </button>
+        <button
+          onClick={downloadPdf}
+          className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
+        >
+          <Download className="w-5 h-5" />
+          Unduh
+        </button>
       </div>
-      <div>
+
+      {/* Form Data Diri */}
+      <HeaderInput title={"Kesehatan Siswa"} word={"C"} form={"admin"} />
+      <div className="bg-white shadow-md p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[
+            { label: "Penyakit", field: "penyakit_pernah_diderita" },
+            { label: "Kelainan Jasmani", field: "kelainan_jasmani" },
+            { label: "Tinggi Badan (cm)", field: "tinggi", type: "integer" },
+            { label: "Berat Badan", field: "berat_badan", type: "integer" },
+          ].map(({ label, field, type }, index) => (
+            <div key={index} className="flex flex-col">
+              <label className="text-gray-700 font-medium mb-1">{label}</label>
+              {type === "integer" ? (
+                <div>
+                  <IntegerInput
+                    value={siswa.kesehatan[field]}
+                    onChange={(e) => isEditing && handleChange(e, field)}
+                    className="input-field"
+                    disabled={!isEditing}
+                  />
+                  <span className="ml-8">{getUnit(field)}</span>
+                </div>
+              ) : (
+                <TextInput
+                  value={siswa.kesehatan[field]}
+                  onChange={(e) => isEditing && handleChange(e, field)}
+                  className="input-field"
+                  disabled={!isEditing}
+                />
+              )}
+            </div>
+          ))}
+
+          {/* Anak Yatim */}
+          <div className="flex flex-col">
+            <label className="text-gray-700 font-medium mb-1">Golongan Darah</label>
+            <select
+              name="tinggal_dengan"
+              value={siswa.kesehatan.gol_darah || ""}
+              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
+              onChange={(e) =>
+                isEditing &&
+                setSiswa((prev) => ({
+                  ...prev,
+                  kesehatan: { ...prev.kesehatan, gol_darah: e.target.value },
+                }))
+              }
+              disabled={!isEditing}
+            >
+              <option value="" hidden>Pilih</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="AB">AB</option>
+              <option value="O">O</option>
+              <option value="lainnya">Lainnya</option>
+              <option value="tidak_diketahui">Tidak diketahui</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      {/* Tombol Next & Back */}
+      <div className="grid grid-cols-2 space-x-4">
         <Nextbefore next={nextButton} back={backButton} />
       </div>
     </div>
