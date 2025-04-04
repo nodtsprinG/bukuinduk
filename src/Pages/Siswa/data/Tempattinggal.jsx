@@ -1,4 +1,4 @@
-import HeaderInput from "../../../Components/headerInputV2";
+import HeaderInput from "../../../Components/headerInput";
 import { useState, useEffect } from "react";
 import {
   TextInput,
@@ -60,60 +60,54 @@ const TempatTinggal = () => {
   };
 
   return (
-    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-[24px]">
-      <HeaderInput title={"Tempat Tinggal Siswa"} word={"B"} form={"siswa"} />
-      <div className="bg-white p-6 flex items-center justify-center">
-        <table className="w-3/4 font-body border-separate border-spacing-4 ">
-          <tbody>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Alamat</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput value={alamat} onChange={(e) => setAlamat(e.target.value)} className="h-full" />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">No Telp/HP</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput value={telp} onChange={(e) => setTelp(e.target.value)} className="h-full" />
-              </td>
-            </tr>
+    <div className="bg-gray-100 w-screen min-h-screen px-8 py-6 rounded-lg text-lg overflow-y-auto">
+      <HeaderInput title="Tempat Tinggal Siswa" word="B" form="siswa" />
 
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Tinggal Dengan</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <select value={tinggal} onChange={(e) => setTinggal(e.target.value)} className="w-[50%] bg-[#DEE0E1] text-black p-2 rounded outline-none shadow-md" defaultValue={"default"}>
-                  <option value={"default"} hidden>Pilih</option>
-                  <option value={"ortu"}>Orang Tua</option>
-                  <option value={"saudara"}>Saudara</option>
-                  <option value={"lainnya"}>Lainnya</option>
-                  <option value={"wali"}>Wali</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">
-                  Jarak Tempat Tinggal ke sekolah (Dalam Kilometer)
-                </label>
-              </td>
-              <td className="w-[63%] h-full">
-                <IntegerInput value={jarak} onChange={(e) => setJarak(e.target.value)} className="h-full" />
-                <span className="ml-2 text-lg text-black">
-                  Km
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          {/* Alamat */}
+          <div className="col-span-2">
+            <label className="block font-medium mb-1">Alamat</label>
+            <TextInput value={alamat} onChange={(e) => setAlamat(e.target.value)} />
+          </div>
+
+          {/* No Telepon */}
+          <div>
+            <label className="block font-medium mb-1">No Telp/HP</label>
+            <TextInput value={telp} onChange={(e) => setTelp(e.target.value)} />
+          </div>
+
+          {/* Tinggal Dengan */}
+          <div>
+            <label className="block font-medium mb-1">Tinggal Dengan</label>
+            <select
+              value={tinggal}
+              onChange={(e) => setTinggal(e.target.value)}
+              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[75%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
+            >
+              <option value="default" hidden>Pilih</option>
+              <option value="ortu">Orang Tua</option>
+              <option value="saudara">Saudara</option>
+              <option value="lainnya">Lainnya</option>
+              <option value="wali">Wali</option>
+            </select>
+          </div>
+
+          {/* Jarak Tempat Tinggal ke Sekolah */}
+          <div>
+            <label className="block font-medium mb-1">Jarak Tempat Tinggal ke Sekolah (Km)</label>
+            <div className="flex items-center">
+              <IntegerInput value={jarak} onChange={(e) => setJarak(e.target.value)} />
+              <span className="ml-2 text-lg text-gray-700">Km</span>
+            </div>
+          </div>
+        </div>
+
       </div>
-      {/* tambahan */}
-      <div>
+
+      {/* Tombol Navigasi */}
+      <div className="grid grid-cols-2 space-x-2 mt-6">
         <Nextbefore back={backButton} next={nextButton} />
       </div>
     </div>

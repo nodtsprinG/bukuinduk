@@ -3,14 +3,13 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../../../utils/constan";
 import Profil from "../../../components/lihatprofil";
-import InputHalaman from "../../../Components/pilihHalamanV2";
 import {
   TextInput,
   IntegerInput,
   RadioInput,
 } from "../../../Components/inputComponent";
 import Nextbefore from "../../../Components/nextbefore";
-import HeaderInput from "../../../Components/headerInput";
+import HeaderInput from "../../../Components/headerInputV2";
 import DatePicker from "react-datepicker";
 import { Edit, Save } from "lucide-react";
 import Swal from "sweetalert2";
@@ -119,110 +118,101 @@ const Biodata = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-2xl">
-      <div className="my-10 w-full"><Profil /></div>
-      <div><InputHalaman /></div>
-      <div className="flex justify-end my-4">
-        {!isEditing ? (
-          <button
-            onClick={handleEdit}
-            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
-          >
-            <Edit className="w-5 h-5" />
-            Ubah
-          </button>
-        ) : (
-          <button
-            onClick={handleSave}
-            className="flex items-center gap-2 bg-green-800 text-white px-6 py-2 rounded-md hover:bg-green-900 transition duration-300 shadow-md hover:shadow-lg"
-          >
-            <Save className="w-5 h-5" />
-            Simpan
-          </button>
-        )}
+    <div className="bg-gray-100 w-screen px-10 pb-6 h-screen overflow-y-auto text-xl">
+      {/* Profil dan Input Halaman */}
+      <div className="my-10 w-full flex flex-col gap-6">
+        <Profil />
       </div>
-      <HeaderInput title={"Keterangan Ayah"} word={"E"} form={"admin"} />
-      <div className="bg-white p-6 flex items-center justify-center">
-        <table className="w-3/4 font-body border-separate border-spacing-y-2 border-spacing-x-4">
-          <tbody>
-            {[
-              { label: "Nama Ayah", field: "nama" },
-              { label: "Tempat Lahir", field: "tempat_lahir" },
-              { label: "Tanggal Lahir", field: "tanggal_lahir", type: "date" },
-              { label: "Agama", field: "agama" },
-              { label: "Kewarganegaraan", field: "kewarganegaraan" },
-              { label: "Pendidikan", field: "pendidikan" },
-              { label: "Pekerjaan", field: "pekerjaan" },
-              { label: "Pengeluaran per Bulan", field: "pengeluaran_per_bulan" },
-              { label: "Alamat/No Telepon", field: "alamat_dan_no_telepon" },
-            ].map(({ label, field, type }, index) => (
-              <tr key={index} className="bg-white hover:bg-gray-50 transition duration-200">
-                <td className="w-[60%] py-2 px-4 text-gray-700 font-medium">
-                  <label>{label}</label>
-                </td>
-                <td className="w-[40%] py-2 px-4">
-                  {type === "integer" ? (
-                    <IntegerInput
-                      value={siswa.ayah_kandung[field]}
-                      onChange={(e) => isEditing && handleChange(e, "kelengkapan_ortu")}
-                      className="h-10 w-full rounded-md bg-[#DEE0E1] text-black px-2 focus:ring-2 focus:ring-blue-500 transition duration-200"
-                      disabled={!isEditing}
-                    />
-                  ) : type === "radio" ? (
-                    <RadioInput
-                      value={siswa.ayah_kandung[field]}
-                      onChange={(e) => isEditing && handleChange(e, field)}
-                      className="h-10"
-                      disabled={!isEditing}
-                    />
-                  ) : type === "date" ? (
-                    <DatePicker
-                      value={siswa.ayah_kandung[field]}
-                      onChange={(e) => isEditing && handleChange(e, field)}
-                      className="h-10 w-full px-2 bg-[#DEE0E1] rounded-md text-black focus:ring-2 focus:ring-blue-500 transition duration-200"
-                      disabled={!isEditing}
-                    />
-                  ) : (
-                    <div className="flex items-center">
-                      <span className="mr-2 text-gray-600">{getUnit(field)}</span>
-                      <TextInput
-                        value={siswa.ayah_kandung[field]}
-                        onChange={(e) => isEditing && handleChange(e, field)}
-                        className="w-full h-10 rounded-md bg-[#DEE0E1] px-2 text-black focus:ring-2 focus:ring-blue-500 transition duration-200"
-                        disabled={!isEditing}
-                      />
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-            <tr className="bg-white hover:bg-gray-50 transition duration-200">
-              <td className="w-[60%] py-2 px-4 text-gray-700 font-medium">
-                <label>Status</label>
-              </td>
-              <td className="w-[40%] py-2 px-4">
-                <select
-                  name="status"
-                  value={siswa.ayah_kandung.status || ""}
-                  className="w-full h-10 bg-[#DEE0E1] text-black p-2 rounded-md shadow-md focus:ring-2 focus:ring-blue-500 transition duration-200"
-                  onChange={(e) =>
-                    isEditing &&
-                    setSiswa((prev) => ({
-                      ...prev,
-                      ayah_kandung: { ...prev.ayah_kandung, status: e.target.value },
-                    }))
-                  }
+
+      {/* Tombol Edit / Simpan dan Unduh */}
+      <div className="flex items-center justify-end gap-4 mt-6">
+        <button
+          onClick={isEditing ? handleSave : handleEdit}
+          className={`flex items-center gap-2 px-6 py-2 rounded-md shadow-md hover:shadow-lg transition duration-300 text-white ${isEditing ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"}`}
+        >
+          {isEditing ? <Save className="w-5 h-5" /> : <Edit className="w-5 h-5" />}
+          {isEditing ? "Simpan" : "Ubah"}
+        </button>
+      </div>
+
+      {/* Form Data Diri */}
+      <HeaderInput title={"Keterangan Ayah"} word={"E"} form={"siswa"} />
+      <div className="bg-white shadow-md p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[
+            { label: "Nama Ayah", field: "nama" },
+            { label: "Agama", field: "agama" },
+            { label: "Tempat Lahir", field: "tempat_lahir" },
+            { label: "Tanggal Lahir", field: "tanggal_lahir", type: "date" },
+            { label: "Kewarganegaraan", field: "kewarganegaraan" },
+            { label: "Pendidikan", field: "pendidikan" },
+            { label: "Pekerjaan", field: "pekerjaan" },
+            { label: "Pengeluaran per Bulan", field: "pengeluaran_per_bulan", type: "integer" },
+            { label: "Alamat", field: "alamat" },
+            { label: "No Telepon", field: "no_telepon" },
+          ].map(({ label, field, type }, index) => (
+            <div key={index} className="flex flex-col">
+              <label className="text-gray-700 font-medium mb-1">{label}</label>
+              {type === 'date' ? (
+                <DatePicker
+                  selected={siswa.ayah_kandung[field] ? new Date(siswa.ayah_kandung[field]) : null}
+                  onChange={(date) => isEditing && handleChange({ target: { value: date } }, field)}
+                  dateFormat={"dd-MM-yyyy"}
+                  className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
                   disabled={!isEditing}
-                >
-                  <option value="masih hidup">Masih Hidup</option>
-                  <option value="meninggal">Meninggal</option>
-                </select>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                />
+              ) : type === "integer" ? (
+                <div>
+                  <span className="mr-8">{getUnit(field)}</span>
+                  <IntegerInput
+                    value={siswa.ayah_kandung[field]}
+                    onChange={(e) => isEditing && handleChange(e, field)}
+                    className="input-field"
+                    disabled={!isEditing}
+                  />
+                </div>
+              ) : type === "radio" ? (
+                <RadioInput
+                  value={siswa.ayah_kandung[field]}
+                  onChange={(e) => isEditing && handleChange(e, field)}
+                  className="input-field"
+                  disabled={!isEditing}
+                />
+              ) : (
+                <TextInput
+                  value={siswa.ayah_kandung[field]}
+                  onChange={(e) => isEditing && handleChange(e, field)}
+                  className="input-field"
+                  disabled={!isEditing}
+                />
+              )}
+            </div>
+          ))}
+
+          {/* Anak Yatim */}
+          <div className="flex flex-col">
+            <label className="text-gray-700 font-medium mb-1">Status</label>
+            <select
+              name="status"
+              value={siswa.ayah_kandung.status || ""}
+              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
+              onChange={(e) =>
+                isEditing &&
+                setSiswa((prev) => ({
+                  ...prev,
+                  ayah_kandung: { ...prev.ayah_kandung, status: e.target.value },
+                }))
+              }
+              disabled={!isEditing}
+            >
+              <option value="masih hidup">Masih Hidup</option>
+              <option value="meninggal">Meninggal</option>
+            </select>
+          </div>
+        </div>
       </div>
-      <div>
+      {/* Tombol Next & Back */}
+      <div className="grid grid-cols-2 space-x-4">
         <Nextbefore next={nextButton} back={backButton} />
       </div>
     </div>

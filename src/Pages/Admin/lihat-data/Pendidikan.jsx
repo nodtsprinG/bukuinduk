@@ -185,7 +185,7 @@ const Pendidikan = () => {
             { label: "Nomor SKHUN", field: "sebelumnya_no_skhun" },
             { label: "Pindahan", field: "pindahan_dari_sekolah" },
             { label: "Alasan", field: "pindahan_alasan" },
-            { label: "Tanggal Diterima", field: "diterima_tanggal" },
+            { label: "Tanggal Diterima", field: "diterima_tanggal", type: "date" },
             { label: "Diterima Di Kelas", field: "diterima_di_kelas", type: "integer" },
             { label: "Bidang Keahlian", field: "diterima_di_bidang_keahlian" },
             { label: "Program Keahlian", field: "diterima_di_program_keahlian" },

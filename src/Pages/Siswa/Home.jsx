@@ -27,7 +27,6 @@ import Libu from "./lihat-data/Ibu"
 import Lwali from "./lihat-data/Wali"
 import Lpendidikan from "./lihat-data/Pendidikan"
 import Lhobi from "./lihat-data/Hobi"
-import HalamanBelakang from "./lihat-data/halaman-belakang"
 
 import resetAll from "../../utils/resetAll";
 
@@ -129,8 +128,6 @@ const LihatData = () => {
       <Route exact path="/ibu" element={<Libu />} />
       <Route exact path="/wali" element={<Lwali />} />
       <Route exact path="/hobi" element={<Lhobi />} />
-      <Route exact path="/perkembangan" element={<Lhobi />} />
-      <Route exact path="/halaman-belakang" element={<HalamanBelakang />} />
     </Routes>
   );
 }

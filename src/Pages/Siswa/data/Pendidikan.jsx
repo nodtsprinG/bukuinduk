@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import HeaderInput from "../../../Components/headerInputV2";
+import HeaderInput from "../../../Components/headerInput";
 import { useState, useEffect } from "react";
 import {
   TextInput,
@@ -58,7 +58,7 @@ const Pendidikan = () => {
     if (localStorage.getItem("pendidikan-tanggal-ijazah"))
       setTanggalIjazah(localStorage.getItem("pendidikan-tanggal-ijazah"));
     if (localStorage.getItem("pendidikan-nomor-ijazah"))
-      setNomorijazah(localStorage.getItem("pendidikan-nomorijazah"));
+      setNomorijazah(localStorage.getItem("pendidikan-nomor-ijazah"));
     if (localStorage.getItem("pendidikan-tanggal-skhun"))
       setTanggalSkhun(localStorage.getItem("pendidikan-tanggal-skhun"));
     if (localStorage.getItem("pendidikan-nomor-skhun"))
@@ -92,8 +92,8 @@ const Pendidikan = () => {
       nomorijazah,
       tanggalSkhun,
       nomorskhun,
-      darisekolah,
-      alasan,
+      darisekolah || "-",
+      alasan || "-",
       bidangkeahlian,
       programkeahlian,
       paketkeahlian,
@@ -132,193 +132,118 @@ const Pendidikan = () => {
   };
 
   return (
-    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-[24px]">
-      <HeaderInput title={"Pendidikan Siswa"} word={"D"} form={"siswa"} />
-      <div className="bg-white p-6 flex items-center justify-center">
-        <table className="w-3/4 font-body border-separate border-spacing-4 ">
-          <tbody>
-            <tr>
-              <td className="font-bold">1. Keterangan Sebelumnya</td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">a. Tamatan Dari</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={tamatan}
-                  onChange={(e) => setTamatan(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">b. Sebelumnya Lama Belajar</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <IntegerInput
-                  value={lamabelajar}
-                  onChange={(e) => setLamabelajar(e.target.value)}
-                  className="h-full w-[20%]"
-                />
-                <span className="ml-2 text-lg text-black">
-                  Tahun
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">c. Tanggal Ijazah</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <DatePicker
-                  selected={tanggalIjazah}
-                  onChange={(date) => setTanggalIjazah(date)}
-                  scrollableMonthYearDropdown
-                  showYearDropdown
-                  dateFormat={"dd-MM-yyyy"}
-                  className="h-full w-1/2 px-4 py-2 bg-[#DEE0E1] rounded-lg"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">d. Nomor Ijazah</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={nomorijazah}
-                  onChange={(e) => setNomorijazah(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">e. Tanggal SKHUN</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <DatePicker
-                  selected={tanggalSkhun}
-                  onChange={(date) => setTanggalSkhun(date)}
-                  scrollableMonthYearDropdown
-                  showYearDropdown
-                  dateFormat={"dd-MM-yyyy"}
-                  className="h-full w-1/2 px-4 py-2 bg-[#DEE0E1] rounded-lg"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">f. Nomor SKHUN</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={nomorskhun}
-                  onChange={(e) => setNomorSKHUN(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="font-bold">2. Pindahan</td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">a. Dari Sekolah</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={darisekolah}
-                  onChange={(e) => setDarisekolah(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">b. Alasan</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={alasan}
-                  onChange={(e) => setAlasan(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="font-bold">3. Diterima Disekolah Ini</td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">a. Kelas</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <IntegerInput
-                  value={kelas}
-                  onChange={(e) => setKelas(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">b. Bidang Keahlian</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={bidangkeahlian}
-                  onChange={(e) => setBidangkeahlian(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">c. Program Keahlian</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={programkeahlian}
-                  onChange={(e) => setProgramkeahlian(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">d. Paket Keahlian</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={paketkeahlian}
-                  onChange={(e) => setPaketkeahlian(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">e. Tanggal</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <DatePicker
-                  selected={tanggal}
-                  onChange={(date) => setTanggal(date)}
-                  scrollableMonthYearDropdown
-                  showYearDropdown
-                  dateFormat={"dd-MM-yyyy"}
-                  className="w-full bg-[#DEE0E1] py-2 px-2 focus:outline-none rounded-lg"
-                  maxDate={new Date()}
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <div className="bg-gray-100 w-screen min-h-screen px-8 py-6 rounded-lg text-lg overflow-y-auto">
+      <HeaderInput title="Pendidikan Siswa" word="D" form="siswa" />
+
+      <div className="bg-white shadow-lg rounded-lg p-6">
+
+        {/* Keterangan Sebelumnya */}
+        <h2 className="text-xl font-bold mb-4">1. Keterangan Sebelumnya</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <div>
+            <label className="block font-medium mb-1">Tamatan Dari</label>
+            <TextInput value={tamatan} onChange={(e) => setTamatan(e.target.value)} />
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Sebelumnya Lama Belajar</label>
+            <div className="flex items-center">
+              <IntegerInput value={lamabelajar} onChange={(e) => setLamabelajar(e.target.value)} />
+              <span className="ml-2 text-gray-700">Tahun</span>
+            </div>
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Tanggal Ijazah</label>
+            <DatePicker
+              selected={tanggalIjazah}
+              onChange={(date) => setTanggalIjazah(date)}
+              scrollableMonthYearDropdown
+              showYearDropdown
+              dateFormat={"dd-MM-yyyy"}
+              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none" />
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Nomor Ijazah</label>
+            <TextInput value={nomorijazah} onChange={(e) => setNomorijazah(e.target.value)} />
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Tanggal SKHUN</label>
+            <DatePicker
+              selected={tanggalSkhun}
+              onChange={(date) => setTanggalSkhun(date)}
+              scrollableMonthYearDropdown
+              showYearDropdown
+              dateFormat={"dd-MM-yyyy"}
+              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Nomor SKHUN</label>
+            <TextInput value={nomorskhun} onChange={(e) => setNomorSKHUN(e.target.value)} />
+          </div>
+        </div>
+
+        {/* Pindahan */}
+        <h2 className="text-xl font-bold mt-6 mb-4">2. Pindahan</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block font-medium mb-1">Dari Sekolah</label>
+            <TextInput value={darisekolah} onChange={(e) => setDarisekolah(e.target.value)} />
+          </div>
+          <div>
+            <label className="block font-medium mb-1">Alasan</label>
+            <TextInput value={alasan} onChange={(e) => setAlasan(e.target.value)} />
+          </div>
+        </div>
+
+        {/* Diterima di Sekolah Ini */}
+        <h2 className="text-xl font-bold mt-6 mb-4">3. Diterima di Sekolah Ini</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block font-medium mb-1">Kelas</label>
+            <IntegerInput value={kelas} onChange={(e) => setKelas(e.target.value)} />
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Tanggal</label>
+            <DatePicker
+              selected={tanggal}
+              onChange={(date) => setTanggal(date)}
+              scrollableMonthYearDropdown
+              showYearDropdown
+              dateFormat={"dd-MM-yyyy"}
+              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
+              maxDate={new Date()}
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Bidang Keahlian</label>
+            <TextInput value={bidangkeahlian} onChange={(e) => setBidangkeahlian(e.target.value)} />
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Program Keahlian</label>
+            <TextInput value={programkeahlian} onChange={(e) => setProgramkeahlian(e.target.value)} />
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Paket Keahlian</label>
+            <TextInput value={paketkeahlian} onChange={(e) => setPaketkeahlian(e.target.value)} />
+          </div>
+
+        </div>
       </div>
-      <Nextbefore next={nextButton} back={backButton} />
+
+      {/* Tombol Navigasi */}
+      <div className="grid grid-cols-2 space-x-2 mt-4">
+        <Nextbefore back={backButton} next={nextButton} />
+      </div>
     </div>
   );
 };

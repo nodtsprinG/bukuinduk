@@ -13,25 +13,53 @@ const Verify = () => {
     const { code } = useParams()
 
     const verify = () => {
-        if (code.length == 0) {
-            alert("Error")
+        if (code.length === 0) {
+            alert("Error");
         } else {
-            axios.post(baseUrl + '/auth/code-admin', {
-                code
-            }).then((res) => {
-                const { token } = res.data
-                localStorage.setItem("token", token)
-                Swal.fire({
-                    title: "Berhasil",
-                    text: "Akun Anda berhasil diverifikasi",
-                    icon: "success",
-                    confirmButtonText: "OK",
-                }).then(() => {
-                    navigate("/admin/dashboard")
-                })
-            })
+            axios.post(baseUrl + '/auth/code-admin', { code })
+                .then((res) => {
+                    const { token } = res.data;
+
+                    // Simpan token ke localStorage
+                    localStorage.setItem("token", token);
+
+                    // Ambil status akun dari API setelah mendapatkan token
+                    axios.get(baseUrl + "/auth/me", {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }).then((res) => {
+                        const { status } = res.data;
+
+                        Swal.fire({
+                            title: "Berhasil",
+                            text: "Akun Anda berhasil diverifikasi",
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        }).then(() => {
+                            // Arahkan berdasarkan status akun
+                            if (status === "inactive") {
+                                navigate("/admin/auth/aktivasi");
+                            } else {
+                                navigate("/admin/dashboard");
+                            }
+                        });
+                    }).catch((err) => {
+                        console.error("Gagal mendapatkan status akun:", err);
+                        Swal.fire({
+                            title: "Error",
+                            text: "Terjadi kesalahan saat mengambil data akun",
+                            icon: "error",
+                        });
+                    });
+                }).catch((err) => {
+                    console.error("Error verifikasi kode:", err);
+                    Swal.fire({
+                        title: "Error",
+                        text: "Kode verifikasi salah atau terjadi kesalahan",
+                        icon: "error",
+                    });
+                });
         }
-    }
+    };
 
     const [nama, setNama] = useState("");
     const [logo, setLogo] = useState(null);

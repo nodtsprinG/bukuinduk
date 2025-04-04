@@ -1,4 +1,4 @@
-import HeaderInput from "../../../Components/headerInputV2";
+import HeaderInput from "../../../Components/headerInput";
 import { useState, useEffect } from "react";
 import {
   TextInput,
@@ -7,6 +7,7 @@ import Nextbefore from "../../../Components/nextbefore";
 import { useNavigate, useParams } from "react-router";
 
 import uploadAll from "../../../Utils/uploadAll";
+import Swal from "sweetalert2";
 
 /* 
 
@@ -48,75 +49,65 @@ const Hobi = () => {
     // Simpan data ke localStorage secara ringkas
     const hobiKeys = ["kesenian", "olahraga", "organisasi", "lainlain"];
     const hobiValues = [kesenian, olahraga, organisasi, lainlain];
-  
+
     hobiKeys.forEach((key, index) => {
       localStorage.setItem(`hobi-${key}`, hobiValues[index] || null);
     });
-  
+
     uploadAll()
-      .then(() => console.log("Data berhasil diupload"))
-      .catch((error) => console.error("Gagal mengupload data:", error));
-    navigate(`/siswa`)
+  .then(() => {
+    Swal.fire({
+      title: "Berhasil!",
+      text: "Data berhasil diupload.",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+    navigate("/siswa/login")
+  })
+  .catch((error) => {
+    Swal.fire({
+      title: "Gagal!",
+      text: `Gagal mengupload data: ${error.message}`,
+      icon: "error",
+      confirmButtonText: "Coba Lagi",
+    });
+  });
   };
-  
+
   return (
-    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-[24px]">
-      <HeaderInput title={"Hobi Siswa"} word={"H"} form={"siswa"} lastpage={true}/>
-      <div className="bg-white p-6 flex items-center justify-center">
-        <table className="w-3/4 font-body border-separate border-spacing-4 ">
-          <tbody>
-            <tr>
-              <td className="w=1/2 h-full">
-                <label className="py-1">Kesenian</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={kesenian}
-                  onChange={(e) => setKesenian(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w=1/2 h-full">
-                <label className="py-1">Olahraga</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={olahraga}
-                  onChange={(e) => setOlahraga(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w=1/2 h-full">
-                <label className="py-1">Organisasi/Kemasyarakatan</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={organisasi}
-                  onChange={(e) => setOrganisasi(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w=1/2 h-full">
-                <label className="py-1">Lain-lain</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={lainlain}
-                  onChange={(e) => setLainlain(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <div className="bg-gray-100 w-screen min-h-screen px-8 py-6 text-lg overflow-y-auto">
+      <HeaderInput title="Hobi Siswa" word="H" form="siswa" lastpage={true} />
+
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-xl font-bold mb-4">Hobi dan Minat</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block font-medium mb-1">Kesenian</label>
+            <TextInput value={kesenian} onChange={(e) => setKesenian(e.target.value)} />
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Olahraga</label>
+            <TextInput value={olahraga} onChange={(e) => setOlahraga(e.target.value)} />
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Organisasi/Kemasyarakatan</label>
+            <TextInput value={organisasi} onChange={(e) => setOrganisasi(e.target.value)} />
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Lain-lain</label>
+            <TextInput value={lainlain} onChange={(e) => setLainlain(e.target.value)} />
+          </div>
+        </div>
       </div>
-      <Nextbefore next={nextButton} back={backButton} lastpage={true} />
+
+      {/* Tombol Navigasi */}
+      <div className="grid grid-cols-2 mt-4">
+        <Nextbefore next={nextButton} back={backButton} lastpage={true} />
+      </div>
     </div>
   );
 };

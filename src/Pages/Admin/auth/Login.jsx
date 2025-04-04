@@ -44,6 +44,7 @@ const Login = () => {
                 timer: 1500
             })
             navigate("/admin/auth/verification/" + code)
+            localStorage.setItem("akun-email", email)
         })
     }
 

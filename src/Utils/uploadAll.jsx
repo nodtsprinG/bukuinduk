@@ -10,7 +10,7 @@ import {
   isWaliFilled,
 } from "../Utils/check";
 import axios from "axios";
-import { baseUrl } from "../Utils/constan";
+import { baseUrl } from "../utils/constan";
 
 const uploadAll = async () => {
   try {
@@ -53,9 +53,9 @@ const uploadAll = async () => {
         agama: getItem("biodata-agama"),
         kewarganegaraan: getItem("biodata-kewarganegaraan"),
         anak_ke: getItem("biodata-anakke"),
-        jml_saudara_kandung: getItem("biodata-kandung"),
-        jml_saudara_angkat: getItem("biodata-angkat"),
-        jml_saudara_tiri: getItem("biodata-tiri"),
+        jml_saudara_kandung: getItem("biodata-kandung") || 0,
+        jml_saudara_angkat: getItem("biodata-angkat") || 0,
+        jml_saudara_tiri: getItem("biodata-tiri") || 0,
         kelengkapan_ortu: getItem("biodata-status"),
         bahasa_sehari_hari: getItem("biodata-bahasa"),
         status_perubahan: "approved"
@@ -100,7 +100,8 @@ const uploadAll = async () => {
         pendidikan: getItem("ayah-pendidikan"),
         pekerjaan: getItem("ayah-pekerjaan"),
         pengeluaran_per_bulan: getItem("ayah-pengeluaran"),
-        alamat_dan_no_telepon: getItem("ayah-alamatdantelpon"),
+        alamat: getItem("ayah-alamat"),
+        no_telepon: getItem("ayah-telepon"),
         status: getItem("ayah-status"),
         status_perubahan: "approved"
       },
@@ -113,7 +114,8 @@ const uploadAll = async () => {
         pendidikan: getItem("ibu-pendidikan"),
         pekerjaan: getItem("ibu-pekerjaan"),
         pengeluaran_per_bulan: getItem("ibu-pengeluaran"),
-        alamat_dan_no_telepon: getItem("ibu-alamatdantelpon"),
+        alamat: getItem("ibu-alamat"),
+        no_telepon: getItem("ibu-telepon"),
         status: getItem("ibu-status"),
         status_perubahan: "approved"
       },
@@ -126,7 +128,8 @@ const uploadAll = async () => {
         pendidikan: getItem("wali-pendidikan"),
         pekerjaan: getItem("wali-pekerjaan"),
         pengeluaran_per_bulan: getItem("wali-pengeluaran"),
-        alamat_dan_no_telepon: getItem("wali-alamatdantelpon"),
+        alamat: getItem("wali-alamat"),
+        no_telepon: getItem("wali-telepon"),
         status_perubahan: "approved"
       },
       hobi_siswa: {
@@ -155,7 +158,6 @@ const uploadAll = async () => {
     });
 
     console.log("Response:", response.data);
-    window.alert("Data berhasil diunggah!");
     return response.data.message;
 
   } catch (error) {

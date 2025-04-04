@@ -10,6 +10,7 @@ import { Routes, Route, useNavigate } from "react-router";
 // ========================== import halaman autentikasi
 import Login from "./auth/Login";
 import Verify from "./auth/Verify";
+import Aktivasi from "./auth/Aktivasi";
 
 import Dashboard from "./Dashboard";
 import Pending from "./Pending"
@@ -120,6 +121,7 @@ const AdminRouting = () => {
       {/* [#] Auth */}
       <Route exact path="/auth/login" element={<Login />} />
       <Route exact path="/auth/verification/:code" element={<Verify />} />
+      <Route exact path="/auth/aktivasi" element={<Aktivasi />} />
       {/* [#] Halaman Input Data */}
       <Route exact path="/lihat/:id/*" element={<LihatData />} />
       <Route exact path="/tambah" element={<TambahSiswa />} />

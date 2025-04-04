@@ -15,9 +15,9 @@ export const isBiodataFilled = () => {
     localStorage.getItem("biodata-agama") &&
     localStorage.getItem("biodata-kewarganegaraan") &&
     localStorage.getItem("biodata-anakke") &&
-    localStorage.getItem("biodata-kandung") &&
-    localStorage.getItem("biodata-angkat") &&
-    localStorage.getItem("biodata-tiri") &&
+    localStorage.getItem("biodata-kandung")?.trim() &&
+    localStorage.getItem("biodata-angkat")?.trim() &&
+    localStorage.getItem("biodata-tiri")?.trim() &&
     localStorage.getItem("biodata-status") &&
     localStorage.getItem("biodata-bahasa")
   );
@@ -33,8 +33,8 @@ export const isTempattinggalFilled = () => {
 export const isKesehatanFilled = () => {
   return (
     localStorage.getItem("kesehatan-goldarah") &&
-    localStorage.getItem("kesehatan-penyakit") &&
-    localStorage.getItem("kesehatan-jasmani") &&
+    localStorage.getItem("kesehatan-penyakit")?.trim() &&
+    localStorage.getItem("kesehatan-jasmani")?.trim() &&
     localStorage.getItem("kesehatan-tinggi") &&
     localStorage.getItem("kesehatan-berat")
   );
@@ -66,7 +66,8 @@ export const isAyahFilled = () => {
     localStorage.getItem("ayah-pendidikan") &&
     localStorage.getItem("ayah-pekerjaan") &&
     localStorage.getItem("ayah-pengeluaran") &&
-    localStorage.getItem("ayah-alamatdantelpon") &&
+    localStorage.getItem("ayah-alamat") &&
+    localStorage.getItem("ayah-telepon")?.trim() &&
     localStorage.getItem("ayah-status")
   );
 };
@@ -80,7 +81,8 @@ export const isIbuFilled = () => {
     localStorage.getItem("ibu-pendidikan") &&
     localStorage.getItem("ibu-pekerjaan") &&
     localStorage.getItem("ibu-pengeluaran") &&
-    localStorage.getItem("ibu-alamatdantelpon") &&
+    localStorage.getItem("ibu-alamat") &&
+    localStorage.getItem("ibu-telepon")?.trim() &&
     localStorage.getItem("ibu-status")
   );
 };
@@ -94,7 +96,8 @@ export const isWaliFilled = () => {
     localStorage.getItem("wali-pendidikan")?.trim() &&
     localStorage.getItem("wali-pekerjaan")?.trim() &&
     localStorage.getItem("wali-pengeluaran")?.trim() &&
-    localStorage.getItem("wali-alamatdantelpon")?.trim()
+    localStorage.getItem("wali-alamat")?.trim() &&
+    localStorage.getItem("wali-telepon")?.trim()
   );
 };
 export const isHobiFilled = () => {

@@ -1,4 +1,4 @@
-import HeaderInput from "../../../Components/headerInputV2";
+import HeaderInput from "../../../Components/headerInput";
 import { useState, useEffect } from "react";
 import {
   TextInput,
@@ -69,11 +69,11 @@ const Biodata = () => {
       setKewarganegaraan(localStorage.getItem("biodata-kewarganegaraan"));
     if (localStorage.getItem("biodata-anakke"))
       setAnakke(localStorage.getItem("biodata-anakke"));
-    if (localStorage.getItem("biodata-kandung"))
+    if (localStorage.getItem("biodata-kandung")!== "null")
       setKandung(localStorage.getItem("biodata-kandung"));
-    if (localStorage.getItem("biodata-angkat"))
+    if (localStorage.getItem("biodata-angkat")!== "null")
       setAngkat(localStorage.getItem("biodata-angkat"));
-    if (localStorage.getItem("biodata-tiri"))
+    if (localStorage.getItem("biodata-tiri")!== "null")
       setTiri(localStorage.getItem("biodata-tiri"));
     if (localStorage.getItem("biodata-status"))
       setStatus(localStorage.getItem("biodata-status"));
@@ -91,9 +91,9 @@ const Biodata = () => {
       agama,
       kewarganegaraan,
       anakke,
-      kandung,
-      angkat,
-      tiri,
+      kandung || 0,
+      angkat || 0,
+      tiri || 0,
       status,
       bahasa
     );
@@ -134,196 +134,125 @@ const Biodata = () => {
   };
 
   return (
-    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll h-min:h-screen rounded-lg text-[24px]">
-      <HeaderInput title={"Data Diri Siswa"} word={"A"} form={"siswa"} />
-      <div className="bg-white p-6 flex items-center justify-center">
-        <table className="w-3/4 font-body border-separate border-spacing-4">
-          <tbody>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Nama Lengkap</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <TextInput
-                  value={nama}
-                  onChange={(e) => setNama(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Nama Panggilan</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <TextInput
-                  value={panggilan}
-                  onChange={(e) => setPanggilan(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Jenis Kelamin</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <RadioInput
-                  value={jeniskelamin}
-                  onChange={(e) => setJeniskelamin(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Tempat Lahir</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <TextInput
-                  value={tempatlahir}
-                  onChange={(e) => setTempatlahir(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Tanggal Lahir</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <DatePicker
-                  selected={tanggallahir}
-                  onChange={(date) => setTanggallahir(date)}
-                  scrollableMonthYearDropdown
-                  showYearDropdown
-                  dateFormat={"dd-MM-yyyy"}
-                  className="bg-[#DEE0E1] py-2 px-2 w-full focus:outline-none rounded-lg"
-                  maxDate={new Date()}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Agama</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <TextInput
-                  value={agama}
-                  onChange={(e) => setAgama(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Kewarganegaraan</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <TextInput
-                  value={kewarganegaraan}
-                  onChange={(e) => setKewarganegaraan(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Anak ke</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <IntegerInput
-                  value={anakke}
-                  onChange={(e) => setAnakke(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Jumlah Saudara Kandung</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <IntegerInput
-                  value={kandung ?? ""}
-                  nullable
-                  onChange={(e) => {
-                    const newValue = e.target.value === "" ? null : parseInt(e.target.value, 10);
-                    setKandung(newValue);
-                  }}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Jumlah Saudara Tiri</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <IntegerInput
-                  value={tiri ?? ""}
-                  nullable
-                  onChange={(e) => {
-                    const newValue = e.target.value === "" ? null : parseInt(e.target.value, 10);
-                    setTiri(newValue);
-                  }}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Jumlah Saudara Angkat</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <IntegerInput
-                  value={angkat ?? ""}
-                  nullable
-                  onChange={(e) => {
-                    const newValue = e.target.value === "" ? null : parseInt(e.target.value, 10);
-                    setAngkat(newValue);
-                  }}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Status Orang Tua</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <select
-                  value={status}
-                  className="w-[50%] bg-[#DEE0E1] text-black p-2 rounded outline-none shadow-md"
-                  defaultValue={"default"}
-                  onChange={(e) => setStatus(e.target.value)}
-                >
-                  <option value="default" hidden>
-                    Pilih
-                  </option>
-                  <option value={"lengkap"}>Lengkap</option>
-                  <option value={"yatim"}>Yatim</option>
-                  <option value={"piatu"}>Piatu</option>
-                  <option value={"yatim piatu"}>Yatim Piatu</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Bahasa Sehari-hari</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={bahasa}
-                  onChange={(e) => setBahasa(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <div className="bg-gray-100 w-screen min-h-screen px-8 py-6 rounded-lg text-lg overflow-y-auto">
+      <HeaderInput title="Data Diri Siswa" word="A" form="siswa" />
+
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Nama Lengkap */}
+          <div>
+            <label className="block font-medium mb-1">Nama Lengkap</label>
+            <TextInput value={nama} onChange={(e) => setNama(e.target.value)} />
+          </div>
+
+          {/* Nama Panggilan */}
+          <div>
+            <label className="block font-medium mb-1">Nama Panggilan</label>
+            <TextInput value={panggilan} onChange={(e) => setPanggilan(e.target.value)} />
+          </div>
+
+          {/* Jenis Kelamin */}
+          <div>
+            <label className="block font-medium mb-1">Jenis Kelamin</label>
+            <RadioInput value={jeniskelamin} onChange={(e) => setJeniskelamin(e.target.value)} />
+          </div>
+
+          {/* Agama */}
+          <div>
+            <label className="block font-medium mb-1">Agama</label>
+            <TextInput value={agama} onChange={(e) => setAgama(e.target.value)} />
+          </div>
+
+          {/* Tempat Lahir */}
+          <div>
+            <label className="block font-medium mb-1">Tempat Lahir</label>
+            <TextInput value={tempatlahir} onChange={(e) => setTempatlahir(e.target.value)} />
+          </div>
+
+          {/* Tanggal Lahir */}
+          <div>
+            <label className="block font-medium mb-1">Tanggal Lahir</label>
+            <DatePicker
+              selected={tanggallahir}
+              onChange={(date) => setTanggallahir(date)}
+              scrollableMonthYearDropdown
+              showYearDropdown
+              dateFormat="dd-MM-yyyy"
+              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
+              maxDate={new Date()}
+            />
+          </div>
+
+          {/* Kewarganegaraan */}
+          <div>
+            <label className="block font-medium mb-1">Kewarganegaraan</label>
+            <TextInput value={kewarganegaraan} onChange={(e) => setKewarganegaraan(e.target.value)} />
+          </div>
+
+          {/* Bahasa Sehari-hari */}
+          <div>
+            <label className="block font-medium mb-1">Bahasa Sehari-hari</label>
+            <TextInput value={bahasa} onChange={(e) => setBahasa(e.target.value)} />
+          </div>
+
+          {/* Anak ke-berapa */}
+          <div>
+            <label className="block font-medium mb-1">Anak Ke</label>
+            <IntegerInput value={anakke} onChange={(e) => setAnakke(e.target.value)} />
+          </div>
+
+          {/* Jumlah Saudara Kandung */}
+          <div>
+            <label className="block font-medium mb-1">Jumlah Saudara Kandung</label>
+            <IntegerInput
+              value={kandung ?? ""}
+              nullable
+              onChange={(e) => setKandung(e.target.value ? parseInt(e.target.value) : null)}
+            />
+          </div>
+
+          {/* Jumlah Saudara Tiri */}
+          <div>
+            <label className="block font-medium mb-1">Jumlah Saudara Tiri</label>
+            <IntegerInput
+              value={tiri ?? ""}
+              nullable
+              onChange={(e) => setTiri(e.target.value ? parseInt(e.target.value) : null)}
+            />
+          </div>
+
+          {/* Jumlah Saudara Angkat */}
+          <div>
+            <label className="block font-medium mb-1">Jumlah Saudara Angkat</label>
+            <IntegerInput
+              value={angkat ?? ""}
+              nullable
+              onChange={(e) => setAngkat(e.target.value ? parseInt(e.target.value) : null)}
+            />
+          </div>
+
+          {/* Status Orang Tua */}
+          <div>
+            <label className="block font-medium mb-1">Status Orang Tua</label>
+            <select
+              value={status}
+              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              <option value="default" hidden>Pilih</option>
+              <option value="lengkap">Lengkap</option>
+              <option value="yatim">Yatim</option>
+              <option value="piatu">Piatu</option>
+              <option value="yatim piatu">Yatim Piatu</option>
+            </select>
+          </div>
+
+          
+        </div>
       </div>
-      <div>
+
+      {/* Tombol Navigasi */}
+      <div className="grid grid-cols-2 space-x-2 mt-6">
         <Nextbefore next={nextButton} back={backButton} />
       </div>
     </div>

@@ -3,14 +3,13 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../../../utils/constan";
 import Profil from "../../../components/lihatprofil";
-import InputHalaman from "../../../Components/pilihHalamanV2";
 import {
   TextInput,
   IntegerInput,
   RadioInput,
 } from "../../../Components/inputComponent";
 import Nextbefore from "../../../Components/nextbefore";
-import HeaderInput from "../../../Components/headerInput";
+import HeaderInput from "../../../Components/headerInputV2";
 import DatePicker from "react-datepicker";
 import { Edit, Save } from "lucide-react";
 import Swal from "sweetalert2";
@@ -49,7 +48,7 @@ const Biodata = () => {
 
   const backButton = () => {
     Swal.fire({
-      title:"Konfirmasi Keluar",
+      title: "Konfirmasi Keluar",
       text: "Apakah Anda yakin ingin keluar?",
       icon: "warning",
       showCancelButton: true,
@@ -127,129 +126,103 @@ const Biodata = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll text-2xl">
-      <div className="my-10 w-full"><Profil /></div>
-      <div><InputHalaman /></div>
-      {/* Tombol Edit / Simpan */}
-      <div className="flex justify-end my-4">
-        {!isEditing ? (
-          <button
-            onClick={handleEdit}
-            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg"
-          >
-            <Edit className="w-5 h-5" />
-            Ubah
-          </button>
-        ) : (
-          <button
-            onClick={handleSave}
-            className="flex items-center gap-2 bg-green-800 text-white px-6 py-2 rounded-md hover:bg-green-900 transition duration-300 shadow-md hover:shadow-lg"
-          >
-            <Save className="w-5 h-5" />
-            Simpan
-          </button>
-        )}
+    <div className="bg-gray-100 w-screen px-10 pb-6 h-screen overflow-y-auto text-xl">
+      {/* Profil dan Input Halaman */}
+      <div className="my-10 w-full flex flex-col gap-6">
+        <Profil />
       </div>
-      <HeaderInput title={"Data Diri Siswa"} word={"A"} form={"admin"} />
-      <div className="bg-white p-6 flex items-center justify-center">
-        <table className="w-3/4 font-body border-separate border-spacing-4">
-          <tbody>
-            {[
-              { label: "Nama Lengkap", field: "nama_lengkap" },
-              { label: "Nama Panggilan", field: "nama_panggilan" },
-              { label: "Jenis Kelamin", field: "jenis_kelamin", type: "radio" },
-              { label: "Tempat Lahir", field: "tempat_lahir" },
-              { label: "Agama", field: "agama" },
-              { label: "Kewarganegaraan", field: "kewarganegaraan" },
-              { label: "Anak ke", field: "anak_ke", type: "integer" },
-              { label: "Jumlah Saudara Kandung", field: "jml_saudara_kandung", type: "integer" },
-              { label: "Jumlah Saudara Tiri", field: "jml_saudara_tiri", type: "integer" },
-              { label: "Jumlah Saudara Angkat", field: "jml_saudara_angkat", type: "integer" },
-              { label: "Bahasa Sehari-hari", field: "bahasa_sehari_hari" },
-            ].map(({ label, field, type }, index) => (
-              <tr key={index}>
-                <td className="w-[63%] h-full">
-                  <label className="py-1">{label}</label>
-                </td>
-                <td className="w-[37%] h-full">
-                  {type === "integer" ? (
-                    <IntegerInput
-                      value={siswa.data_diri[field]}
-                      onChange={(e) => isEditing && handleChange(e, "kelengkapan_ortu")}
-                      className="h-full"
-                      disabled={!isEditing}
-                    />
-                  ) : type === "radio" ? (
-                    <RadioInput
-                      value={siswa.data_diri[field]}
-                      onChange={(e) => isEditing && handleChange(e, field)}
-                      className="h-full"
-                      disabled={!isEditing}
-                    />
-                  ) : (
-                    <TextInput
-                      value={siswa.data_diri[field]}
-                      onChange={(e) => isEditing && handleChange(e, field)}
-                      className="h-full"
-                      disabled={!isEditing}
-                    />
-                  )}
-                </td>
-              </tr>
-            ))}
 
-            {/* Input Tanggal Lahir */}
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Tanggal Lahir</label>
-              </td>
-              <td className="w-[37%] h-full rounded-lg">
+      {/* Tombol Edit / Simpan dan Unduh */}
+      <div className="flex items-center justify-end gap-4 mt-6">
+        <button
+          onClick={isEditing ? handleSave : handleEdit}
+          className={`flex items-center gap-2 px-6 py-2 rounded-md shadow-md hover:shadow-lg transition duration-300 text-white ${isEditing ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"}`}
+        >
+          {isEditing ? <Save className="w-5 h-5" /> : <Edit className="w-5 h-5" />}
+          {isEditing ? "Simpan" : "Ubah"}
+        </button>
+      </div>
+
+      {/* Form Data Diri */}
+      <HeaderInput title={"Data Diri Siswa"} word={"A"} form={"siswa"} />
+      <div className="bg-white shadow-md p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[
+            { label: "Nama Lengkap", field: "nama_lengkap" },
+            { label: "Nama Panggilan", field: "nama_panggilan" },
+            { label: "Jenis Kelamin", field: "jenis_kelamin", type: "radio" },
+            { label: "Bahasa Sehari-hari", field: "bahasa_sehari_hari" },
+            { label: "Tempat Lahir", field: "tempat_lahir" },
+            { label: "Tanggal Lahir", field: "tanggal_lahir", type: "date" },
+            { label: "Agama", field: "agama" },
+            { label: "Kewarganegaraan", field: "kewarganegaraan" },
+            { label: "Anak ke", field: "anak_ke", type: "integer" },
+            { label: "Jumlah Saudara Kandung", field: "jml_saudara_kandung", type: "integer" },
+            { label: "Jumlah Saudara Tiri", field: "jml_saudara_tiri", type: "integer" },
+            { label: "Jumlah Saudara Angkat", field: "jml_saudara_angkat", type: "integer" },
+          ].map(({ label, field, type }, index) => (
+            <div key={index} className="flex flex-col">
+              <label className="text-gray-700 font-medium mb-1">{label}</label>
+              {type === 'date' ? (
                 <DatePicker
-                  selected={new Date(siswa.data_diri.tanggal_lahir)}
-                  onChange={(date) =>
-                    isEditing &&
-                    setSiswa((prev) => ({
-                      ...prev,
-                      data_diri: { ...prev.data_diri, tanggal_lahir: date },
-                    }))
-                  }
+                  selected={siswa.data_diri[field] ? new Date(siswa.data_diri[field]) : null}
+                  onChange={(date) => isEditing && handleChange({ target: { value: date } }, field)}
                   dateFormat={"dd-MM-yyyy"}
-                  className="bg-[#DEE0E1] py-2 px-2 w-full focus:outline-none rounded-lg"
+                  className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
                   disabled={!isEditing}
                 />
-              </td>
-            </tr>
+              ) : type === "integer" ? (
+                <IntegerInput
+                  value={siswa.data_diri[field]}
+                  onChange={(e) => isEditing && handleChange(e, field)}
+                  className="input-field"
+                  disabled={!isEditing}
+                />
+              ) : type === "radio" ? (
+                <RadioInput
+                  value={siswa.data_diri[field]}
+                  onChange={(e) => isEditing && handleChange(e, field)}
+                  className="input-field"
+                  disabled={!isEditing}
+                />
+              ) : (
+                <TextInput
+                  value={siswa.data_diri[field]}
+                  onChange={(e) => isEditing && handleChange(e, field)}
+                  className="input-field"
+                  disabled={!isEditing}
+                />
+              )}
+            </div>
+          ))}
 
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Anak Yatim</label>
-              </td>
-              <td className="w-[37%] h-full">
-                <select
-                  name="anak_yatim"
-                  value={siswa.data_diri.kelengkapan_ortu || ""}
-                  className="w-full bg-[#DEE0E1] text-black p-2 rounded shadow-md"
-                  onChange={(e) =>
-                    isEditing &&
-                    setSiswa((prev) => ({
-                      ...prev,
-                      data_diri: { ...prev.data_diri, kelengkapan_ortu: e.target.value },
-                    }))
-                  }
-                  disabled={!isEditing} // Hanya bisa diubah saat mode edit
-                >
-                  <option value="" hidden>Pilih</option>
-                  <option value="lengkap">Lengkap</option>
-                  <option value="yatim">Yatim</option>
-                  <option value="piatu">Piatu</option>
-                  <option value="yatim piatu">Yatim Piatu</option>
-                </select>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          {/* Anak Yatim */}
+          <div className="flex flex-col">
+            <label className="text-gray-700 font-medium mb-1">Status</label>
+            <select
+              name="anak_yatim"
+              value={siswa.data_diri.kelengkapan_ortu || ""}
+              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
+              onChange={(e) =>
+                isEditing &&
+                setSiswa((prev) => ({
+                  ...prev,
+                  data_diri: { ...prev.data_diri, kelengkapan_ortu: e.target.value },
+                }))
+              }
+              disabled={!isEditing}
+            >
+              <option value="" hidden>Pilih</option>
+              <option value="lengkap">Lengkap</option>
+              <option value="yatim">Yatim</option>
+              <option value="piatu">Piatu</option>
+              <option value="yatim piatu">Yatim Piatu</option>
+            </select>
+          </div>
+        </div>
       </div>
-      <div>
+      {/* Tombol Next & Back */}
+      <div className="grid grid-cols-2 space-x-4">
         <Nextbefore next={nextButton} back={backButton} />
       </div>
     </div>

@@ -1,4 +1,4 @@
-import HeaderInput from "../../../Components/headerInputV2";
+import HeaderInput from "../../../Components/headerInput";
 import { useState, useEffect } from "react";
 import {
   TextInput,
@@ -82,106 +82,68 @@ const Kesehatan = () => {
   };
 
   return (
-    <div className="bg-[#dee0e1d6] w-screen px-10 pb-6 h-screen overflow-y-scroll h-min:h-screen text-[24px]">
-      <HeaderInput title={"Kesehatan Siswa"} word={"C"} form={"siswa"} />
-      <div className="bg-white p-6 flex items-center justify-center">
-        <table className="w-3/4 font-body border-separate border-spacing-4">
-          <tbody>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Golongan Darah</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <select
-                  value={goldarah}
-                  onChange={(e) => setGoldarah(e.target.value)}
-                  className="w-[50%] bg-[#DEE0E1] text-black p-2 rounded outline-none shadow-md"
-                  defaultValue={"default"}
-                >
-                  <option value="default" hidden>
-                    Pilih
-                  </option>
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="AB">AB</option>
-                  <option value="O">O</option>
-                  <option value="lainnya">Lainnya</option>
-                  <option value="tidak diketahui">Tidak Diketahui</option>
-                </select>
-              </td>
-            </tr>
-            {goldarah === "lainnya" ? (
-              <tr>
-                <td className="w-[63%] h-full">
-                  <label className="py-1">Lainnya</label>
-                </td>
-                <td className="w-[63%] h-full">
-                  <TextInput
-                    value={goldarahlain}
-                    onChange={(e) => setGoldarahlain(e.target.value)}
-                    className="h-full"
-                  />
-                </td>
-              </tr>
-            ) : null}
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Penyakit Yang Pernah Diderita</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={penyakit}
-                  onChange={(e) => setPenyakit(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1 ">Kelainan Jasmani</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <TextInput
-                  value={jasmani}
-                  onChange={(e) => setJasmani(e.target.value)}
-                  className="h-full"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Tinggi Badan (*cm)</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <IntegerInput
-                  value={tinggi}
-                  onChange={(e) => setTinggi(e.target.value)}
-                  className="h-full"
-                />
-                <span className="ml-2 text-lg text-black">
-                  CM
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td className="w-[63%] h-full">
-                <label className="py-1">Berat Badan (*kg)</label>
-              </td>
-              <td className="w-[63%] h-full">
-                <IntegerInput
-                  value={berat}
-                  onChange={(e) => setBerat(e.target.value)}
-                  className="h-full"
-                />
-                <span className="ml-2 text-lg text-black">
-                  KG
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <div className="bg-gray-100 w-screen min-h-screen px-8 py-6 rounded-lg text-lg overflow-y-auto">
+      <HeaderInput title="Kesehatan Siswa" word="C" form="siswa" />
+
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          {/* Golongan Darah */}
+          <div className="col-span-2">
+            <div className="w-[75%]">
+              <label className="block font-medium mb-1">Golongan Darah</label>
+              <select
+                value={goldarah}
+                onChange={(e) => setGoldarah(e.target.value)}
+                className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
+              >
+                <option value="default" hidden>Pilih</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="AB">AB</option>
+                <option value="O">O</option>
+                <option value="lainnya">Lainnya</option>
+                <option value="tidak diketahui">Tidak Diketahui</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Penyakit yang Pernah Diderita */}
+          <div>
+            <label className="block font-medium mb-1">Penyakit yang Pernah Diderita</label>
+            <TextInput value={penyakit} onChange={(e) => setPenyakit(e.target.value)} />
+          </div>
+
+          {/* Kelainan Jasmani */}
+          <div>
+            <label className="block font-medium mb-1">Kelainan Jasmani</label>
+            <TextInput value={jasmani} onChange={(e) => setJasmani(e.target.value)} />
+          </div>
+
+          {/* Tinggi Badan */}
+          <div>
+            <label className="block font-medium mb-1">Tinggi Badan (cm)</label>
+            <div className="flex items-center">
+              <IntegerInput value={tinggi} onChange={(e) => setTinggi(e.target.value)} />
+              <span className="ml-2 text-lg text-gray-700">CM</span>
+            </div>
+          </div>
+
+          {/* Berat Badan */}
+          <div>
+            <label className="block font-medium mb-1">Berat Badan (kg)</label>
+            <div className="flex items-center">
+              <IntegerInput value={berat} onChange={(e) => setBerat(e.target.value)} />
+              <span className="ml-2 text-lg text-gray-700">KG</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <Nextbefore next={nextButton} back={backButton} />
+
+      {/* Tombol Navigasi */}
+      <div className="grid grid-cols-2 space-x-2 mt-4">
+        <Nextbefore back={backButton} next={nextButton} />
+      </div>
     </div>
   );
 };

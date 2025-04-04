@@ -130,8 +130,9 @@ const HeaderButton = ({ nama, isActive = false, to }) => {
   }
 };
 
-const HeaderInput = ({ title, word, form}) => {
+const HeaderInput = ({ title, word, form }) => {
   const params = useParams();
+
   const ButtonList = [
     { a: "Data Diri Siswa", b: "biodata" },
     { a: "Tempat Tinggal Siswa", b: "tempattinggal" },
@@ -141,42 +142,39 @@ const HeaderInput = ({ title, word, form}) => {
     { a: "Keterangan Ibu", b: "ibu" },
     { a: "Keterangan Wali", b: "wali" },
     { a: "Hobi Siswa", b: "hobi" },
-    {
-      a: "Perkembangan Siswa",
-      b: "perkembangansiswa",
-      c: true
-    },
+    { a: "Perkembangan Siswa", b: "perkembangansiswa", c: true },
     { a: "Selesai Pendidikan", b: "selesaipend", c: true },
   ];
-  
-  const totalCols = ButtonList.some((t) => t.b === "perkembangansiswa" || t.b === "selesaipend") ? "grid grid-cols-10" : "grid grid-cols-8";
+
+  // Filter tombol yang akan ditampilkan
+  const filteredButtons = ButtonList.filter((t) => !(t.c && form !== "admin"));
+
+  // Tentukan jumlah kolom berdasarkan jumlah tombol
+  const gridCols = `grid-cols-${filteredButtons.length}`;
 
   return (
-    <div>
+    <div className="w-full">
+      {/* Judul Header */}
       <div className="flex flex-row items-center w-full">
-        <div className="w-[63%] h-full mb-4">
-          <label className="font-header font-bold text-xl">
-            {word}. {title}
-          </label>
-        </div>
+        <label className="font-header font-bold text-xl">
+          {word}. {title}
+        </label>
       </div>
-      <div className={`grid md:${totalCols} border-b-gray-400`}>
-        {ButtonList.map((t, i) => {
-          if (t.c && form !== "admin") return null;
-          return (
-            <HeaderButton
-              key={i}
-              to={
-                form == "admin"
-                  ? `/${form}/lihat/${params.id}/${t.b}`
-                  : `/${form}/data/${params.action}/${t.b}`
-              }
-              nama={t.a}
-              isActive={title === t.a ? true : false}
-              
-            />
-          );
-        })}
+
+      {/* Navigasi Button - Menggunakan Grid Dinamis */}
+      <div className={`grid ${gridCols} border-gray-400 w-full`}>
+        {filteredButtons.map((t, i) => (
+          <HeaderButton
+            key={i}
+            to={
+              form === "admin"
+                ? `/${form}/lihat/${params.id}/${t.b}`
+                : `/${form}/data/${params.action}/${t.b}`
+            }
+            nama={t.a}
+            isActive={title === t.a}
+          />
+        ))}
       </div>
     </div>
   );

@@ -162,7 +162,7 @@ const HeaderInput = ({ title, word, form}) => {
               key={i}
               to={
                 form == "siswa"
-                  ? `/${form}/lihat/${params.id}/${t.b}`
+                  ? `/${form}/lihat-data/${t.b}`
                   : `/${form}/data/${params.action}/${t.b}`
               }
               nama={t.a}
