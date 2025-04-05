@@ -59,11 +59,27 @@ const Kesehatan = () => {
     }, [id]);
 
     const backButton = () => {
-        navigate(`/admin/lihat/${id}/perkembangan`);
+        navigate(`/admin/lihat/${id}/perkembangansiswa`);
     };
 
     const nextButton = () => {
-        navigate(`/admin/dashboard`);
+        Swal.fire({
+            icon: 'warning',
+            title: 'Peringatan!',
+            text: 'Anda akan dialihkan ke halaman data siswa. Apakah Anda yakin ingin melanjutkan?',
+            showCancelButton: true,
+            confirmButtonText: 'Lanjutkan',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const token = localStorage.getItem("token"); // Simpan token sebelum clear
+                localStorage.clear(); // Hapus semua data
+                if (token) {
+                    localStorage.setItem("token", token); // Simpan kembali token
+                }
+                navigate(`/admin/datasiswa`);
+            }
+        });
     };
 
     const handleEdit = () => {
@@ -214,8 +230,8 @@ const Kesehatan = () => {
                 </div>
             </div>
             {/* Tombol Next & Back */}
-            <div className="grid grid-cols-2 space-x-4">
-                <Nextbefore next={nextButton} back={backButton} />
+            <div className="flex justify-end space-x-4">
+                <Nextbefore next={nextButton} back={backButton} lastpage={true} />
             </div>
         </div>
     );

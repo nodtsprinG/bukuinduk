@@ -140,9 +140,9 @@ const Kesehatan = () => {
         </div>
       </div>
 
-      {/* Tombol Navigasi */}
-      <div className="grid grid-cols-2 space-x-2 mt-4">
-        <Nextbefore back={backButton} next={nextButton} />
+      {/* Tombol Next & Back */}
+      <div className="flex justify-end space-x-4">
+        <Nextbefore next={nextButton} back={backButton} />
       </div>
     </div>
   );

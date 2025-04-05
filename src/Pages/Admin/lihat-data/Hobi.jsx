@@ -61,7 +61,7 @@ const Biodata = () => {
   };
 
   const nextButton = () => {
-    navigate(`/admin/lihat/${id}/perkembangan`);
+    navigate(`/admin/lihat/${id}/perkembangansiswa`);
   };
 
   const handleEdit = () => {
@@ -206,7 +206,7 @@ const Biodata = () => {
         </div>
       </div>
       {/* Tombol Next & Back */}
-      <div className="grid grid-cols-2 space-x-4">
+      <div className="flex justify-end space-x-4">
         <Nextbefore next={nextButton} back={backButton} />
       </div>
     </div>

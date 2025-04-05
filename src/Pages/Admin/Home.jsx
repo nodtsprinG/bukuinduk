@@ -105,8 +105,8 @@ const LihatData = () => {
       <Route exact path="/ibu" element={<Libu />} />
       <Route exact path="/wali" element={<Lwali />} />
       <Route exact path="/hobi" element={<Lhobi />} />
-      <Route exact path="/perkembangan" element={<Perkembangan />} />
-      <Route exact path="/selesai" element={<Selesai />} />
+      <Route exact path="/perkembangansiswa" element={<Perkembangan />} />
+      <Route exact path="/selesaipend" element={<Selesai />} />
       {/* <Route exact path="/hobi" element={<Perkembangan />} /> */}
       <Route exact path="/halaman-belakang" element={<LHalamanBelakang />} />
     </Routes>

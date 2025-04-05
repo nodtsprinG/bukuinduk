@@ -104,8 +104,8 @@ const Hobi = () => {
         </div>
       </div>
 
-      {/* Tombol Navigasi */}
-      <div className="grid grid-cols-2 mt-4">
+      {/* Tombol Next & Back */}
+      <div className="flex justify-end space-x-4">
         <Nextbefore next={nextButton} back={backButton} lastpage={true} />
       </div>
     </div>

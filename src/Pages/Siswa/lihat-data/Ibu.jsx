@@ -163,7 +163,7 @@ const Biodata = () => {
                 />
               ) : type === "integer" ? (
                 <div>
-                  <span className="mr-8">{getUnit(field)}</span>
+                  <span className="mr-1">{getUnit(field)}</span>
                   <IntegerInput
                   value={siswa.ibu_kandung[field]}
                   onChange={(e) => isEditing && handleChange(e, field)}
@@ -212,7 +212,7 @@ const Biodata = () => {
         </div>
       </div>
       {/* Tombol Next & Back */}
-      <div className="grid grid-cols-2 space-x-4">
+      <div className="flex justify-end space-x-4">
         <Nextbefore next={nextButton} back={backButton} />
       </div>
     </div>

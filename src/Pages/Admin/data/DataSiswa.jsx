@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import Navigation from "../../../Components/nav";
 import { Link, useNavigate } from "react-router-dom";
@@ -11,16 +11,6 @@ import fileDownload from "js-file-download";
 import detailPreparing from "../../../Utils/detailPreparing";
 import { FaDownload, FaFilePdf, FaFileExcel, FaRegFile, FaPlus } from "react-icons/fa";
 import Swal from "sweetalert2";
-import {
-  isAkunFilled,
-  isBiodataFilled,
-  isTempattinggalFilled,
-  isKesehatanFilled,
-  isPendidikanFilled,
-  isAyahFilled,
-  isIbuFilled,
-  isHobiFilled,
-} from "../../../Utils/DataComplete";
 
 const DataSiswa = () => {
   const navigate = useNavigate();
@@ -37,54 +27,57 @@ const DataSiswa = () => {
   const [file, setFile] = useState(null);
 
   useEffect(() => {
-    axios
-      .get(`${baseUrl}/admin/akun`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-      .then((res) => {
-        setSiswa(res.data);
-        console.log(res.data);
-      })
-  }, []);
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    // Ambil daftar jurusan
-    axios
-      .get(`${baseUrl}/admin/jurusan`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-      .then((res) => setJurusanList(res.data))
-      .catch((err) => console.error("Error fetching jurusan:", err));
+        // Jalankan semua request secara paralel untuk menghemat waktu
+        const [akunRes, jurusanRes, angkatanRes] = await Promise.all([
+          axios.get(`${baseUrl}/admin/akun`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${baseUrl}/admin/jurusan`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${baseUrl}/admin/angkatan`, { headers: { Authorization: `Bearer ${token}` } }),
+        ]);
 
-    // Ambil daftar angkatan
-    axios
-      .get(`${baseUrl}/admin/angkatan`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-      .then((res) => setAngkatanList(res.data))
-      .catch((err) => console.error("Error fetching angkatan:", err));
-  }, []);
+        // Simpan hasil data
+        setSiswa(akunRes.data);
+        setJurusanList(jurusanRes.data);
+        setAngkatanList(angkatanRes.data);
 
-  useEffect(() => {
-    if (!siswa) return;
+        // Simpan ID siswa ke localStorage
+        const id_siswa = akunRes.data.map((item) => item.id);
+        localStorage.setItem("id_siswa", JSON.stringify(id_siswa));
+
+        console.log("ID Siswa disimpan di localStorage:", id_siswa);
+      } catch (error) {
+        console.error("❌ Error mengambil data:", error);
+      }
+    };
+
+    fetchData();
+  }, []); // Tetap gunakan array kosong untuk hanya dipanggil sekali
+
+  const filteredData = useMemo(() => {
+    if (!siswa) return [];
+
     let data = siswa.filter((s) =>
       s.nama.toLowerCase().includes(searchKey.toLowerCase())
     );
 
-    const selectedAngkatans = angkatans
-      .filter((x) => x.checked)
-      .map((x) => x.tahun);
-    const selectedJurusans = jurusans
-      .filter((x) => x.checked)
-      .map((x) => x.nama);
+    const selectedAngkatans = angkatans.filter((x) => x.checked).map((x) => x.tahun);
+    const selectedJurusans = jurusans.filter((x) => x.checked).map((x) => x.nama);
 
     if (selectedAngkatans.length)
       data = data.filter((s) => selectedAngkatans.includes(s.angkatan));
     if (selectedJurusans.length)
       data = data.filter((s) => selectedJurusans.includes(s.jurusan));
 
-    setFiltered(data);
-  }, [siswa, searchKey, angkatans, jurusans]);
+    return data;
+  }, [siswa, searchKey, angkatans, jurusans]); // Hanya menghitung ulang jika salah satu dependency berubah
+
+  useEffect(() => {
+    setFiltered(filteredData);
+  }, [filteredData]); // Set state hanya jika hasil filtering berubah
+
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -473,21 +466,83 @@ const DataSiswa = () => {
     setIsModalOpen1(true)
   );
 
+  // useEffect(() => {
+  //   // Ambil ID siswa dari localStorage
+  //   const idSiswa = JSON.parse(localStorage.getItem("id_siswa"));
+
+  //   if (!idSiswa || idSiswa.length === 0) {
+  //     console.log("❌ Tidak ada ID siswa di localStorage!");
+  //     return;
+  //   }
+
+  //   // Ambil data siswa berdasarkan ID pertama (atau looping jika perlu)
+  //   const id = JSON.parse(localStorage.getItem("id_siswa")) || [];
+
+  //   id.forEach((id) => {
+  //     console.log("ID Siswa:", id);
+  //   });
+
+
+  //   // Ambil ID pertama (sesuai kebutuhan)
+  //   axios
+  //     .get(`${baseUrl}/admin/akun/${id}`, {
+  //       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  //     })
+  //     .then((res) => {
+  //       setSiswa(res.data);
+  //       console.log("Data siswa:", res.data);
+
+  //       // Cek kelengkapan data
+  //       const lengkap = isDataComplete(res.data);
+  //       console.log("Status kelengkapan:", lengkap ? "✅ Lengkap" : "❌ Tidak lengkap");
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error mengambil data siswa:", error);
+  //     });
+  // }, []);
+
+  console.log("Data siswa:", siswa);
   const isDataComplete = (siswa) => {
-    return (
-      isAkunFilled(siswa) &&
-      isBiodataFilled(siswa) &&
-      isTempattinggalFilled(siswa) &&
-      isKesehatanFilled(siswa) &&
-      isPendidikanFilled(siswa) &&
-      isAyahFilled(siswa) &&
-      isIbuFilled(siswa) &&
-      isHobiFilled(siswa)
-    );
+    const sections = {
+      data_diri: ["pindahan_alasan", "jml_saudara_tiri", "jml_saudara_angkat"],
+      tempat_tinggal: [],
+      kesehatan: ["penyakit_pernah_diderita", "kelainan_jasmani"],
+      pendidikan: ["pindahan_dari_sekolah", "pindahan_alasan"],
+      ayah_kandung: ["no_telepon", "alamat"],
+      ibu_kandung: ["no_telepon", "alamat"],
+      hobi_siswa: [],
+    };
+
+    let isComplete = true;
+
+    Object.entries(sections).forEach(([section, allowedEmptyFields]) => {
+      const data = siswa[section];
+
+      if (!data || typeof data !== "object") {
+        console.log(`❌ Bagian "${section}" kosong atau bukan objek`);
+        isComplete = false;
+        return;
+      }
+
+      Object.entries(data).forEach(([key, value]) => {
+        if (allowedEmptyFields.includes(key)) return; // Skip yang boleh kosong
+
+        if (value === null || value === "" || value === undefined) {
+          console.log(`❌ Field "${key}" di bagian "${section}" kosong`);
+          isComplete = false;
+        }
+      });
+    });
+
+    if (isComplete) {
+      console.log("✅ Semua data lengkap!");
+    }
+
+    return isComplete;
   };
 
-  const tambah = (id) => {
-    navigate("/admin/tambah", { state: { id } });
+  const tambah = (i) => {
+    navigate("/siswa/data/upload/akun");
   };
 
   return (

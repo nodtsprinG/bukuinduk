@@ -143,6 +143,12 @@ const Biodata = () => {
     }
   };
 
+  const getUnit = (field) => {
+    switch (field) {
+      case "pengeluaran_per_bulan":
+        return "Rp";
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -185,7 +191,7 @@ const Biodata = () => {
             { label: "Kewarganegaraan", field: "kewarganegaraan" },
             { label: "Pendidikan", field: "pendidikan" },
             { label: "Pekerjaan", field: "pekerjaan" },
-            { label: "Pengeluaran per Bulan", field: "pengeluaran_per_bulan" },
+            { label: "Pengeluaran per Bulan", field: "pengeluaran_per_bulan", type: "integer" },
             { label: "Alamat", field: "alamat" },
             { label: "No Telepon", field: "no_telepon" },
           ].map(({ label, field, type }, index) => (
@@ -200,12 +206,15 @@ const Biodata = () => {
                   disabled={!isEditing}
                 />
               ) : type === "integer" ? (
-                <IntegerInput
-                  value={siswa.ayah_kandung[field]}
-                  onChange={(e) => isEditing && handleChange(e, field)}
-                  className="input-field"
-                  disabled={!isEditing}
-                />
+                <div>
+                  <span className="mr-1">{getUnit(field)}</span>
+                  <IntegerInput
+                    value={siswa.ayah_kandung[field]}
+                    onChange={(e) => isEditing && handleChange(e, field)}
+                    className="input-field"
+                    disabled={!isEditing}
+                  />
+                </div>
               ) : type === "radio" ? (
                 <RadioInput
                   value={siswa.ayah_kandung[field]}
@@ -247,7 +256,7 @@ const Biodata = () => {
         </div>
       </div>
       {/* Tombol Next & Back */}
-      <div className="grid grid-cols-2 space-x-4">
+      <div className="flex justify-end space-x-4">
         <Nextbefore next={nextButton} back={backButton} />
       </div>
     </div>

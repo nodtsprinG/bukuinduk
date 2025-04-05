@@ -48,22 +48,22 @@ const Hobi = () => {
 
   const nextButton = () => {
     Swal.fire({
-          title: "Anda akan Keluar",
-          text: "Apakah Anda yakin ingin keluar?",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Iya",
-          cancelButtonText: "Batal",
-          confirmButtonColor: "#d33",
-          cancelButtonColor: "#3085d6",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            localStorage.clear();
-            Swal.fire("Berhasil Keluar", "Anda telah keluar.", "success").then(() => {
-              navigate("/siswa/login");
-            });
-          }
+      title: "Anda akan Keluar",
+      text: "Apakah Anda yakin ingin keluar?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Iya",
+      cancelButtonText: "Batal",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.clear();
+        Swal.fire("Berhasil Keluar", "Anda telah keluar.", "success").then(() => {
+          navigate("/siswa/login");
         });
+      }
+    });
   };
 
   const handleEdit = () => {
@@ -83,14 +83,14 @@ const Hobi = () => {
   const handleSave = async () => {
     try {
       delete siswa.hobi_siswa.id
-      const hobi = {
+      const hobi_siswa = {
         ...siswa.hobi_siswa,
         status_perubahan: "pending", // Tambahkan status perubahan
       };
 
-      console.log("Struktur siswa yang dikirim:", JSON.stringify(hobi, null, 2));
+      console.log("Struktur siswa yang dikirim:", JSON.stringify(hobi_siswa, null, 2));
 
-      const response = await axios.put(baseUrl + `/siswa/data-diri`, hobi, {
+      const response = await axios.put(baseUrl + `/siswa/data-diri`, {hobi_siswa}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
@@ -99,9 +99,21 @@ const Hobi = () => {
 
       console.log("Response dari backend:", response.data);
       setIsEditing(false); // Kembali ke mode lihat setelah sukses
-      window.alert("Tunggu Konfirmasi Admin!");
+      Swal.fire({
+        icon: "info",
+        title: "Menunggu Konfirmasi",
+        text: "Perubahan data Anda sedang menunggu konfirmasi.",
+        showConfirmButton: false,
+        timer: 3000,
+      })
     } catch (err) {
-      alert("Gagal menyimpan perubahan");
+      Swal.fire({
+        icon: "error",
+        title: "Terjadi Kesalahan",
+        text: "Silakan coba lagi.",
+        showConfirmButton: false,
+        timer: 3000,
+      })
     }
   };
 
@@ -152,7 +164,7 @@ const Hobi = () => {
         </div>
       </div>
       {/* Tombol Next & Back */}
-      <div className="grid grid-cols-2 space-x-4">
+      <div className="flex justify-end space-x-4">
         <Nextbefore next={nextButton} back={backButton} />
       </div>
     </div>

@@ -167,8 +167,8 @@ const Wali = () => {
         </div>
       </div>
 
-      {/* Tombol Navigasi */}
-      <div className="grid grid-cols-2 space-x-2 mt-4">
+      {/* Tombol Next & Back */}
+      <div className="flex justify-end space-x-4">
         <Nextbefore next={nextButton} back={backButton} />
       </div>
     </div>

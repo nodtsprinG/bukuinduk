@@ -146,7 +146,7 @@ const TempatTinggal = () => {
                     className="input-field"
                     disabled={!isEditing}
                   />
-                  <span className="ml-8">KM</span>
+                  <span className="ml-8">km</span>
                 </div>
               ) : type === "radio" ? (
                 <RadioInput
@@ -192,7 +192,7 @@ const TempatTinggal = () => {
         </div>
       </div>
       {/* Tombol Next & Back */}
-      <div className="grid grid-cols-2 space-x-4">
+      <div className="flex justify-end space-x-4">
         <Nextbefore next={nextButton} back={backButton} />
       </div>
     </div>
