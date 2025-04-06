@@ -71,7 +71,7 @@ const Biodata = () => {
   };
 
   const handleEdit = () => {
-    setIsEditing(true); // Aktifkan mode edit
+    setIsEditing(true); // Mengaktifkan mode edit
   };
 
   const handleChange = (e, field) => {
@@ -89,7 +89,7 @@ const Biodata = () => {
       delete siswa.data_diri.id
       const biodata = {
         ...siswa.data_diri,
-        status_perubahan: "pending", // Tambahkan status perubahan
+        status_perubahan: "pending", // Ini biar status perubahannya pending
       };
 
       console.log("Struktur siswa yang dikirim:", JSON.stringify(biodata, null, 2));

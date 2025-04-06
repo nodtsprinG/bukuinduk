@@ -21,22 +21,40 @@ const Navigation = () => {
   const [nama, setNama] = useState("");
 
   useEffect(() => {
-    axios.get(baseUrl + "/auth/me", {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    })
-      .then((res) => setRole(res.data.role))
-      .catch((err) => console.error("Gagal mengambil data user:", err));
-  }, []);
-
-  useEffect(() => {
-    axios.get(baseUrl + "/admin/data-sekolah", {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    })
-      .then((res) => {
-        setNama(res.data.nama);
-        setLogo(res.data.logo);
+    const cachedUser = localStorage.getItem("user_role");
+  
+    if (cachedUser) {
+      setRole(JSON.parse(cachedUser));
+    } else {
+      axios.get(baseUrl + "/auth/me", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
-      .catch((err) => console.error("Gagal mengambil data sekolah:", err));
+        .then((res) => {
+          setRole(res.data.role);
+          localStorage.setItem("user_role", JSON.stringify(res.data.role));
+        })
+        .catch((err) => console.error("Gagal mengambil data user:", err));
+    }
+  }, []);
+  
+  useEffect(() => {
+    const cachedSekolah = localStorage.getItem("data_sekolah");
+  
+    if (cachedSekolah) {
+      const data = JSON.parse(cachedSekolah);
+      setNama(data.nama);
+      setLogo(data.logo);
+    } else {
+      axios.get(baseUrl + "/admin/data-sekolah", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
+        .then((res) => {
+          setNama(res.data.nama);
+          setLogo(res.data.logo);
+          localStorage.setItem("data_sekolah", JSON.stringify(res.data));
+        })
+        .catch((err) => console.error("Gagal mengambil data sekolah:", err));
+    }
   }, []);
 
   useEffect(() => {

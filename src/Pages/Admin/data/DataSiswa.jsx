@@ -29,25 +29,28 @@ const DataSiswa = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const cachedSiswa = localStorage.getItem("id_siswa");
+        if (cachedSiswa) {
+          console.log("✅ Data ID siswa sudah ada di localStorage.");
+          return;
+        }
+    
         const token = localStorage.getItem("token");
-
-        // Jalankan semua request secara paralel untuk menghemat waktu
+    
         const [akunRes, jurusanRes, angkatanRes] = await Promise.all([
           axios.get(`${baseUrl}/admin/akun`, { headers: { Authorization: `Bearer ${token}` } }),
           axios.get(`${baseUrl}/admin/jurusan`, { headers: { Authorization: `Bearer ${token}` } }),
           axios.get(`${baseUrl}/admin/angkatan`, { headers: { Authorization: `Bearer ${token}` } }),
         ]);
-
-        // Simpan hasil data
+    
         setSiswa(akunRes.data);
         setJurusanList(jurusanRes.data);
         setAngkatanList(angkatanRes.data);
-
-        // Simpan ID siswa ke localStorage
+    
         const id_siswa = akunRes.data.map((item) => item.id);
         localStorage.setItem("id_siswa", JSON.stringify(id_siswa));
-
         console.log("ID Siswa disimpan di localStorage:", id_siswa);
+    
       } catch (error) {
         console.error("❌ Error mengambil data:", error);
       }
@@ -467,79 +470,82 @@ const DataSiswa = () => {
   );
 
   // useEffect(() => {
-  //   // Ambil ID siswa dari localStorage
-  //   const idSiswa = JSON.parse(localStorage.getItem("id_siswa"));
-
+  //   const token = localStorage.getItem("token");
+  
+  //   // Kalau tidak ada ID di localStorage, generate dari 1-8 dan simpan
   //   if (!idSiswa || idSiswa.length === 0) {
-  //     console.log("❌ Tidak ada ID siswa di localStorage!");
-  //     return;
+  //     idSiswa = Array.from({ length: 8 }, (_, i) => i + 1); // [1,2,3,4,5,6,7,8]
+  //     localStorage.setItem("id_siswa", JSON.stringify(idSiswa));
   //   }
-
-  //   // Ambil data siswa berdasarkan ID pertama (atau looping jika perlu)
-  //   const id = JSON.parse(localStorage.getItem("id_siswa")) || [];
-
-  //   id.forEach((id) => {
+  
+  //   // Tampilkan semua ID di console
+  //   idSiswa.forEach((id) => {
   //     console.log("ID Siswa:", id);
   //   });
-
-
-  //   // Ambil ID pertama (sesuai kebutuhan)
-  //   axios
-  //     .get(`${baseUrl}/admin/akun/${id}`, {
-  //       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  
+  //   // Ambil data siswa berdasarkan ID yang ada
+  //   const requests = idSiswa.map((id) =>
+  //     axios.get(`${baseUrl}/admin/akun/${id}`, {
+  //       headers: { Authorization: `Bearer ${token}` },
   //     })
-  //     .then((res) => {
-  //       setSiswa(res.data);
-  //       console.log("Data siswa:", res.data);
-
-  //       // Cek kelengkapan data
-  //       const lengkap = isDataComplete(res.data);
-  //       console.log("Status kelengkapan:", lengkap ? "✅ Lengkap" : "❌ Tidak lengkap");
+  //   );
+  
+  //   Promise.all(requests)
+  //     .then((responses) => {
+  //       const allData = responses.map((res) => res.data);
+  //       setSiswa(allData); // Simpan seluruh data siswa
+  
+  //       // Cek kelengkapan tiap siswa
+  //       allData.forEach((siswa, index) => {
+  //         const lengkap = isDataComplete(siswa);
+  //         console.log(`ID ${idSiswa[index]} - Status kelengkapan:`, lengkap ? "✅ Lengkap" : "❌ Tidak lengkap");
+  //       });
   //     })
   //     .catch((error) => {
   //       console.error("Error mengambil data siswa:", error);
   //     });
   // }, []);
+  
 
-  console.log("Data siswa:", siswa);
-  const isDataComplete = (siswa) => {
-    const sections = {
-      data_diri: ["pindahan_alasan", "jml_saudara_tiri", "jml_saudara_angkat"],
-      tempat_tinggal: [],
-      kesehatan: ["penyakit_pernah_diderita", "kelainan_jasmani"],
-      pendidikan: ["pindahan_dari_sekolah", "pindahan_alasan"],
-      ayah_kandung: ["no_telepon", "alamat"],
-      ibu_kandung: ["no_telepon", "alamat"],
-      hobi_siswa: [],
-    };
+  // console.log("Data siswa:", siswa);
+  // const isDataComplete = (siswa) => {
+  //   const sections = {
+  //     data_diri: ["pindahan_alasan", "jml_saudara_tiri", "jml_saudara_angkat"],
+  //     tempat_tinggal: [],
+  //     kesehatan: ["penyakit_pernah_diderita", "kelainan_jasmani"],
+  //     pendidikan: ["pindahan_dari_sekolah", "pindahan_alasan"],
+  //     ayah_kandung: ["no_telepon", "alamat"],
+  //     ibu_kandung: ["no_telepon", "alamat"],
+  //     hobi_siswa: [],
+  //   };
 
-    let isComplete = true;
+  //   let isComplete = true;
 
-    Object.entries(sections).forEach(([section, allowedEmptyFields]) => {
-      const data = siswa[section];
+  //   Object.entries(sections).forEach(([section, allowedEmptyFields]) => {
+  //     const data = siswa[section];
 
-      if (!data || typeof data !== "object") {
-        console.log(`❌ Bagian "${section}" kosong atau bukan objek`);
-        isComplete = false;
-        return;
-      }
+  //     // if (!data || typeof data !== "object") {
+  //     //   console.log(`❌ Bagian "${section}" kosong atau bukan objek`);
+  //     //   isComplete = false;
+  //     //   return;
+  //     // }
 
-      Object.entries(data).forEach(([key, value]) => {
-        if (allowedEmptyFields.includes(key)) return; // Skip yang boleh kosong
+  //   //   Object.entries(data).forEach(([key, value]) => {
+  //   //     if (allowedEmptyFields.includes(key)) return; // Skip yang boleh kosong
 
-        if (value === null || value === "" || value === undefined) {
-          console.log(`❌ Field "${key}" di bagian "${section}" kosong`);
-          isComplete = false;
-        }
-      });
-    });
+  //   //     if (value === null || value === "" || value === undefined) {
+  //   //       console.log(`❌ Field "${key}" di bagian "${section}" kosong`);
+  //   //       isComplete = false;
+  //   //     }
+  //   //   });
+  //   // });
 
-    if (isComplete) {
-      console.log("✅ Semua data lengkap!");
-    }
+  //   if (isComplete) {
+  //     console.log("✅ Semua data lengkap!");
+  //   }
 
-    return isComplete;
-  };
+  //   return isComplete;
+  // };
 
   const tambah = (i) => {
     navigate("/siswa/data/upload/akun");
@@ -730,8 +736,7 @@ const DataSiswa = () => {
                 <td className="px-4 py-2 justify-center">
                   <button
                     onClick={() => handleDetailClick(s.id)}
-                    className={`rounded-sm p-2 text-white border ${isDataComplete(s) ? "bg-blue-700 hover:bg-blue-800" : "bg-gray-400"
-                      }`}
+                    className={`rounded-sm p-2 text-white border bg-blue-700 hover:bg-blue-800`}
                   >
                     Detail Siswa
                   </button>

@@ -12,13 +12,26 @@ const Dashboard = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   useEffect(() => {
+    const cachedDashboard = localStorage.getItem("dashboard");
+  
+    if (cachedDashboard) {
+      setDashboard(JSON.parse(cachedDashboard));
+      console.log("✅ Data dashboard dari cache.");
+      return;
+    }
+  
     axios
       .get(baseUrl + "/admin/dashboard", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
-      .then((res) => setDashboard(res.data))
+      .then((res) => {
+        setDashboard(res.data);
+        localStorage.setItem("dashboard", JSON.stringify(res.data));
+        console.log("✅ Data dashboard diambil dari backend.");
+      })
       .catch((err) => console.error("Gagal mengambil data:", err));
   }, []);
+  
 
   return (
     <div className="flex h-full font-body bg-gray-100">
