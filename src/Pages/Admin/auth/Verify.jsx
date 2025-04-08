@@ -36,7 +36,7 @@ const Verify = () => {
                             confirmButtonText: "OK",
                         }).then(() => {
                             // Arahkan berdasarkan status akun
-                            if (status === "inactive") {
+                            if (status !== "aktif") {
                                 navigate("/admin/auth/aktivasi");
                             } else {
                                 navigate("/admin/dashboard");

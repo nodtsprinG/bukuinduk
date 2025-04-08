@@ -8,9 +8,10 @@ import { CiFilter } from "react-icons/ci";
 import FilterComponent from "../../../components/filter";
 import { baseUrl } from "../../../utils/constan";
 import fileDownload from "js-file-download";
-import detailPreparing from "../../../Utils/detailPreparing";
 import { FaDownload, FaFilePdf, FaFileExcel, FaRegFile, FaPlus } from "react-icons/fa";
 import Swal from "sweetalert2";
+import SearchBar from "../../../Components/SearchBar";
+import Pagination from "../../../Components/Pagination";
 
 const DataSiswa = () => {
   const navigate = useNavigate();
@@ -29,35 +30,52 @@ const DataSiswa = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = localStorage.getItem("token");
         const cachedSiswa = localStorage.getItem("id_siswa");
+
         if (cachedSiswa) {
+          // ✅ Ambil data siswa dari localStorage (hanya ID, bukan seluruh data siswa)
           console.log("✅ Data ID siswa sudah ada di localStorage.");
+
+          // Kalau kamu ingin tetap menampilkan data siswa saat ini,
+          // sebaiknya cache juga seluruh data siswa, bukan cuma ID-nya.
+          const cachedSiswaData = localStorage.getItem("siswa_data");
+          if (cachedSiswaData) {
+            setSiswa(JSON.parse(cachedSiswaData)); // Tampilkan data dari cache
+            console.log("📦 Menampilkan siswa dari cache");
+          }
+
           return;
         }
-    
-        const token = localStorage.getItem("token");
-    
+
+        // ✅ Ambil data dari server
         const [akunRes, jurusanRes, angkatanRes] = await Promise.all([
           axios.get(`${baseUrl}/admin/akun`, { headers: { Authorization: `Bearer ${token}` } }),
           axios.get(`${baseUrl}/admin/jurusan`, { headers: { Authorization: `Bearer ${token}` } }),
           axios.get(`${baseUrl}/admin/angkatan`, { headers: { Authorization: `Bearer ${token}` } }),
         ]);
-    
-        setSiswa(akunRes.data);
+
+        const siswaData = akunRes.data;
+
+        // Simpan ke state
+        setSiswa(siswaData);
         setJurusanList(jurusanRes.data);
         setAngkatanList(angkatanRes.data);
-    
-        const id_siswa = akunRes.data.map((item) => item.id);
+
+        // Cache ID dan data siswa
+        const id_siswa = siswaData.map((item) => item.id);
         localStorage.setItem("id_siswa", JSON.stringify(id_siswa));
-        console.log("ID Siswa disimpan di localStorage:", id_siswa);
-    
+        localStorage.setItem("siswa_data", JSON.stringify(siswaData));
+        console.log("📦 Data siswa disimpan di localStorage:", id_siswa);
       } catch (error) {
         console.error("❌ Error mengambil data:", error);
       }
     };
 
     fetchData();
-  }, []); // Tetap gunakan array kosong untuk hanya dipanggil sekali
+  }, []); // Tetap hanya dijalankan sekali  
+
+
 
   const filteredData = useMemo(() => {
     if (!siswa) return [];
@@ -66,21 +84,24 @@ const DataSiswa = () => {
       s.nama.toLowerCase().includes(searchKey.toLowerCase())
     );
 
-    const selectedAngkatans = angkatans.filter((x) => x.checked).map((x) => x.tahun);
+
+    const selectedAngkatans = angkatans
+      .filter((x) => x.checked)
+      .map((x) => Number(x.tahun));
     const selectedJurusans = jurusans.filter((x) => x.checked).map((x) => x.nama);
 
     if (selectedAngkatans.length)
       data = data.filter((s) => selectedAngkatans.includes(s.angkatan));
     if (selectedJurusans.length)
       data = data.filter((s) => selectedJurusans.includes(s.jurusan));
-
+    console.log("S.angkatan:", data.map((s) => s.angkatan));
+    console.log("Selected Angkatans:", selectedAngkatans);
     return data;
   }, [siswa, searchKey, angkatans, jurusans]); // Hanya menghitung ulang jika salah satu dependency berubah
 
   useEffect(() => {
     setFiltered(filteredData);
   }, [filteredData]); // Set state hanya jika hasil filtering berubah
-
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -387,7 +408,6 @@ const DataSiswa = () => {
       });
   };
   const handleDetailClick = (id) => {
-    detailPreparing(id);
     localStorage.setItem("akun-id", id);
     navigate(`/admin/lihat/${id}/biodata`);
   };
@@ -471,30 +491,30 @@ const DataSiswa = () => {
 
   // useEffect(() => {
   //   const token = localStorage.getItem("token");
-  
+
   //   // Kalau tidak ada ID di localStorage, generate dari 1-8 dan simpan
   //   if (!idSiswa || idSiswa.length === 0) {
   //     idSiswa = Array.from({ length: 8 }, (_, i) => i + 1); // [1,2,3,4,5,6,7,8]
   //     localStorage.setItem("id_siswa", JSON.stringify(idSiswa));
   //   }
-  
+
   //   // Tampilkan semua ID di console
   //   idSiswa.forEach((id) => {
   //     console.log("ID Siswa:", id);
   //   });
-  
+
   //   // Ambil data siswa berdasarkan ID yang ada
   //   const requests = idSiswa.map((id) =>
   //     axios.get(`${baseUrl}/admin/akun/${id}`, {
   //       headers: { Authorization: `Bearer ${token}` },
   //     })
   //   );
-  
+
   //   Promise.all(requests)
   //     .then((responses) => {
   //       const allData = responses.map((res) => res.data);
   //       setSiswa(allData); // Simpan seluruh data siswa
-  
+
   //       // Cek kelengkapan tiap siswa
   //       allData.forEach((siswa, index) => {
   //         const lengkap = isDataComplete(siswa);
@@ -505,7 +525,7 @@ const DataSiswa = () => {
   //       console.error("Error mengambil data siswa:", error);
   //     });
   // }, []);
-  
+
 
   // console.log("Data siswa:", siswa);
   // const isDataComplete = (siswa) => {
@@ -688,85 +708,66 @@ const DataSiswa = () => {
           </form>
         </header>
 
-        <div className="grid grid-cols-10 gap-5 mt-6">
-          <input
-            type="search"
-            placeholder="Cari.."
-            className="border border-gray-400 rounded-sm col-span-9 p-2"
-            onChange={(e) => setSearchKey(e.target.value)}
-          />
-          <button
-            onClick={() => setFilters(!filters)}
-            className="border border-gray-400 rounded-sm text-black col-span-1 p-2 flex items-center justify-center"
-          >
-            <CiFilter className="mr-2" /> Filter
-          </button>
-        </div>
+        <SearchBar
+          searchKey={searchKey}
+          setSearchKey={setSearchKey}
+          onToggleFilter={() => setFilters(!filters)}
+        />
+
         {filters && (
           <FilterComponent
             stateAngkatan={setAngkatans}
             stateJurusan={setJurusans}
           />
         )}
+
         <button
-          onClick={() => tambah(siswa.id)}
+          onClick={() => tambah()}
           className="p-2 flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white text-normal rounded-sm mt-4"
         >
           <FaPlus className="text-sm" />
           Tambah Siswa
         </button>
 
-        <table className="w-full mt-4 border border-gray-300">
-          <thead className="bg-gray-200 border p-2">
-            <tr>
-              <th className="border p-2">No</th>
-              <th className="border p-2">NISN</th>
-              <th className="border p-2">Nama</th>
-              <th className="border p-2">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.map((s, index) => (
-              <tr key={s.id} className="text-center border">
-                <td className="border px-4 py-2">
-                  {indexOfFirstItem + index + 1}
-                </td>
-                <td className="border px-4 py-2">{s.nisn}</td>
-                <td className="border px-4 py-2">{s.nama}</td>
-                <td className="px-4 py-2 justify-center">
-                  <button
-                    onClick={() => handleDetailClick(s.id)}
-                    className={`rounded-sm p-2 text-white border bg-blue-700 hover:bg-blue-800`}
-                  >
-                    Detail Siswa
-                  </button>
-                </td>
-
+        {currentItems.length === 0 ? (
+          <div className="text-center mt-6 text-gray-500">Tidak ada data siswa</div>
+        ) : (
+          <table className="w-full mt-4 border border-gray-300">
+            <thead className="bg-gray-200 border p-2">
+              <tr>
+                <th className="border p-2">No</th>
+                <th className="border p-2">NISN</th>
+                <th className="border p-2">Nama</th>
+                <th className="border p-2">Aksi</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {currentItems.map((s, index) => (
+                <tr key={s.id} className="text-center border">
+                  <td className="border px-4 py-2">
+                    {indexOfFirstItem + index + 1}
+                  </td>
+                  <td className="border px-4 py-2">{s.nisn}</td>
+                  <td className="border px-4 py-2">{s.nama}</td>
+                  <td className="px-4 py-2">
+                    <button
+                      onClick={() => handleDetailClick(s.id)}
+                      className="rounded-sm p-2 text-white border bg-blue-700 hover:bg-blue-800"
+                    >
+                      Detail Siswa
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
 
-        {/* Pagination */}
-        <div className="flex justify-center mt-4">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-            className="px-4 py-2 mx-1 bg-gray-300 rounded disabled:opacity-50"
-          >
-            Kembali
-          </button>
-          <span className="px-4 py-2">
-            {currentPage} / {totalPages}
-          </span>
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-            className="px-4 py-2 mx-1 bg-gray-300 rounded disabled:opacity-50"
-          >
-            Selanjutnya
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
     </div>
   );

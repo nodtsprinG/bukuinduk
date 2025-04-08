@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navigation from "../../../Components/nav";
@@ -14,7 +15,7 @@ const DataAngkatan = () => {
   const [filtered, setFiltered] = useState([]);
   const [role, setRole] = useState(""); // State untuk menyimpan role pengguna
 
-  // 🔥 Ambil Role dari API /auth/me
+  // Ambil Role dari API /auth/me
   useEffect(() => {
     axios.get(baseUrl + "/auth/me", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -77,12 +78,6 @@ const DataAngkatan = () => {
             </button>
           )}
         </header>
-        <input
-          type="search"
-          placeholder="Search"
-          onChange={(e) => setSearchkey(e.target.value)}
-          className="border w-full p-2 rounded-lg"
-        />
         <table className="w-full mt-4 border">
           <thead>
             <tr className="bg-gray-200">
@@ -108,12 +103,27 @@ const DataAngkatan = () => {
       </div>
       {showDialog && role !== "petugas" && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg">
+          <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-md">
             <h2 className="text-lg font-semibold mb-4">Tambah Angkatan</h2>
-            <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} className="w-full p-2 border rounded-lg" />
+            <input
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              className="w-full p-2 border rounded-lg"
+              placeholder="Tahun angkatan"
+            />
             <div className="flex justify-end mt-4 gap-2">
-              <button onClick={() => setShowDialog(false)} className="bg-gray-500 text-white p-2 rounded-lg">Batal</button>
-              <button onClick={handleAddClick} className="bg-blue-500 text-white p-2 rounded-lg">Tambah</button>
+              <button
+                onClick={() => setShowDialog(false)}
+                className="bg-gray-500 text-white p-2 rounded-lg"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleAddClick}
+                className="bg-blue-500 text-white p-2 rounded-lg"
+              >
+                Tambah
+              </button>
             </div>
           </div>
         </div>

@@ -10,9 +10,8 @@ const Aktivasi = () => {
     const navigate = useNavigate()
 
     const aktivasi = () => {
-        const token = localStorage.getItem("token"); // Ambil token dari localStorage
-        const email = localStorage.getItem("akun-email"); // Ambil email dari localStorage
-
+        const token = localStorage.getItem("token");
+    
         if (!token) {
             Swal.fire({
                 title: "Gagal",
@@ -22,16 +21,26 @@ const Aktivasi = () => {
             });
             return;
         }
-
-        axios.put(
-            baseUrl + "/admin/aktivasi",
-            {}, // Tidak perlu body, hanya headers saja
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
+    
+        // Langkah 1: Ambil data akun dulu (biar dapet ID)
+        axios.get(baseUrl + "/auth/me", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+        .then((res) => {
+            const  email  = localStorage.getItem("akun-email")
+    
+            // Langkah 2: Kirim request aktivasi berdasarkan ID
+            axios.put(
+                baseUrl + "/admin/aktivasi",
+                { email }, // kirim ID ke body
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
-            }
-        )
+            )
             .then((res) => {
                 Swal.fire({
                     title: "Berhasil",
@@ -39,7 +48,7 @@ const Aktivasi = () => {
                     icon: "success",
                     confirmButtonText: "OK",
                 }).then(() => {
-                    navigate("/admin/dashboard"); // Redirect setelah aktivasi berhasil
+                    navigate("/admin/dashboard");
                 });
             })
             .catch((err) => {
@@ -50,8 +59,16 @@ const Aktivasi = () => {
                     confirmButtonText: "OK",
                 });
             });
-    };
-
+        })
+        .catch((err) => {
+            Swal.fire({
+                title: "Gagal",
+                text: "Gagal mengambil data pengguna",
+                icon: "error",
+                confirmButtonText: "OK",
+            });
+        });
+    };    
 
     const [nama, setNama] = useState("");
     const [logo, setLogo] = useState(null);
