@@ -88,7 +88,7 @@ const TempatTinggal = () => {
 
       const tempat_tinggal = {
         ...siswa.tempat_tinggal, // Tambahkan status perubahan
-        status_perubahan: "approved",
+        status_data: "approved",
       };
 
       console.log("Struktur siswa yang dikirim:", JSON.stringify(tempat_tinggal, null, 2));

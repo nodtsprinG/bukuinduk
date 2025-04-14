@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import HeaderInput from "../../../Components/headerInput";
 import { useState, useEffect } from "react";
 import {
@@ -6,6 +7,7 @@ import {
 } from "../../../Components/inputComponent";
 import Nextbefore from "../../../Components/nextbefore";
 import { useNavigate, useParams } from "react-router";
+import Swal from "sweetalert2";
 /* 
 
 =====================================================================================================
@@ -27,6 +29,8 @@ const Kesehatan = () => {
   const [jasmani, setJasmani] = useState("");
   const [tinggi, setTinggi] = useState("");
   const [berat, setBerat] = useState("");
+  const [errors, setErrors] = useState({});
+
 
   useEffect(() => {
     console.log("Di cek dulu...");
@@ -57,29 +61,32 @@ const Kesehatan = () => {
   };
 
   const nextButton = () => {
-    console.log(
-      goldarah == "lainnya"
-        ? goldarahlain
-        : goldarah, penyakit, jasmani, tinggi, berat
-    );
-    if (
-      goldarah == "lainnya"
-        ? goldarahlain
-        : goldarah && tinggi && berat
-    ) {
-      localStorage.setItem(
-        "kesehatan-goldarah",
-        goldarah == "lainnya" ? goldarahlain : goldarah
-      );
-      localStorage.setItem("kesehatan-penyakit", penyakit ? penyakit : null);
-      localStorage.setItem("kesehatan-jasmani", jasmani ? jasmani : null);
-      localStorage.setItem("kesehatan-tinggi", tinggi);
-      localStorage.setItem("kesehatan-berat", berat);
+    const newErrors = {};
+
+    if (!goldarah) newErrors.goldarah = "Golongan darah wajib diisi.";
+    if (!tinggi) newErrors.tinggi = "Tinggi badan wajib diisi.";
+    if (!berat) newErrors.berat = "Berat badan wajib diisi.";
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      if (params.action === "upload") {
+        localStorage.setItem("kesehatan-goldarah", goldarah);
+        localStorage.setItem("kesehatan-penyakit", penyakit);
+        localStorage.setItem("kesehatan-jasmani", jasmani);
+        localStorage.setItem("kesehatan-tinggi", tinggi);
+        localStorage.setItem("kesehatan-berat", berat);
+      }
       navigate(`/siswa/data/${params.action}/pendidikan`);
     } else {
-      alert("Semua data belum terisi");
+      Swal.fire({
+        icon: "error",
+        text: "Harap lengkapi semua data yang wajib diisi.",
+        showCloseButton: true,
+      });
     }
   };
+
 
   return (
     <div className="bg-gray-100 w-screen min-h-screen px-8 py-6 rounded-lg text-lg overflow-y-auto">
@@ -91,7 +98,7 @@ const Kesehatan = () => {
           {/* Golongan Darah */}
           <div className="col-span-2">
             <div className="w-[75%]">
-              <label className="block font-medium mb-1">Golongan Darah</label>
+              <label className="block font-medium mb-1">Golongan Darah <span className="text-red-500">*</span></label>
               <select
                 value={goldarah}
                 onChange={(e) => setGoldarah(e.target.value)}
@@ -102,9 +109,8 @@ const Kesehatan = () => {
                 <option value="B">B</option>
                 <option value="AB">AB</option>
                 <option value="O">O</option>
-                <option value="lainnya">Lainnya</option>
-                <option value="tidak diketahui">Tidak Diketahui</option>
               </select>
+              {errors.goldarah && <p className="text-red-500 text-sm mt-1">{errors.goldarah}</p>}
             </div>
           </div>
 
@@ -122,20 +128,22 @@ const Kesehatan = () => {
 
           {/* Tinggi Badan */}
           <div>
-            <label className="block font-medium mb-1">Tinggi Badan (cm)</label>
+            <label className="block font-medium mb-1">Tinggi Badan <span className="text-red-500">*</span></label>
             <div className="flex items-center">
               <IntegerInput value={tinggi} onChange={(e) => setTinggi(e.target.value)} />
               <span className="ml-2 text-lg text-gray-700">CM</span>
             </div>
+            {errors.tinggi && <p className="text-red-500 text-sm mt-1">{errors.tinggi}</p>}
           </div>
 
           {/* Berat Badan */}
           <div>
-            <label className="block font-medium mb-1">Berat Badan (kg)</label>
+            <label className="block font-medium mb-1">Berat Badan <span className="text-red-500">*</span></label>
             <div className="flex items-center">
               <IntegerInput value={berat} onChange={(e) => setBerat(e.target.value)} />
               <span className="ml-2 text-lg text-gray-700">KG</span>
             </div>
+            {errors.berat && <p className="text-red-500 text-sm mt-1">{errors.berat}</p>}
           </div>
         </div>
       </div>

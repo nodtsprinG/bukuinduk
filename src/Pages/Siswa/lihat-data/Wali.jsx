@@ -73,7 +73,7 @@ const Wali = () => {
       delete siswa.wali.id
       const wali = {
         ...siswa.wali,
-        status_perubahan: "pending", // Tambahkan status perubahan
+        status_data: "pending", // Tambahkan status perubahan
       };
 
       console.log("Struktur siswa yang dikirim:", JSON.stringify(wali, null, 2));

@@ -85,7 +85,7 @@ const Hobi = () => {
       delete siswa.hobi_siswa.id
       const hobi_siswa = {
         ...siswa.hobi_siswa,
-        status_perubahan: "pending", // Tambahkan status perubahan
+        status_data: "pending", // Tambahkan status perubahan
       };
 
       console.log("Struktur siswa yang dikirim:", JSON.stringify(hobi_siswa, null, 2));

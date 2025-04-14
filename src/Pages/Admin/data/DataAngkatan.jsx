@@ -78,28 +78,41 @@ const DataAngkatan = () => {
             </button>
           )}
         </header>
-        <table className="w-full mt-4 border">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="p-2">No</th>
-              <th className="p-2">Angkatan</th>
-              <th className="p-2">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((s, index) => (
-              <tr key={s.id} className="border">
-                <td className="border px-4 py-2">{index + 1}</td>
-                <td className="border px-4 py-2">{s.tahun}</td>
-                <td className="px-4 py-2 grid grid-cols-2">
-                  <button disabled={role === "petugas"} onClick={() => handleEditClick(s.id, s.nama)} className={`col-span-2 text-white rounded-sm font-semibold ${role === "petugas" ? "bg-gray-400 cursor-not-allowed" : "bg-green-700"}`}>
-                    Ubah
-                  </button>
-                </td>
+        <div className="mt-6 overflow-x-auto shadow">
+          <table className="min-w-full border border-gray-200 bg-white text-sm">
+            <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
+              <tr>
+                <th className="px-6 py-3 border">No</th>
+                <th className="px-6 py-3 border">Angkatan</th>
+                <th className="px-6 py-3 border">Aksi</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="text-center text-gray-800">
+              {filtered.map((s, index) => (
+                <tr
+                  key={s.id}
+                  className="hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <td className="px-6 py-3 border">{index + 1}</td>
+                  <td className="px-6 py-3 border">{s.tahun}</td>
+                  <td className="px-6 py-3 border">
+                    <button
+                      disabled={role === "petugas"}
+                      onClick={() => handleEditClick(s.id, s.tahun)}
+                      className={`w-full px-4 py-2 rounded text-sm font-semibold transition-colors duration-200 
+                ${role === "petugas"
+                          ? "bg-gray-400 text-white cursor-not-allowed"
+                          : "bg-green-600 hover:bg-green-700 text-white"}
+              `}
+                    >
+                      Ubah
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       {showDialog && role !== "petugas" && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">

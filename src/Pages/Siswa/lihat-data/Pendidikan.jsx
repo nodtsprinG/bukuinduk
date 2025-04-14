@@ -73,7 +73,7 @@ const Pendidikan = () => {
       delete siswa.pendidikan.id
       const pendidikan = {
         ...siswa.pendidikan,
-        status_perubahan: "pending", // Tambahkan status perubahan
+        status_data: "pending", // Tambahkan status perubahan
       };
 
       console.log("Struktur siswa yang dikirim:", JSON.stringify(pendidikan, null, 2));

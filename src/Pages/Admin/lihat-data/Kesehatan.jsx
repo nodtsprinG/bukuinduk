@@ -73,7 +73,7 @@ const Kesehatan = () => {
 
       const kesehatan = {
         ...siswa.kesehatan, // Tambahkan status perubahan
-        status_perubahan: "approved",
+        status_data: "approved",
       };
 
       console.log("Struktur siswa yang dikirim:", JSON.stringify(kesehatan, null, 2));

@@ -8,7 +8,7 @@ import {
 } from "../../../Components/inputComponent";
 import Nextbefore from "../../../Components/nextbefore";
 import { useNavigate, useParams } from "react-router";
-
+import Swal from "sweetalert2";
 //Date issues
 
 import DatePicker from "react-datepicker";
@@ -43,6 +43,7 @@ const Ayah = () => {
   const [alamat, setAlamat] = useState("");
   const [telepon, setTelepon] = useState("");
   const [status, setStatus] = useState("");
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     console.log("Di cek dulu...");
@@ -76,36 +77,27 @@ const Ayah = () => {
   };
 
   const nextButton = () => {
-    console.log(
-      nama,
-      tempatlahir,
-      tanggallahir,
-      agama,
-      kewarganegaraan,
-      pendidikan,
-      pekerjaan,
-      pengeluaran,
-      alamat,
-      telepon || "-",
-      status
-    );
-    if (
-      nama &&
-      tempatlahir &&
-      tanggallahir &&
-      agama &&
-      kewarganegaraan &&
-      pendidikan &&
-      pekerjaan &&
-      pengeluaran &&
-      alamat &&
-      status
-    ) {
+
+    const newErrors = {}
+
+    if (!nama) newErrors.nama = "Nama ayah wajib diisi"
+    if (!tempatlahir) newErrors.tempatlahir = "Tempat lahir wajib diisi"
+    if (!tanggallahir) newErrors.tanggallahir = "Tanggal lahir wajib diisi"
+    if (!agama) newErrors.agama = "Agama wajib diisi"
+    if (!kewarganegaraan) newErrors.kewarganegaraan = "Kewarganegaraan wajib diisi"
+    if (!pendidikan) newErrors.pendidikan = "Pendidikan wajib diisi"
+    if (!pekerjaan) newErrors.pekerjaan = "Pekerjaan wajib diisi"
+    if (!pengeluaran) newErrors.pengeluaran = "Pengeluaran wajib diisi"
+    if (!alamat) newErrors.alamat = "Alamat wajib diisi"
+    if (!telepon) newErrors.telepon = "Telepon wajib diisi"
+    if (!status) newErrors.status = "Status ayah wajib diisi"
+
+    if (Object.keys(newErrors)) {
       if (params.action === "upload") {
         localStorage.setItem("ayah-nama", nama);
         localStorage.setItem("ayah-tempatlahir", tempatlahir);
         localStorage.setItem("ayah-tanggallahir", tanggallahir);
-        localStorage.setItem("ayah-agama", nama);
+        localStorage.setItem("ayah-agama", agama);
         localStorage.setItem("ayah-kewarganegaraan", kewarganegaraan);
         localStorage.setItem("ayah-pendidikan", pendidikan);
         localStorage.setItem("ayah-pekerjaan", pekerjaan);
@@ -114,12 +106,15 @@ const Ayah = () => {
         localStorage.setItem("ayah-telepon", telepon || "-");
         localStorage.setItem("ayah-status", status);
       }
-
       navigate(`/siswa/data/${params.action}/ibu`);
     } else {
-      alert("Semua data belum terisi");
+      Swal.fire({
+        icon: "error",
+        text: "Harap lengkapi semua data yang wajib diisi.",
+        showCloseButton: true,
+      });
     }
-  };
+  }
 
   return (
     <div className="bg-gray-100 w-screen min-h-screen px-8 py-6 text-lg overflow-y-auto">
@@ -130,7 +125,7 @@ const Ayah = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block font-medium mb-1">Nama Lengkap</label>
+            <label className="block font-medium mb-1">Nama Lengkap <span className="text-red-500">*</span></label>
             <TextInput value={nama} onChange={(e) => setNama(e.target.value)} />
           </div>
 
@@ -152,9 +147,22 @@ const Ayah = () => {
             />
           </div>
 
+          {/* Agama */}
           <div>
             <label className="block font-medium mb-1">Agama</label>
-            <TextInput value={agama} onChange={(e) => setAgama(e.target.value)} />
+            <select
+              value={agama}
+              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
+              onChange={(e) => setAgama(e.target.value)}
+            >
+              <option value="default" hidden>Pilih</option>
+              <option value="Islam">Islam</option>
+              <option value="Kristen">Kristen</option>
+              <option value="Katholik">Katholik</option>
+              <option value="Hindu">Hindu</option>
+              <option value="Buddha">Hindu</option>
+              <option value="Konghucu">Konghuchu</option>
+            </select>
           </div>
 
           <div>

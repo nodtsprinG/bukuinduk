@@ -102,7 +102,7 @@ const Biodata = () => {
     try {
       const biodata = {
         ...siswa.data_diri, // Tambahkan status perubahan
-        status_perubahan: "approved",
+        status_data: "approved",
       };
 
       console.log("Struktur siswa yang dikirim:", JSON.stringify(biodata, null, 2));
@@ -209,14 +209,15 @@ const Biodata = () => {
             { label: "Jenis Kelamin", field: "jenis_kelamin", type: "radio" },
             { label: "Bahasa Sehari-hari", field: "bahasa_sehari_hari" },
             { label: "Tempat Lahir", field: "tempat_lahir" },
-            { label: "Tanggal Lahir", field: "tanggal_lahir", type: "date" },
-            { label: "Agama", field: "agama" },
+            { label: "Tanggal Lahir", field: "tanggal_lahir", type: "date"  },
+            { label: "Agama", field: "agama", type: "select", options: ["Islam", "Kristen", "Katholik", "Hindu", "Buddha", "Konghucu"] },
             { label: "Kewarganegaraan", field: "kewarganegaraan" },
             { label: "Anak ke", field: "anak_ke", type: "integer" },
             { label: "Jumlah Saudara Kandung", field: "jml_saudara_kandung", type: "integer" },
             { label: "Jumlah Saudara Tiri", field: "jml_saudara_tiri", type: "integer" },
             { label: "Jumlah Saudara Angkat", field: "jml_saudara_angkat", type: "integer" },
-          ].map(({ label, field, type }, index) => (
+            { label: "Status", field: "anak_yatim", type: "select", options: ["lengkap", "yatim", "piatu", "yatim piatu"] },
+          ].map(({ label, field, type, options }, index) => (
             <div key={index} className="flex flex-col">
               <label className="text-gray-700 font-medium mb-1">{label}</label>
               {type === 'date' ? (
@@ -241,6 +242,20 @@ const Biodata = () => {
                   className="input-field"
                   disabled={!isEditing}
                 />
+              ) : type === "select" ? (
+                <select
+                  value={siswa.data_diri[field]}
+                  onChange={(e) => isEditing && handleChange(e, field)}
+                  disabled={!isEditing}
+                  className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none capitalize"
+                >
+                  <option value="" hidden>Pilih</option>
+                  {options.map((option, idx) => (
+                    <option key={idx} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               ) : (
                 <TextInput
                   value={siswa.data_diri[field]}
@@ -251,30 +266,6 @@ const Biodata = () => {
               )}
             </div>
           ))}
-
-          {/* Anak Yatim */}
-          <div className="flex flex-col">
-            <label className="text-gray-700 font-medium mb-1">Status</label>
-            <select
-              name="anak_yatim"
-              value={siswa.data_diri.kelengkapan_ortu || ""}
-              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
-              onChange={(e) =>
-                isEditing &&
-                setSiswa((prev) => ({
-                  ...prev,
-                  data_diri: { ...prev.data_diri, kelengkapan_ortu: e.target.value },
-                }))
-              }
-              disabled={!isEditing}
-            >
-              <option value="" hidden>Pilih</option>
-              <option value="lengkap">Lengkap</option>
-              <option value="yatim">Yatim</option>
-              <option value="piatu">Piatu</option>
-              <option value="yatim piatu">Yatim Piatu</option>
-            </select>
-          </div>
         </div>
       </div>
       {/* Tombol Next & Back */}

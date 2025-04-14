@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../utils/constan";
 import Navigation from "../../../Components/nav";
+import Swal from "sweetalert2";
 
 export default function SchoolDataComponent() {
     const [schoolName, setSchoolName] = useState("Memuat...");
@@ -29,7 +30,7 @@ export default function SchoolDataComponent() {
             <Navigation />
             <div className="bg-white p-6 text-center w-full max-w-2xl mx-auto">
                 <h1 className="text-2xl font-semibold mb-4">Data Sekolah</h1>
-                <p className="text-lg font-bold text-green-600">{schoolName}</p>
+                <p className="text-lg font-bold text-green-700">{schoolName}</p>
                 <div className="my-4">
                     {schoolLogo ? (
                         <img 
@@ -43,7 +44,7 @@ export default function SchoolDataComponent() {
                 </div>
                 <button 
                     onClick={() => setIsFormOpen(true)} 
-                    className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
+                    className="bg-green-700 hover:bg-green-800 text-white py-2 px-4 rounded"
                 >
                     Ubah Data Sekolah
                 </button>
@@ -88,8 +89,11 @@ function SchoolFormModal({ onClose, onUpdateName, onUpdateLogo }) {
                 });
                 onUpdateLogo();
             }
-
-            window.alert("Data Sekolah berhasil diperbarui!");
+            Swal.fire({
+                icon: 'success',
+                title: 'Data Sekolah diperbarui',
+                confirmButtonText: 'OK',
+            })
             onClose();
             window.location.reload();
         } catch (error) {

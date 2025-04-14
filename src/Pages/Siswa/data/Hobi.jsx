@@ -62,7 +62,7 @@ const Hobi = () => {
       icon: "success",
       confirmButtonText: "OK",
     });
-    navigate("/siswa/login")
+    // navigate("/siswa/login")
   })
   .catch((error) => {
     Swal.fire({

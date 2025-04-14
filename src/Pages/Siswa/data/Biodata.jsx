@@ -45,6 +45,8 @@ const Biodata = () => {
   const [tiri, setTiri] = useState("");
   const [status, setStatus] = useState("");
   const [bahasa, setBahasa] = useState("");
+  const [errors, setErrors] = useState({});
+
   const navigate = useNavigate();
 
   const backButton = () => {
@@ -69,11 +71,11 @@ const Biodata = () => {
       setKewarganegaraan(localStorage.getItem("biodata-kewarganegaraan"));
     if (localStorage.getItem("biodata-anakke"))
       setAnakke(localStorage.getItem("biodata-anakke"));
-    if (localStorage.getItem("biodata-kandung")!== "null")
+    if (localStorage.getItem("biodata-kandung") !== "null")
       setKandung(localStorage.getItem("biodata-kandung"));
-    if (localStorage.getItem("biodata-angkat")!== "null")
+    if (localStorage.getItem("biodata-angkat") !== "null")
       setAngkat(localStorage.getItem("biodata-angkat"));
-    if (localStorage.getItem("biodata-tiri")!== "null")
+    if (localStorage.getItem("biodata-tiri") !== "null")
       setTiri(localStorage.getItem("biodata-tiri"));
     if (localStorage.getItem("biodata-status"))
       setStatus(localStorage.getItem("biodata-status"));
@@ -82,32 +84,22 @@ const Biodata = () => {
   }, []);
 
   const nextButton = () => {
-    console.log(
-      nama,
-      panggilan,
-      jeniskelamin,
-      tempatlahir,
-      tanggallahir,
-      agama,
-      kewarganegaraan,
-      anakke,
-      kandung || 0,
-      angkat || 0,
-      tiri || 0,
-      status,
-      bahasa
-    );
-    if (
-      nama &&
-      panggilan &&
-      jeniskelamin &&
-      tempatlahir &&
-      tanggallahir &&
-      agama &&
-      kewarganegaraan &&
-      anakke &&
-      bahasa
-    ) {
+    const newErrors = {};
+
+    if (!nama) newErrors.nama = "Nama lengkap wajib diisi.";
+    if (!panggilan) newErrors.panggilan = "Nama panggilan wajib diisi.";
+    if (!jeniskelamin) newErrors.jeniskelamin = "Jenis kelamin wajib diisi.";
+    if (!tempatlahir) newErrors.tempatlahir = "Tempat lahir wajib diisi.";
+    if (!tanggallahir) newErrors.tanggallahir = "Tanggal lahir wajib diisi.";
+    if (!agama) newErrors.agama = "Agama wajib diisi.";
+    if (!kewarganegaraan) newErrors.kewarganegaraan = "Kewarganegaraan wajib diisi.";
+    if (!anakke) newErrors.anakke = "Nomor anak ke-berapa wajib diisi.";
+    if (!bahasa) newErrors.bahasa = "Bahasa sehari-hari wajib diisi.";
+    if (!status) newErrors.status = "Status orang tua wajib diisi.";
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
       if (params.action === "upload") {
         localStorage.setItem("biodata-nama", nama);
         localStorage.setItem("biodata-panggilan", panggilan);
@@ -127,9 +119,9 @@ const Biodata = () => {
     } else {
       Swal.fire({
         icon: "error",
-        text: "Semua data belum terisi",
+        text: "Harap lengkapi semua data yang wajib diisi.",
         showCloseButton: true,
-      })
+      });
     }
   };
 
@@ -141,37 +133,58 @@ const Biodata = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Nama Lengkap */}
           <div>
-            <label className="block font-medium mb-1">Nama Lengkap</label>
+            <label className="block font-medium mb-1">
+              Nama Lengkap <span className="text-red-500">*</span>
+            </label>
             <TextInput value={nama} onChange={(e) => setNama(e.target.value)} />
+            {errors.nama && <p className="text-red-500 text-sm mt-1">{errors.nama}</p>}
           </div>
 
           {/* Nama Panggilan */}
           <div>
-            <label className="block font-medium mb-1">Nama Panggilan</label>
+            <label className="block font-medium mb-1">
+              Nama Panggilan <span className="text-red-500">*</span>
+            </label>
             <TextInput value={panggilan} onChange={(e) => setPanggilan(e.target.value)} />
+            {errors.panggilan && <p className="text-red-500 text-sm mt-1">{errors.panggilan}</p>}
           </div>
 
           {/* Jenis Kelamin */}
           <div>
-            <label className="block font-medium mb-1">Jenis Kelamin</label>
+            <label className="block font-medium mb-1">Jenis Kelamin <span className="text-red-500">*</span></label>
             <RadioInput value={jeniskelamin} onChange={(e) => setJeniskelamin(e.target.value)} />
+            {errors.jeniskelamin && <p className="text-red-500 text-sm mt-1">{errors.jeniskelamin}</p>}
           </div>
 
           {/* Agama */}
           <div>
-            <label className="block font-medium mb-1">Agama</label>
-            <TextInput value={agama} onChange={(e) => setAgama(e.target.value)} />
+            <label className="block font-medium mb-1">Agama <span className="text-red-500">*</span></label>
+            <select
+              value={agama}
+              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
+              onChange={(e) => setAgama(e.target.value)}
+            >
+              <option value="default" hidden>Pilih</option>
+              <option value="Islam">Islam</option>
+              <option value="Kristen">Kristen</option>
+              <option value="Katholik">Katholik</option>
+              <option value="Hindu">Hindu</option>
+              <option value="Buddha">Hindu</option>
+              <option value="Konghucu">Konghuchu</option>
+            </select>
+            {errors.agama && <p className="text-red-500 text-sm mt-1">{errors.agama}</p>}
           </div>
 
           {/* Tempat Lahir */}
           <div>
-            <label className="block font-medium mb-1">Tempat Lahir</label>
+            <label className="block font-medium mb-1">Tempat Lahir <span className="text-red-500">*</span></label>
             <TextInput value={tempatlahir} onChange={(e) => setTempatlahir(e.target.value)} />
+            {errors.tempatlahir && <p className="text-red-500 text-sm mt-1">{errors.tempatlahir}</p>}
           </div>
 
           {/* Tanggal Lahir */}
           <div>
-            <label className="block font-medium mb-1">Tanggal Lahir</label>
+            <label className="block font-medium mb-1">Tanggal Lahir <span className="text-red-500">*</span></label>
             <DatePicker
               selected={tanggallahir}
               onChange={(date) => setTanggallahir(date)}
@@ -181,24 +194,28 @@ const Biodata = () => {
               className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
               maxDate={new Date()}
             />
+            {errors.tanggallahir && <p className="text-red-500 text-sm mt-1">{errors.tanggallahir}</p>}
           </div>
 
           {/* Kewarganegaraan */}
           <div>
-            <label className="block font-medium mb-1">Kewarganegaraan</label>
+            <label className="block font-medium mb-1">Kewarganegaraan <span className="text-red-500">*</span></label>
             <TextInput value={kewarganegaraan} onChange={(e) => setKewarganegaraan(e.target.value)} />
+            {errors.kewarganegaraan && <p className="text-red-500 text-sm mt-1">{errors.kewarganegaraan}</p>}
           </div>
 
           {/* Bahasa Sehari-hari */}
           <div>
-            <label className="block font-medium mb-1">Bahasa Sehari-hari</label>
+            <label className="block font-medium mb-1">Bahasa Sehari-hari <span className="text-red-500">*</span></label>
             <TextInput value={bahasa} onChange={(e) => setBahasa(e.target.value)} />
+            {errors.bahasa && <p className="text-red-500 text-sm mt-1">{errors.bahasa}</p>}
           </div>
 
           {/* Anak ke-berapa */}
           <div>
-            <label className="block font-medium mb-1">Anak Ke</label>
+            <label className="block font-medium mb-1">Anak Ke <span className="text-red-500">*</span></label>
             <IntegerInput value={anakke} onChange={(e) => setAnakke(e.target.value)} />
+            {errors.anakke && <p className="text-red-500 text-sm mt-1">{errors.anakke}</p>}
           </div>
 
           {/* Jumlah Saudara Kandung */}
@@ -233,7 +250,7 @@ const Biodata = () => {
 
           {/* Status Orang Tua */}
           <div>
-            <label className="block font-medium mb-1">Status Orang Tua</label>
+            <label className="block font-medium mb-1">Status Orang Tua <span className="text-red-500">*</span></label>
             <select
               value={status}
               className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
@@ -245,9 +262,10 @@ const Biodata = () => {
               <option value="piatu">Piatu</option>
               <option value="yatim piatu">Yatim Piatu</option>
             </select>
+            {errors.status && <p className="text-red-500 text-sm mt-1">{errors.status}</p>}
           </div>
 
-          
+
         </div>
       </div>
 

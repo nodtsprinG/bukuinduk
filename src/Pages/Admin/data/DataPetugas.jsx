@@ -37,34 +37,34 @@ const DataJurusan = () => {
   // Tambah petugas
   const handleAddClick = () => {
     if (!username.trim() || !email.trim() || !password.trim()) {
-        return alert("Semua data harus diisi!");
+      return alert("Semua data harus diisi!");
     }
 
-    axios.post(baseUrl + "/admin/petugas/", 
+    axios.post(baseUrl + "/admin/petugas/",
       { username, email, password },
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     )
-    .then(() => {
-      setShowDialog(false);
-      setUsername("");  // Reset input setelah berhasil
-      setEmail(""); 
-      setPassword("");
-      Swal.fire({
-        icon : "info",
-        title: "Tunggu Konfirmasi Petugas",
-        text: "Menunggu konfirmasi petugas",
-        showConfirmButton: false,
-        timer: 3000
+      .then(() => {
+        setShowDialog(false);
+        setUsername("");  // Reset input setelah berhasil
+        setEmail("");
+        setPassword("");
+        Swal.fire({
+          icon: "info",
+          title: "Tunggu Konfirmasi Petugas",
+          text: "Menunggu konfirmasi petugas",
+          showConfirmButton: false,
+          timer: 3000
+        })
+        console.log("✅ Data berhasil dikirim:", { username, email, password });
+
+        updatePetugas(); // Jika ada fungsi untuk refresh data petugas
       })
-      console.log("✅ Data berhasil dikirim:", { username, email, password });
-      
-      updatePetugas(); // Jika ada fungsi untuk refresh data petugas
-    })
-    .catch(error => {
-      console.error("❌ Error saat menambahkan petugas:", error.response?.data || error.message);
-      alert("Terjadi kesalahan: " + (error.response?.data?.message || "Silakan coba lagi."));
-    });
-};
+      .catch(error => {
+        console.error("❌ Error saat menambahkan petugas:", error.response?.data || error.message);
+        alert("Terjadi kesalahan: " + (error.response?.data?.message || "Silakan coba lagi."));
+      });
+  };
 
 
   // Buka dialog edit
@@ -80,7 +80,7 @@ const DataJurusan = () => {
   const handleUpdateClick = () => {
     if (!editUsername || !editEmail || !editPassword) return alert("Semua data harus diisi!");
 
-    axios.put(baseUrl + `/admin/petugas/${editId}`, 
+    axios.put(baseUrl + `/admin/petugas/${editId}`,
       { username: editUsername, email: editEmail, password: editPassword },
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     ).then(() => {
@@ -89,14 +89,30 @@ const DataJurusan = () => {
     });
   };
 
-  // Hapus petugas
   const handleDeleteClick = (id) => {
-    if (window.confirm("Apakah yakin ingin menghapus petugas ini?")) {
-      axios.delete(baseUrl + `/admin/petugas/${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      }).then(updatePetugas);
-    }
+    Swal.fire({
+      title: 'Yakin ingin menghapus?',
+      text: "Data petugas ini akan dihapus secara permanen.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Hapus',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(baseUrl + `/admin/petugas/${id}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }).then(() => {
+          Swal.fire('Berhasil!', 'Data petugas telah dihapus.', 'success');
+          updatePetugas();
+        }).catch(() => {
+          Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus.', 'error');
+        });
+      }
+    });
   };
+
 
   return (
     <div className="flex h-screen">
@@ -110,7 +126,7 @@ const DataJurusan = () => {
         </header>
         <input
           type="search"
-          placeholder="Search Petugas"
+          placeholder="Cari Petugas"
           onChange={(e) => setSearchKey(e.target.value)}
           className="border w-full p-2 rounded-lg"
         />
@@ -145,15 +161,43 @@ const DataJurusan = () => {
 
       {/* Dialog Tambah Petugas */}
       {showDialog && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <h2 className="text-lg font-semibold mb-4">Tambah Petugas</h2>
-            <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" className="w-full p-2 border rounded-lg mb-2" />
-            <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="w-full p-2 border rounded-lg mb-2" />
-            <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" type="password" className="w-full p-2 border rounded-lg mb-2" />
-            <div className="flex justify-end gap-2">
-              <button onClick={() => setShowDialog(false)} className="bg-gray-500 text-white p-2 rounded-lg">Batal</button>
-              <button onClick={handleAddClick} className="bg-blue-500 text-white p-2 rounded-lg">Tambah</button>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 transition-opacity">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-fade-in">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Tambah Petugas</h2>
+            <div className="space-y-3">
+              <input
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Nama Petugas"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+              <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                placeholder="Kata Sandi"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+            <div className="flex justify-end gap-2 mt-6">
+              <button
+                onClick={() => setShowDialog(false)}
+                className="px-4 py-2 rounded-lg bg-gray-400 hover:bg-gray-500 text-white transition"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleAddClick}
+                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition"
+              >
+                Tambah
+              </button>
             </div>
           </div>
         </div>
@@ -161,15 +205,43 @@ const DataJurusan = () => {
 
       {/* Dialog Edit Petugas */}
       {editDialog && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <h2 className="text-lg font-semibold mb-4">Ubah Petugas</h2>
-            <input value={editUsername} onChange={(e) => setEditUsername(e.target.value)} className="w-full p-2 border rounded-lg mb-2" />
-            <input value={editEmail} onChange={(e) => setEditEmail(e.target.value)} className="w-full p-2 border rounded-lg mb-2" />
-            <input value={editPassword} onChange={(e) => setEditPassword(e.target.value)} type="password" className="w-full p-2 border rounded-lg mb-2" />
-            <div className="flex justify-end gap-2">
-              <button onClick={() => setEditDialog(false)} className="bg-gray-500 text-white p-2 rounded-lg">Batal</button>
-              <button onClick={handleUpdateClick} className="bg-blue-500 text-white p-2 rounded-lg">Simpan</button>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 transition-opacity">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-fade-in">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Ubah Petugas</h2>
+            <div className="space-y-3">
+              <input
+                value={editUsername}
+                onChange={(e) => setEditUsername(e.target.value)}
+                placeholder="Username"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+              <input
+                value={editEmail}
+                onChange={(e) => setEditEmail(e.target.value)}
+                placeholder="Email"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+              <input
+                value={editPassword}
+                onChange={(e) => setEditPassword(e.target.value)}
+                type="password"
+                placeholder="Password"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+            <div className="flex justify-end gap-2 mt-6">
+              <button
+                onClick={() => setEditDialog(false)}
+                className="px-4 py-2 rounded-lg bg-gray-400 hover:bg-gray-500 text-white transition"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleUpdateClick}
+                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition"
+              >
+                Simpan
+              </button>
             </div>
           </div>
         </div>

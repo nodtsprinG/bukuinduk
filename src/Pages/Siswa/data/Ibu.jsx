@@ -147,9 +147,22 @@ const Ibu = () => {
             />
           </div>
 
+          {/* Agama */}
           <div>
             <label className="block font-medium mb-1">Agama</label>
-            <TextInput value={agama} onChange={(e) => setAgama(e.target.value)} />
+            <select
+              value={agama}
+              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
+              onChange={(e) => setAgama(e.target.value)}
+            >
+              <option value="default" hidden>Pilih</option>
+              <option value="Islam">Islam</option>
+              <option value="Kristen">Kristen</option>
+              <option value="Katholik">Katholik</option>
+              <option value="Hindu">Hindu</option>
+              <option value="Buddha">Hindu</option>
+              <option value="Konghucu">Konghuchu</option>
+            </select>
           </div>
 
           <div>

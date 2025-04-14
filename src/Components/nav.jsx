@@ -90,12 +90,13 @@ const Navigation = () => {
     { to: "/admin/dataangkatan", icon: <FaHistory size={20} />, label: "Data Angkatan" },
     { to: "/admin/mapel", icon: <FaBook size={20} />, label: "Mata Pelajaran" },
     { to: "/admin/datasiswa", icon: <FaUserGraduate size={20} />, label: "Data Siswa" },
-    role !== "petugas" && { to: "/admin/petugas", icon: <FaUserCog size={20} />, label: "Petugas" },
-    role !== "petugas" && { to: "/admin/pending", icon: <MdPendingActions size={20} />, label: "Pending Data" }
+    role !== "petugas" && { to: "/admin/petugas", icon: <FaUserCog size={20} />, label: "Data Petugas" },
+    role !== "petugas" && { to: "/admin/pending", icon: <MdPendingActions size={20} />, label: "Data Pengajuan" },
+    role !== "petugas" && { to: "/admin/unverified", icon: <MdPendingActions size={20} />, label: "Verifikasi Data" }
   ].filter(Boolean);
 
   return (
-    <nav className="h-full w-72 bg-gray-900 text-white p-6 flex flex-col">
+    <nav className="h-full w-72 bg-gray-900 text-white p-6 flex flex-col space-y-5">
       <div className="flex items-center space-x-3 mb-6">
         <img 
           src={`data:image/png;base64,${logo}`} 
@@ -128,7 +129,7 @@ const Navigation = () => {
           className="flex w-full items-center space-x-3 p-3 rounded-lg bg-red-600 hover:bg-red-700 transition duration-300"
         >
           <FaSignOutAlt size={20} />
-          <span className="text-sm font-medium">Logout</span>
+          <span className="text-sm font-medium">Keluar</span>
         </button>
       </div>
     </nav>

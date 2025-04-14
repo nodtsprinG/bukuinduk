@@ -721,46 +721,43 @@ const DataSiswa = () => {
           />
         )}
 
-        <button
-          onClick={() => tambah()}
-          className="p-2 flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white text-normal rounded-sm mt-4"
-        >
-          <FaPlus className="text-sm" />
-          Tambah Siswa
-        </button>
-
         {currentItems.length === 0 ? (
           <div className="text-center mt-6 text-gray-500">Tidak ada data siswa</div>
         ) : (
-          <table className="w-full mt-4 border border-gray-300">
-            <thead className="bg-gray-200 border p-2">
-              <tr>
-                <th className="border p-2">No</th>
-                <th className="border p-2">NISN</th>
-                <th className="border p-2">Nama</th>
-                <th className="border p-2">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((s, index) => (
-                <tr key={s.id} className="text-center border">
-                  <td className="border px-4 py-2">
-                    {indexOfFirstItem + index + 1}
-                  </td>
-                  <td className="border px-4 py-2">{s.nisn}</td>
-                  <td className="border px-4 py-2">{s.nama}</td>
-                  <td className="px-4 py-2">
-                    <button
-                      onClick={() => handleDetailClick(s.id)}
-                      className="rounded-sm p-2 text-white border bg-blue-700 hover:bg-blue-800"
-                    >
-                      Detail Siswa
-                    </button>
-                  </td>
+          <div className="mt-6 overflow-x-auto shadow">
+            <table className="min-w-full border border-gray-200 bg-white text-sm">
+              <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
+                <tr>
+                  <th className="px-6 py-3 border">No</th>
+                  <th className="px-6 py-3 border">NISN</th>
+                  <th className="px-6 py-3 border">Nama</th>
+                  <th className="px-6 py-3 border">Aksi</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="text-center text-gray-800">
+                {currentItems.map((s, index) => (
+                  <tr
+                    key={s.id}
+                    className="hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <td className="px-6 py-3 border">
+                      {indexOfFirstItem + index + 1}
+                    </td>
+                    <td className="px-6 py-3 border">{s.nisn}</td>
+                    <td className="px-6 py-3 border">{s.nama}</td>
+                    <td className="px-6 py-3 border">
+                      <button
+                        onClick={() => handleDetailClick(s.id)}
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+                      >
+                        Detail Siswa
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
 
         <Pagination

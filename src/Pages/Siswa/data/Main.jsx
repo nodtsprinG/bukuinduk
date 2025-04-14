@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import Logo from "../../../assets/logosekolah.png"
 import axios from "axios";
-// import GoBack from "../../../components/goback";
-
+import { Listbox } from "@headlessui/react";
 import { baseUrl } from "../../../utils/constan";
 
 const TambahAkun = () => {
@@ -78,28 +77,50 @@ const TambahAkun = () => {
             className="border border-gray-300 rounded p-2 mb-4 focus:outline-none focus:ring focus:ring-gray-300"
             placeholder="Masukkan NISN"
           />
-          <label className="text-gray-600 text-sm">Jurusan</label>
-          <select
-            value={jurusanId}
-            onChange={(e) => setJurusanId(e.target.value)}
-            className="border border-gray-300 rounded p-2 mb-4 focus:outline-none focus:ring focus:ring-gray-300"
-          >
-            <option value="default" hidden>Pilih Jurusan</option>
-            {jurusan.map((jrs) => (
-              <option key={jrs.id} value={jrs.id}>{jrs.nama}</option>
-            ))}
-          </select>
-          <label className="text-gray-600 text-sm">Angkatan</label>
-          <select
-            value={angkatan_id}
-            onChange={(e) => setAngkatan_id(e.target.value)}
-            className="border border-gray-300 rounded p-2 mb-4 focus:outline-none focus:ring focus:ring-gray-300"
-          >
-            <option value="default" hidden>Pilih Angkatan</option>
-            {angkatan.map((ank) => (
-              <option key={ank.id} value={ank.id}>{ank.tahun}</option>
-            ))}
-          </select>
+          <label className="text-gray-600 text-sm mb-1">Jurusan</label>
+          <Listbox value={jurusanId} onChange={(value) => setJurusanId(value)}>
+            <div className="relative mb-4">
+              <Listbox.Button className="w-full rounded border border-gray-300 bg-white p-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+                {jurusan.find((j) => j.id == jurusanId)?.nama || "Pilih Jurusan"}
+              </Listbox.Button>
+              <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                {jurusan.map((jrs) => (
+                  <Listbox.Option
+                    key={jrs.id}
+                    value={jrs.id}
+                    className={({ active }) =>
+                      `cursor-pointer select-none px-4 py-2 ${active ? "bg-blue-100 text-blue-900" : "text-gray-900"
+                      }`
+                    }
+                  >
+                    {jrs.nama}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
+          </Listbox>
+          <label className="text-gray-600 text-sm mb-1">Angkatan</label>
+          <Listbox value={angkatan_id} onChange={(value) => setAngkatan_id(value)}>
+            <div className="relative mb-4">
+              <Listbox.Button className="w-full rounded border border-gray-300 bg-white p-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+                {angkatan.find((a) => a.id == angkatan_id)?.tahun || "Pilih Angkatan"}
+              </Listbox.Button>
+              <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                {angkatan.map((ank) => (
+                  <Listbox.Option
+                    key={ank.id}
+                    value={ank.id}
+                    className={({ active }) =>
+                      `cursor-pointer select-none px-4 py-2 ${active ? "bg-blue-100 text-blue-900" : "text-gray-900"
+                      }`
+                    }
+                  >
+                    {ank.tahun}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
+          </Listbox>
           <div className="flex justify-between mt-4">
             <button
               onClick={back}

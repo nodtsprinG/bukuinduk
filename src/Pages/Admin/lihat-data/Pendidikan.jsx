@@ -74,7 +74,7 @@ const Pendidikan = () => {
 
       const pendidikan = {
         ...siswa.pendidikan, // Tambahkan status perubahan
-        status_perubahan: "approved",
+        status_data: "approved",
       };
 
       console.log("Struktur siswa yang dikirim:", JSON.stringify(pendidikan, null, 2));
