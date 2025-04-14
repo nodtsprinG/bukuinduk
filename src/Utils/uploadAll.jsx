@@ -58,14 +58,14 @@ const uploadAll = async () => {
         jml_saudara_tiri: getItem("biodata-tiri") || 0,
         kelengkapan_ortu: getItem("biodata-status"),
         bahasa_sehari_hari: getItem("biodata-bahasa"),
-        status_perubahan: "approved"
+        status_data: "unverified"
       },
       tempat_tinggal: {
         alamat: getItem("tempattinggal-alamat"),
         no_telepon: getItem("tempattinggal-telp"),
         tinggal_dengan: getItem("tempattinggal-tinggal"),
         jarak_ke_sekolah: getItem("tempattinggal-jarak"),
-        status_perubahan: "approved"
+        status_data: "unverified"
       },
       kesehatan: {
         gol_darah: getItem("kesehatan-goldarah"),
@@ -73,7 +73,7 @@ const uploadAll = async () => {
         kelainan_jasmani: getItem("kesehatan-jasmani"),
         tinggi: getItem("kesehatan-tinggi"),
         berat_badan: getItem("kesehatan-berat"),
-        status_perubahan: "approved"
+        status_data: "unverified"
       },
       pendidikan: {
         diterima_tanggal: getItem("pendidikan-tanggal"),
@@ -89,7 +89,7 @@ const uploadAll = async () => {
         diterima_di_bidang_keahlian: getItem("pendidikan-bidangkeahlian"),
         diterima_di_program_keahlian: getItem("pendidikan-programkeahlian"),
         diterima_di_paket_keahlian : getItem("pendidikan-paketkeahlian"),
-        status_perubahan: "approved"
+        status_data: "unverified"
       },
       ayah_kandung: {
         nama: getItem("ayah-nama"),
@@ -103,7 +103,7 @@ const uploadAll = async () => {
         alamat: getItem("ayah-alamat"),
         no_telepon: getItem("ayah-telepon"),
         status: getItem("ayah-status"),
-        status_perubahan: "approved"
+        status_data: "unverified"
       },
       ibu_kandung: {
         nama: getItem("ibu-nama"),
@@ -117,7 +117,7 @@ const uploadAll = async () => {
         alamat: getItem("ibu-alamat"),
         no_telepon: getItem("ibu-telepon"),
         status: getItem("ibu-status"),
-        status_perubahan: "approved"
+        status_data: "unverified"
       },
       wali: {
         nama: getItem("wali-nama"),
@@ -130,14 +130,14 @@ const uploadAll = async () => {
         pengeluaran_per_bulan: getItem("wali-pengeluaran"),
         alamat: getItem("wali-alamat"),
         no_telepon: getItem("wali-telepon"),
-        status_perubahan: "approved"
+        status_data: "unverified"
       },
       hobi_siswa: {
         kesenian: getItem("hobi-kesenian"),
         olahraga: getItem("hobi-olahraga"),
         organisasi: getItem("hobi-organisasi"),
         lain_lain: getItem("hobi-lainlain"),
-        status_perubahan: "approved"
+        status_data: "unverified"
       },
     };
 

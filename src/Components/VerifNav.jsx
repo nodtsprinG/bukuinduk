@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
-import client from "../Utils/client"
+import client from "../Utils/client";
 import Swal from "sweetalert2";
 
 function DataDiriNav({ data }) {
@@ -28,25 +29,20 @@ function DataDiriNav({ data }) {
 
     function acceptChanges(e) {
         e.preventDefault();
-        client.post("/admin/data-diri/pending/" + data.id).then(() => {
+        client.post("/admin/data-diri/unverified/" + data.id).then(() => {
             Swal.fire({
-                icon: "success",
-                title: "Data Berhasil diterima",
-                text: "Semua data berhasil diterima!",
-                confirmButtonText: "OK",
-            })
+                            icon: "success",
+                            title: "Data Berhasil diterima",
+                            text: "Semua data berhasil diterima!",
+                            confirmButtonText: "OK",
+                        })
         });
     }
 
     function rejectChanges(e) {
         e.preventDefault();
-        client.delete("/admin/data-diri/pending/" + data.id).then(() => {
-            Swal.fire({
-                icon: "success",
-                title: "Data Berhasil ditolak",
-                text: "Semua data berhasil ditolak!",
-                confirmButtonText: "OK",
-            })
+        client.delete("/admin/data-diri/unverified/" + data.id).then(() => {
+            alert("Semua data berhasil ditolak!");
         });
     }
 
@@ -76,7 +72,7 @@ function DataDiriNav({ data }) {
             <div className="max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 mb-6">
                 {/* Data Baru */}
                 <div className="mb-6">
-                    <div className="font-bold text-blue-600 mb-2">Data Baru</div>
+                    <div className="font-bold text-blue-600 mb-2">Data Masuk</div>
                     <table className="w-full table-fixed mb-4 border-collapse shadow rounded-lg overflow-hidden capitalize">
                         <tbody>
                             {active &&
@@ -93,38 +89,6 @@ function DataDiriNav({ data }) {
                                             <td className="p-2 w-1/3 text-gray-600 border-b">{val.replaceAll("_", " ")}</td>
                                             <td className="p-2 w-10 border-b text-center">:</td>
                                             <td className="p-2 w-2/3 text-gray-800 border-b">{data[active][val]}</td>
-                                        </tr>
-                                    );
-                                })}
-                        </tbody>
-                    </table>
-                </div>
-
-                {/* Data Lama */}
-                <div className="mb-4">
-                    <div className="font-bold text-blue-600 mb-2">Data Lama</div>
-                    <table className="w-full table-fixed mb-4 border-collapse shadow rounded-lg overflow-hidden capitalize">
-                        <tbody>
-                            {active &&
-                                data[active] &&
-                                typeof data[active] === "object" &&
-                                Object.keys(data[active]).map((val, index) => {
-                                    if (["id", "user_id", "status_data"].includes(val)) return null;
-                                    const isDifferent = oldData?.[active]?.[val] !== data?.[active]?.[val];
-                                    return (
-                                        <tr
-                                            key={index}
-                                            className={`text-sm ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                                                }`}
-                                        >
-                                            <td className="p-2 w-1/3 text-gray-600 border-b">{val.replaceAll("_", " ")}</td>
-                                            <td className="p-2 w-10 border-b text-center">:</td>
-                                            <td
-                                                className={`p-2 w-2/3 border-b ${isDifferent ? "font-semibold text-red-500" : "text-gray-800"
-                                                    }`}
-                                            >
-                                                {oldData[active] && oldData[active][val]}
-                                            </td>
                                         </tr>
                                     );
                                 })}

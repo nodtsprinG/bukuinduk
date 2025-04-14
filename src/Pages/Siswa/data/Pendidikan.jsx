@@ -15,6 +15,7 @@ import "react-datepicker/dist/react-datepicker.css";
 // CSS Modules, react-datepicker-cssmodules.css//
 import "react-datepicker/dist/react-datepicker-cssmodules.css";
 import { useNavigate, useParams } from "react-router";
+import Swal from "sweetalert2";
 
 /* 
 
@@ -45,7 +46,8 @@ const Pendidikan = () => {
   const [programkeahlian, setProgramkeahlian] = useState("");
   const [paketkeahlian, setPaketkeahlian] = useState("");
   const [kelas, setKelas] = useState(0);
-  const [lamabelajar, setLamabelajar] = useState("")
+  const [lamabelajar, setLamabelajar] = useState("");
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     console.log("Di cek dulu...");
@@ -84,51 +86,47 @@ const Pendidikan = () => {
   };
 
   const nextButton = () => {
-    console.log(
-      tanggal,
-      tamatan,
-      lamabelajar,
-      tanggalIjazah,
-      nomorijazah,
-      tanggalSkhun,
-      nomorskhun,
-      darisekolah || "-",
-      alasan || "-",
-      bidangkeahlian,
-      programkeahlian,
-      paketkeahlian,
-      kelas
-    );
-    if (
-      tanggal &&
-      tamatan &&
-      lamabelajar &&
-      tanggalIjazah &&
-      nomorijazah &&
-      tanggalSkhun &&
-      nomorskhun &&
-      bidangkeahlian &&
-      programkeahlian &&
-      paketkeahlian &&
-      kelas
-    ) {
-      localStorage.setItem("pendidikan-tanggal", tanggal);
-      localStorage.setItem("pendidikan-tamatan", tamatan);
-      localStorage.setItem("pendidikan-tanggal-ijazah", tanggalIjazah);
-      localStorage.setItem("pendidikan-nomor-ijazah", nomorijazah);
-      localStorage.setItem("pendidikan-tanggal-skhun", tanggalSkhun);
-      localStorage.setItem("pendidikan-nomor-skhun", nomorskhun);
-      localStorage.setItem("pendidikan-darisekolah", darisekolah ? darisekolah : null);
-      localStorage.setItem("pendidikan-alasan", alasan ? alasan : null);
-      localStorage.setItem("pendidikan-bidangkeahlian", bidangkeahlian);
-      localStorage.setItem("pendidikan-programkeahlian", programkeahlian);
-      localStorage.setItem("pendidikan-paketkeahlian", paketkeahlian);
-      localStorage.setItem("pendidikan-kelas", kelas);
-      localStorage.setItem("pendidikan-sebelumnyalamabelajar", lamabelajar)
-      navigate(`/siswa/data/${params.action}/ayah`);
-    } else {
-      alert("Semua data belum terisi");
+    const newErrors = {};
+
+    if (!tanggal) newErrors.tanggal = "Tanggal masuk wajib diisi"
+    if (!tamatan) newErrors.tamatan = "Tamatan wajib diisi.";
+    if (!lamabelajar) newErrors.lamabelajar = "Lama belajar wajib diisi.";
+    if (!tanggalIjazah) newErrors.tanggalIjazah = "Tanggal ijazah wajib diisi.";
+    if (!nomorijazah) newErrors.nomorijazah = "Nomor ijazah wajib diisi.";
+    if (!tanggalSkhun) newErrors.tanggalSkhun = "Tanggal SKHUN wajib diisi." ;
+    if (!nomorskhun) newErrors.nomorskhun = "Nomor SKHUN wajib diisi.";
+    if (!bidangkeahlian) newErrors.bidangkeahlian = "Bidang keahlian wajib diisi.";
+    if (!programkeahlian) newErrors.programkeahlian = "Program keahlian wajib diisi.";
+    if (!paketkeahlian) newErrors.paketkeahlian = "Paket keahlian wajib diisi." ;
+    if (!kelas) newErrors.kelas = "Kelas wajib diisi.";
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      if (params.action === "upload") {
+        localStorage.setItem("pendidikan-tanggal", tanggal);
+        localStorage.setItem("pendidikan-tamatan", tamatan);
+        localStorage.setItem("pendidikan-tanggal-ijazah", tanggalIjazah);
+        localStorage.setItem("pendidikan-nomor-ijazah", nomorijazah);
+        localStorage.setItem("pendidikan-tanggal-skhun", tanggalSkhun);
+        localStorage.setItem("pendidikan-nomor-skhun", nomorskhun);
+        localStorage.setItem("pendidikan-darisekolah", darisekolah ? darisekolah : null);
+        localStorage.setItem("pendidikan-alasan", alasan ? alasan : null);
+        localStorage.setItem("pendidikan-bidangkeahlian", bidangkeahlian);
+        localStorage.setItem("pendidikan-programkeahlian", programkeahlian);
+        localStorage.setItem("pendidikan-paketkeahlian", paketkeahlian);
+        localStorage.setItem("pendidikan-kelas", kelas);
+        localStorage.setItem("pendidikan-sebelumnyalamabelajar", lamabelajar)
+        navigate(`/siswa/data/${params.action}/ayah`);
+      } else {
+        Swal.fire({
+          icon: "error",
+          text: "Harap lengkapi semua data yang wajib diisi.",
+          showCloseButton: true,
+        });
+      }
     }
+
   };
 
   return (
@@ -142,20 +140,22 @@ const Pendidikan = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           <div>
-            <label className="block font-medium mb-1">Tamatan Dari</label>
+            <label className="block font-medium mb-1">Tamatan Dari <span className="text-red-500">*</span></label>
             <TextInput value={tamatan} onChange={(e) => setTamatan(e.target.value)} />
+            {errors.tamatan && <p className="text-red-500 text-sm">{errors.tamatan}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Sebelumnya Lama Belajar</label>
+            <label className="block font-medium mb-1">Sebelumnya Lama Belajar <span className="text-red-500">*</span></label>
             <div className="flex items-center">
               <IntegerInput value={lamabelajar} onChange={(e) => setLamabelajar(e.target.value)} />
               <span className="ml-2 text-gray-700">Tahun</span>
             </div>
+            {errors.lamabelajar && <p className="text-red-500 text-sm">{errors.lamabelajar}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Tanggal Ijazah</label>
+            <label className="block font-medium mb-1">Tanggal Ijazah <span className="text-red-500">*</span></label>
             <DatePicker
               selected={tanggalIjazah}
               onChange={(date) => setTanggalIjazah(date)}
@@ -163,15 +163,17 @@ const Pendidikan = () => {
               showYearDropdown
               dateFormat={"dd-MM-yyyy"}
               className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none" />
+            {errors.tanggalIjazah && <p className="text-red-500 text-sm">{errors.tanggalIjazah}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Nomor Ijazah</label>
+            <label className="block font-medium mb-1">Nomor Ijazah <span className="text-red-500">*</span></label>
             <TextInput value={nomorijazah} onChange={(e) => setNomorijazah(e.target.value)} />
+            {errors.nomorijazah && <p className="text-red-500 text-sm">{errors.nomorijazah}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Tanggal SKHUN</label>
+            <label className="block font-medium mb-1">Tanggal SKHUN <span className="text-red-500">*</span></label>
             <DatePicker
               selected={tanggalSkhun}
               onChange={(date) => setTanggalSkhun(date)}
@@ -180,11 +182,13 @@ const Pendidikan = () => {
               dateFormat={"dd-MM-yyyy"}
               className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
             />
+            {errors.tanggalSkhun && <p className="text-red-500 text-sm">{errors.tanggalSkhun}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Nomor SKHUN</label>
+            <label className="block font-medium mb-1">Nomor SKHUN <span className="text-red-500">*</span></label>
             <TextInput value={nomorskhun} onChange={(e) => setNomorSKHUN(e.target.value)} />
+            {errors.nomorskhun && <p className="text-red-500 text-sm">{errors.nomorskhun}</p>}
           </div>
         </div>
 
@@ -205,12 +209,13 @@ const Pendidikan = () => {
         <h2 className="text-xl font-bold mt-6 mb-4">3. Diterima di Sekolah Ini</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block font-medium mb-1">Kelas</label>
+            <label className="block font-medium mb-1">Kelas <span className="text-red-500">*</span></label>
             <IntegerInput value={kelas} onChange={(e) => setKelas(e.target.value)} />
+            {errors.kelas && <p className="text-red-500 text-sm">{errors.kelas}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Tanggal</label>
+            <label className="block font-medium mb-1">Tanggal<span className="text-red-500">*</span></label>
             <DatePicker
               selected={tanggal}
               onChange={(date) => setTanggal(date)}
@@ -218,23 +223,26 @@ const Pendidikan = () => {
               showYearDropdown
               dateFormat={"dd-MM-yyyy"}
               className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
-              maxDate={new Date()}
             />
+            {errors.tanggal && <p className="text-red-500 text-sm">{errors.tanggal}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Bidang Keahlian</label>
+            <label className="block font-medium mb-1">Bidang Keahlian <span className="text-red-500">*</span></label>
             <TextInput value={bidangkeahlian} onChange={(e) => setBidangkeahlian(e.target.value)} />
+            {errors.bidangkeahlian && <p className="text-red-500 text-sm">{errors.bidangkeahlian}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Program Keahlian</label>
+            <label className="block font-medium mb-1">Program Keahlian <span className="text-red-500">*</span></label>
             <TextInput value={programkeahlian} onChange={(e) => setProgramkeahlian(e.target.value)} />
+            {errors.programkeahlian && <p className="text-red-500 text-sm">{errors.programkeahlian}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Paket Keahlian</label>
+            <label className="block font-medium mb-1">Paket Keahlian <span className="text-red-500">*</span></label>
             <TextInput value={paketkeahlian} onChange={(e) => setPaketkeahlian(e.target.value)} />
+            {errors.paketkeahlian && <p className="text-red-500 text-sm">{errors.paketkeahlian}</p>}
           </div>
 
         </div>

@@ -73,7 +73,7 @@ const Biodata = () => {
       delete siswa.ibu_kandung.id
       const ibu = {
         ...siswa.ibu_kandung,
-        status_perubahan: "pending", // Tambahkan status perubahan
+        status_data: "pending", // Tambahkan status perubahan
       };
 
       console.log("Struktur siswa yang dikirim:", JSON.stringify(ibu, null, 2));

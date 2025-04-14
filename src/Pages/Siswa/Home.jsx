@@ -28,7 +28,7 @@ import Lwali from "./lihat-data/Wali"
 import Lpendidikan from "./lihat-data/Pendidikan"
 import Lhobi from "./lihat-data/Hobi"
 
-import resetAll from "../../utils/resetAll";
+import resetAll from "../../Utils/resetAll";
 
 const HomeSiswa = () => {
   const navigate = useNavigate();

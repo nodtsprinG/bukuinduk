@@ -84,12 +84,12 @@ const Biodata = () => {
 
       const perkembangan = {
         ...siswa.perkembangan, // Tambahkan status perubahan
-        status_perubahan: "approved",
+        status_data: "approved",
       };
 
       console.log("Struktur siswa yang dikirim:", JSON.stringify(perkembangan, null, 2));
 
-      const response = await axios.put(baseUrl + `/admin/data-diri/${id}`, { perkembangan }, {
+      const response = await axios.put(baseUrl + `/admin/data-diri/${id}`, { perkembangan: perkembangan }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",

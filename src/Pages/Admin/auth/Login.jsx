@@ -11,42 +11,83 @@ const Login = () => {
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
-            navigate("/admin/dashboard")
+            if (localStorage.getItem('status') === 'aktif') {
+                navigate("/admin/dashboard")
+            }
+            else {
+                navigate("/admin/auth/aktivasi")
+            }
         }
     })
 
     const verify = () => {
-        if (email.length == 0) {
+        if (email.length === 0) {
             Swal.fire({
                 icon: 'error',
                 title: 'Email Kosong',
                 text: 'Silakan masukkan email Anda!',
                 showConfirmButton: true,
-            })
-        } else if (password.length == 0) {
+            });
+            return;
+        } else if (password.length === 0) {
             Swal.fire({
                 icon: 'error',
                 title: 'Password Kosong',
                 text: 'Silakan masukkan password Anda!',
                 showConfirmButton: true,
-            })
+            });
+            return;
         }
-        console.log(email, password)
-        axios.post(baseUrl + "/auth/login-admin", {
-            email, password
-        }).then((res) => {
-            const { code } = res.data
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil Masuk',
-                text: 'Silakan tunggu sebentar...',
-                showConfirmButton: false,
-                timer: 1500
+    
+        console.log(email, password);
+    
+        axios.post(baseUrl + "/auth/login-admin", { email, password })
+            .then((res) => {
+                const { action, code } = res.data;
+                console.log("Actionnya :", action)
+    
+                if (action === "need_code") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Kode Dikirim ke Email',
+                        text: 'Silakan cek email Anda untuk verifikasi',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+    
+                    localStorage.setItem("akun-email", email);
+                    navigate("/admin/auth/verification/" + code);
+    
+                } else if (action === "need_verification") {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Akun Belum Aktif',
+                        text: 'Silakan aktivasi akun Anda terlebih dahulu',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+    
+                    navigate("/admin/auth/aktivasi");
+    
+                } else {
+                    // fallback jika action tidak diketahui
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Respons Tidak Dikenal',
+                        text: 'Mohon hubungi administrator',
+                        showConfirmButton: true,
+                    });
+                }
             })
-            navigate("/admin/auth/verification/" + code)
-            localStorage.setItem("akun-email", email)
-        })
-    }
+            .catch((err) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Gagal',
+                    text: err.response?.data?.message || 'Terjadi kesalahan pada server',
+                    showConfirmButton: true,
+                });
+            });
+    }    
 
     const [nama, setNama] = useState("");
     const [logo, setLogo] = useState(null);

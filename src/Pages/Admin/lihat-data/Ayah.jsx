@@ -75,7 +75,7 @@ const Biodata = () => {
 
       const ayah_kandung = {
         ...siswa.ayah_kandung, // Tambahkan status perubahan
-        status_perubahan: "approved",
+        status_data: "approved",
       };
 
       console.log("Struktur siswa yang dikirim:", JSON.stringify(ayah_kandung, null, 2));

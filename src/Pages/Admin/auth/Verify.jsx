@@ -27,19 +27,22 @@ const Verify = () => {
                     axios.get(baseUrl + "/auth/me", {
                         headers: { Authorization: `Bearer ${token}` }
                     }).then((res) => {
-                        const { status } = res.data;
-
+                        const status = res.data?.status || res.data?.data?.status;
+                        console.log("DATA /auth/me:", res.data);
+                        console.log("Status akun:", status); // Debugging
+                        localStorage.setItem("status", status);
                         Swal.fire({
                             title: "Berhasil",
                             text: "Akun Anda berhasil diverifikasi",
                             icon: "success",
                             confirmButtonText: "OK",
                         }).then(() => {
+                            console.log("Status akun:", status);
                             // Arahkan berdasarkan status akun
-                            if (status === "inactive") {
-                                navigate("/admin/auth/aktivasi");
-                            } else {
+                            if (status === "aktif") {
                                 navigate("/admin/dashboard");
+                            } else {
+                                navigate("/admin/auth/aktivasi");
                             }
                         });
                     }).catch((err) => {

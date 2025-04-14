@@ -74,7 +74,7 @@ const TempatTinggal = () => {
       delete siswa.tempat_tinggal.id
       const tempat = {
         ...siswa.tempat_tinggal,
-        status_perubahan: "pending", // Tambahkan status perubahan
+        status_data: "pending", // Tambahkan status perubahan
       };
 
       console.log("Struktur siswa yang dikirim:", JSON.stringify(tempat, null, 2));

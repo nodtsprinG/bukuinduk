@@ -6,6 +6,7 @@ import {
 } from "../../../Components/inputComponent";
 import Nextbefore from "../../../Components/nextbefore";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 /* 
 
 =====================================================================================================
@@ -25,6 +26,8 @@ const TempatTinggal = () => {
   const [telp, setTelp] = useState("")
   const [tinggal, setTinggal] = useState("")
   const [jarak, setJarak] = useState("")
+  const [errors, setErrors] = useState({});
+
 
   useEffect(() => {
     console.log("Di cek dulu...");
@@ -43,21 +46,32 @@ const TempatTinggal = () => {
   };
 
   const nextButton = () => {
-    console.log(
-      alamat, telp, tinggal, jarak
-    );
-    if (
-      alamat && telp && tinggal && jarak
-    ) {
-      localStorage.setItem("tempattinggal-alamat", alamat);
-      localStorage.setItem("tempattinggal-telp", telp);
-      localStorage.setItem("tempattinggal-tinggal", tinggal);
-      localStorage.setItem("tempattinggal-jarak", jarak);
+    const newErrors = {};
+  
+    if (!alamat) newErrors.alamat = "Alamat wajib diisi.";
+    if (!telp) newErrors.telp = "Nomo Telepon wajib diisi.";
+    if (!tinggal) newErrors.tinggal = "Tinggal dengan wajib diisi.";
+    if (!jarak) newErrors.jarak = "Jarak ke sekolah wajib diisi.";
+  
+    setErrors(newErrors);
+  
+    if (Object.keys(newErrors).length === 0) {
+      if (params.action === "upload") {
+        localStorage.setItem("tempattinggal-alamat", alamat);
+        localStorage.setItem("tempattinggal-telp", telp);
+        localStorage.setItem("tempattinggal-tinggal", tinggal);
+        localStorage.setItem("tempattinggal-jarak", jarak);
+      }
       navigate(`/siswa/data/${params.action}/kesehatan`);
     } else {
-      alert("Semua data belum terisi");
+      Swal.fire({
+        icon: "error",
+        text: "Harap lengkapi semua data yang wajib diisi.",
+        showCloseButton: true,
+      });
     }
   };
+  
 
   return (
     <div className="bg-gray-100 w-screen min-h-screen px-8 py-6 rounded-lg text-lg overflow-y-auto">
@@ -68,19 +82,21 @@ const TempatTinggal = () => {
           
           {/* Alamat */}
           <div className="col-span-2">
-            <label className="block font-medium mb-1">Alamat</label>
+            <label className="block font-medium mb-1">Alamat <span className="text-red-500">*</span></label>
             <TextInput value={alamat} onChange={(e) => setAlamat(e.target.value)} />
+            {errors.alamat && <p className="text-red-500 text-sm">{errors.alamat}</p>}
           </div>
 
           {/* No Telepon */}
           <div>
-            <label className="block font-medium mb-1">No Telp/HP</label>
+            <label className="block font-medium mb-1">No Telepon  / Handphone <span className="text-red-500">*</span></label>
             <TextInput value={telp} onChange={(e) => setTelp(e.target.value)} />
+            {errors.telp && <p className="text-red-500 text-sm">{errors.telp}</p>}
           </div>
 
           {/* Tinggal Dengan */}
           <div>
-            <label className="block font-medium mb-1">Tinggal Dengan</label>
+            <label className="block font-medium mb-1">Tinggal Dengan <span className="text-red-500">*</span></label>
             <select
               value={tinggal}
               onChange={(e) => setTinggal(e.target.value)}
@@ -92,15 +108,17 @@ const TempatTinggal = () => {
               <option value="lainnya">Lainnya</option>
               <option value="wali">Wali</option>
             </select>
+            {errors.tinggal && <p className="text-red-500 text-sm">{errors.tinggal}</p>}
           </div>
 
           {/* Jarak Tempat Tinggal ke Sekolah */}
           <div>
-            <label className="block font-medium mb-1">Jarak Tempat Tinggal ke Sekolah (Km)</label>
+            <label className="block font-medium mb-1">Jarak Tempat Tinggal ke Sekolah <span className="text-red-500">*</span></label>
             <div className="flex items-center">
               <IntegerInput value={jarak} onChange={(e) => setJarak(e.target.value)} />
               <span className="ml-2 text-lg text-gray-700">Km</span>
             </div>
+            {errors.jarak && <p className="text-red-500 text-sm">{errors.jarak}</p>}
           </div>
         </div>
 

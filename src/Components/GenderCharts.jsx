@@ -31,10 +31,10 @@ const GenderCharts = () => {
       const colors = {};
 
       const jurusanColors = {
-        "Rekayasa Perangkat Lunak": "#FC8A31",    // Warna untuk Rekayasa Perangkat Lunak
-        "Desain Komunikasi Visual": "#1C87D6",    // Warna untuk Teknik Komputer & Jaringan
-        "Audio Video": "#62BB51",
-        "Broadcasting": "#E04F52",
+        "Rekayasa Perangkat Lunak": "#fc5e03",    
+        "Desain Komunikasi Visual": "#1C87D6",
+        "Audio Video": "#62BB32",
+        "Broadcasting": "#fc0303",
         "Animasi": "#D94B98",
         "Teknik Komunikasi Jaringan": "#FECC2C",
         "Elektronika Industri": "#009253",
@@ -107,8 +107,8 @@ const GenderCharts = () => {
       categories: chartData.jurusan,
       labels: {
         style: {
-          colors: chartData.jurusan.map(j => jurusanColors[j] || '#000000'),
-          fontSize: '12px'
+          colors: chartData.jurusan.map,
+          fontSize: '14px'
         }
       }
     },
@@ -132,7 +132,7 @@ const GenderCharts = () => {
     dataLabels: {
       enabled: true,
       style: {
-        colors: ['#000000']
+        colors: ['#FFFFFF']
       }
     }
   };
@@ -144,7 +144,7 @@ const GenderCharts = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
-      <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all">
+      <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all text-black">
         <h3 className="text-lg font-semibold mb-4">Distribusi Siswa per Jurusan</h3>
         <ReactApexChart
           options={chartOptions}

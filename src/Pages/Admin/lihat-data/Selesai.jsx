@@ -101,7 +101,7 @@ const Kesehatan = () => {
 
             const setelah_pendidikan = {
                 ...siswa.setelah_pendidikan, // Tambahkan status perubahan
-                status_perubahan: "approved",
+                status_data: "approved",
             };
 
             console.log("Struktur siswa yang dikirim:", JSON.stringify(setelah_pendidikan, null, 2));
