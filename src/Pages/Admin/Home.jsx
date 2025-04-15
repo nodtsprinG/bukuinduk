@@ -124,7 +124,7 @@ const AdminRouting = () => {
       <Route exact path="/auth/login" element={<Login />} />
       <Route exact path="/auth/verification/:code" element={<Verify />} />
       <Route exact path="/auth/aktivasi" element={<Aktivasi />} />
-      <Route path="/verify" element={<VerifyToken />} />
+      <Route exact path="/verify/:token" element={<VerifyToken />} />
       {/* [#] Halaman Input Data */}
       <Route exact path="/lihat/:id/*" element={<LihatData />} />
       <Route exact path="/tambah" element={<TambahSiswa />} />
