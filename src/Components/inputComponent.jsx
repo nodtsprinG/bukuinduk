@@ -13,12 +13,13 @@ export const TextInput = ({ onChange, value, placeholder = "Masukkan teks..." })
   );
 };
 
-export const IntegerInput = ({ onChange, value, placeholder = "0" }) => {
+export const IntegerInput = ({ onChange, value, placeholder = "0", step=1 }) => {
   return (
     <input
       value={value === null ? "" : value}
       onChange={onChange}
       placeholder={placeholder}
+      step={step}
       className="bg-white border text-center border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[25%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
       type="number"
     />

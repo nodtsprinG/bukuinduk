@@ -31,11 +31,12 @@ function DataDiriNav({ data }) {
         e.preventDefault();
         client.post("/admin/data-diri/unverified/" + data.id).then(() => {
             Swal.fire({
-                            icon: "success",
-                            title: "Data Berhasil diterima",
-                            text: "Semua data berhasil diterima!",
-                            confirmButtonText: "OK",
-                        })
+                icon: "success",
+                title: "Data Berhasil diterima",
+                text: "Semua data berhasil diterima!",
+                confirmButtonText: "OK",
+            })
+            window.reload()
         });
     }
 

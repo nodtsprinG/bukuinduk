@@ -28,9 +28,11 @@ const Verify = () => {
                         headers: { Authorization: `Bearer ${token}` }
                     }).then((res) => {
                         const status = res.data?.status || res.data?.data?.status;
+                        const role = res.data?.role || res.data?.data?.role;
                         console.log("DATA /auth/me:", res.data);
                         console.log("Status akun:", status); // Debugging
                         localStorage.setItem("status", status);
+                        localStorage.setItem("Role : ", role);
                         Swal.fire({
                             title: "Berhasil",
                             text: "Akun Anda berhasil diverifikasi",

@@ -32,45 +32,41 @@ const DataSiswa = () => {
       try {
         const token = localStorage.getItem("token");
         const cachedSiswa = localStorage.getItem("id_siswa");
-
-        if (cachedSiswa) {
-          // ✅ Ambil data siswa dari localStorage (hanya ID, bukan seluruh data siswa)
-          console.log("✅ Data ID siswa sudah ada di localStorage.");
-
-          // Kalau kamu ingin tetap menampilkan data siswa saat ini,
-          // sebaiknya cache juga seluruh data siswa, bukan cuma ID-nya.
-          const cachedSiswaData = localStorage.getItem("siswa_data");
-          if (cachedSiswaData) {
-            setSiswa(JSON.parse(cachedSiswaData)); // Tampilkan data dari cache
-            console.log("📦 Menampilkan siswa dari cache");
-          }
-
-          return;
-        }
-
-        // ✅ Ambil data dari server
-        const [akunRes, jurusanRes, angkatanRes] = await Promise.all([
-          axios.get(`${baseUrl}/admin/akun`, { headers: { Authorization: `Bearer ${token}` } }),
+    
+        // ✅ Ambil jurusan & angkatan SELALU
+        const [jurusanRes, angkatanRes] = await Promise.all([
           axios.get(`${baseUrl}/admin/jurusan`, { headers: { Authorization: `Bearer ${token}` } }),
           axios.get(`${baseUrl}/admin/angkatan`, { headers: { Authorization: `Bearer ${token}` } }),
         ]);
-
-        const siswaData = akunRes.data;
-
-        // Simpan ke state
-        setSiswa(siswaData);
         setJurusanList(jurusanRes.data);
         setAngkatanList(angkatanRes.data);
-
-        // Cache ID dan data siswa
-        const id_siswa = siswaData.map((item) => item.id);
-        localStorage.setItem("id_siswa", JSON.stringify(id_siswa));
+    
+        if (cachedSiswa) {
+          // ✅ Gunakan data siswa dari cache
+          const cachedSiswaData = localStorage.getItem("siswa_data");
+          if (cachedSiswaData) {
+            setSiswa(JSON.parse(cachedSiswaData));
+            console.log("📦 Menampilkan siswa dari cache");
+          }
+          return;
+        }
+    
+        // ✅ Ambil data siswa jika belum ada di cache
+        const akunRes = await axios.get(`${baseUrl}/admin/akun`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+    
+        const siswaData = akunRes.data;
+    
+        setSiswa(siswaData);
+        localStorage.setItem("id_siswa", JSON.stringify(siswaData.map((item) => item.id)));
         localStorage.setItem("siswa_data", JSON.stringify(siswaData));
-        console.log("📦 Data siswa disimpan di localStorage:", id_siswa);
+        console.log("📦 Data siswa disimpan di localStorage");
+    
       } catch (error) {
         console.error("❌ Error mengambil data:", error);
       }
-    };
+    };    
 
     fetchData();
   }, []); // Tetap hanya dijalankan sekali  
