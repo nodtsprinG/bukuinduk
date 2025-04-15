@@ -4,6 +4,7 @@ import {
   IntegerInput,
   TextInput,
 } from "../../../Components/inputComponent";
+import Swal from "sweetalert2";
 import Nextbefore from "../../../Components/nextbefore";
 import { useNavigate, useParams } from "react-router";
 
@@ -41,6 +42,7 @@ const Ibu = () => {
   const [alamat, setAlamat] = useState("");
   const [telepon, setTelepon] = useState("");
   const [status, setStatus] = useState("");
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     console.log("Di cek dulu...");
@@ -63,7 +65,7 @@ const Ibu = () => {
     if (localStorage.getItem("ibu-alamat"))
       setAlamat(localStorage.getItem("ibu-alamat"));
     if (localStorage.getItem("ibu-telepon"));
-      setTelepon(localStorage.getItem("ibu-telepon"))
+    setTelepon(localStorage.getItem("ibu-telepon"))
     if (localStorage.getItem("ibu-status"))
       setStatus(localStorage.getItem("ibu-status"));
   }, []);
@@ -73,47 +75,42 @@ const Ibu = () => {
   };
 
   const nextButton = () => {
-    console.log(
-      nama,
-      tempatlahir,
-      tanggallahir,
-      agama,
-      kewarganegaraan,
-      pendidikan,
-      pekerjaan,
-      pengeluaran,
-      alamat,
-      telepon,
-      status
-    );
-    if (
-      nama &&
-      tempatlahir &&
-      tanggallahir &&
-      agama &&
-      kewarganegaraan &&
-      pendidikan &&
-      pekerjaan &&
-      pengeluaran &&
-      alamat &&
-      telepon &&
-      status
-    ) {
-      localStorage.setItem("ibu-nama", nama);
-      localStorage.setItem("ibu-tempatlahir", tempatlahir);
-      localStorage.setItem("ibu-tanggallahir", tanggallahir);
-      localStorage.setItem("ibu-agama", nama);
-      localStorage.setItem("ibu-kewarganegaraan", kewarganegaraan);
-      localStorage.setItem("ibu-pendidikan", pendidikan);
-      localStorage.setItem("ibu-pekerjaan", pekerjaan);
-      localStorage.setItem("ibu-pengeluaran", pengeluaran);
-      localStorage.setItem("ibu-alamat", alamat);
-      localStorage.setItem("ibu-telepon", telepon || "-");
-      localStorage.setItem("ibu-status", status);
+    const newErrors = {};
 
+    if (!nama) newErrors.nama = "Nama ibu wajib diisi.";
+    if (!tempatlahir) newErrors.tempatlahir = "Tempat lahir wajib diisi.";
+    if (!tanggallahir) newErrors.tanggallahir = "Tanggal lahir wajib diisi.";
+    if (!agama) newErrors.agama = "Agama wajib diisi.";
+    if (!kewarganegaraan) newErrors.kewarganegaraan = "Kewarganegaraan wajib diisi.";
+    if (!pendidikan) newErrors.pendidikan = "Pendidikan wajib diisi.";
+    if (!pekerjaan) newErrors.pekerjaan = "Pekerjaan wajib diisi.";
+    if (!pengeluaran) newErrors.pengeluaran = "Pengeluaran wajib diisi.";
+    if (!alamat) newErrors.alamat = "Alamat ibu wajib diisi.";
+    if (!status) newErrors.status = "Status ibu wajib diisi.";
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      if (params.action === "upload") {
+        localStorage.setItem("ibu-nama", nama);
+        localStorage.setItem("ibu-tempatlahir", tempatlahir);
+        localStorage.setItem("ibu-tanggallahir", tanggallahir);
+        localStorage.setItem("ibu-agama", nama);
+        localStorage.setItem("ibu-kewarganegaraan", kewarganegaraan);
+        localStorage.setItem("ibu-pendidikan", pendidikan);
+        localStorage.setItem("ibu-pekerjaan", pekerjaan);
+        localStorage.setItem("ibu-pengeluaran", pengeluaran);
+        localStorage.setItem("ibu-alamat", alamat);
+        localStorage.setItem("ibu-telepon", telepon || "-");
+        localStorage.setItem("ibu-status", status);
+      }
       navigate(`/siswa/data/${params.action}/wali`);
     } else {
-      alert("Semua data belum terisi");
+      Swal.fire({
+        icon: "error",
+        text: "Harap lengkapi semua data yang wajib diisi.",
+        showCloseButton: true,
+      });
     }
   };
 
@@ -126,30 +123,33 @@ const Ibu = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block font-medium mb-1">Nama Lengkap</label>
+            <label className="block font-medium mb-1">Nama Lengkap <span className="text-red-500">*</span></label>
             <TextInput value={nama} onChange={(e) => setNama(e.target.value)} />
+            {errors.nama && <p className="text-red-500 text-sm">{errors.nama}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Tempat Lahir</label>
+            <label className="block font-medium mb-1">Tempat Lahir <span className="text-red-500">*</span></label>
             <TextInput value={tempatlahir} onChange={(e) => setTempatlahir(e.target.value)} />
+            {errors.tempatlahir && <p className="text-red-500 text-sm">{errors.tempatlahir}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Tanggal Lahir</label>
+            <label className="block font-medium mb-1">Tanggal Lahir <span className="text-red-500">*</span></label>
             <DatePicker
               selected={tanggallahir}
               onChange={(date) => setTanggallahir(date)}
               scrollableMonthYearDropdown
               showYearDropdown
               dateFormat={"dd-MM-yyyy"}
-              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"              maxDate={new Date()}
+              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none" maxDate={new Date()}
             />
+            {errors.tanggallahir && <p className="text-red-500 text-sm">{errors.tanggallahir}</p>}
           </div>
 
           {/* Agama */}
           <div>
-            <label className="block font-medium mb-1">Agama</label>
+            <label className="block font-medium mb-1">Agama <span className="text-red-500">*</span></label>
             <select
               value={agama}
               className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
@@ -163,43 +163,49 @@ const Ibu = () => {
               <option value="Buddha">Hindu</option>
               <option value="Konghucu">Konghuchu</option>
             </select>
+            {errors.agama && <p className="text-red-500 text-sm">{errors.agama}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Kewarganegaraan</label>
+            <label className="block font-medium mb-1">Kewarganegaraan <span className="text-red-500">*</span></label>
             <TextInput value={kewarganegaraan} onChange={(e) => setKewarganegaraan(e.target.value)} />
+            {errors.kewarganegaraan && <p className="text-red-500 text-sm">{errors.kewarganegaraan}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Pendidikan</label>
+            <label className="block font-medium mb-1">Pendidikan <span className="text-red-500">*</span></label>
             <TextInput value={pendidikan} onChange={(e) => setPendidikan(e.target.value)} />
+            {errors.pendidikan && <p className="text-red-500 text-sm">{errors.pendidikan}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Pekerjaan</label>
+            <label className="block font-medium mb-1">Pekerjaan <span className="text-red-500">*</span></label>
             <TextInput value={pekerjaan} onChange={(e) => setPekerjaan(e.target.value)} />
+            {errors.pekerjaan && <p className="text-red-500 text-sm">{errors.pekerjaan}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Pengeluaran per Bulan (Rp)</label>
+            <label className="block font-medium mb-1">Pengeluaran per Bulan <span className="text-red-500">*</span></label>
             <div className="flex items-center">
               <span className="text-xl mr-8 text-gray-500">Rp</span>
-              <IntegerInput value={pengeluaran} onChange={(e) => setPengeluaran(e.target.value)} className="w-full" />
+              <IntegerInput value={pengeluaran} step={100000} onChange={(e) => setPengeluaran(e.target.value)} className="w-full" />
             </div>
+            {errors.pengeluaran && <p className="text-red-500 text-sm">{errors.pengeluaran}</p>}
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Alamat</label>
+            <label className="block font-medium mb-1">Alamat <span className="text-red-500">*</span></label>
             <TextInput value={alamat} onChange={(e) => setAlamat(e.target.value)} />
+            {errors.alamat && <p className="text-red-500 text-sm">{errors.alamat}</p>}
           </div>
-          
+
           <div>
-            <label className="block font-medium mb-1">Telepon</label>
+            <label className="block font-medium mb-1">Telepon <span className="text-red-500">*</span></label>
             <TextInput value={telepon} onChange={(e) => setTelepon(e.target.value)} />
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Status</label>
+            <label className="block font-medium mb-1">Status Ibu <span className="text-red-500">*</span></label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
@@ -208,6 +214,7 @@ const Ibu = () => {
               <option value="masih hidup">Masih Hidup</option>
               <option value="meninggal">Meninggal Dunia</option>
             </select>
+            {errors.status && <p className="text-red-500 text-sm">{errors.status}</p>}
           </div>
         </div>
       </div>

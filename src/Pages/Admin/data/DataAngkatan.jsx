@@ -15,17 +15,7 @@ const DataAngkatan = () => {
   const [filtered, setFiltered] = useState([]);
   const [role, setRole] = useState(""); // State untuk menyimpan role pengguna
 
-  // Ambil Role dari API /auth/me
-  useEffect(() => {
-    axios.get(baseUrl + "/auth/me", {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    })
-      .then((res) => {
-        console.log("Role pengguna:", res.data); // Debugging
-        setRole(res.data.role); // Pastikan state diperbarui
-      }) // Ambil role dari response API
-      .catch((err) => console.error("Gagal mengambil data user:", err));
-  }, []);
+  const roles = localStorage.getItem("user_role")
 
   const updateAngkatan = () => {
     axios.get(baseUrl + "/admin/angkatan", {
@@ -72,7 +62,7 @@ const DataAngkatan = () => {
       <div className="flex-1 p-6 bg-white text-black overflow-y-scroll">
         <header className="flex justify-between items-center mb-4">
           <h1 className="text-3xl">Angkatan SMKN 2 Singosari</h1>
-          {role !== "petugas" && (
+          {roles !== "petugas" && (
             <button onClick={() => setShowDialog(true)} className="bg-blue-500 text-white p-2 rounded-sm">
               Tambah Angkatan
             </button>
@@ -100,7 +90,7 @@ const DataAngkatan = () => {
                       disabled={role === "petugas"}
                       onClick={() => handleEditClick(s.id, s.tahun)}
                       className={`w-full px-4 py-2 rounded text-sm font-semibold transition-colors duration-200 
-                ${role === "petugas"
+                ${roles === "petugas"
                           ? "bg-gray-400 text-white cursor-not-allowed"
                           : "bg-green-600 hover:bg-green-700 text-white"}
               `}
@@ -141,7 +131,7 @@ const DataAngkatan = () => {
           </div>
         </div>
       )}
-      {editDialog && role !== "petugas" && (
+      {editDialog && roles !== "petugas" && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-4 rounded-lg shadow-lg">
             <h2 className="text-lg font-semibold mb-4">Ubah Angkatan</h2>
