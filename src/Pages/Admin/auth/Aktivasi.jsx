@@ -33,7 +33,7 @@ const Aktivasi = () => {
             return;
         }
         localStorage.setItem("token-verifikasi", tokenInput); // Simpan token ke localStorage
-        navigate(`/verify` + tokenInput)
+        navigate(`/admin/verify/` + tokenInput)
     };    
 
     return (

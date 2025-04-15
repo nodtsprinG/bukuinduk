@@ -15,18 +15,18 @@ const VerifikasiToken = () => {
                 icon: "error",
                 title: "Token Tidak Valid",
                 text: "Token verifikasi tidak ditemukan.",
-            }).then(() => navigate("/admin/login"));
+            }).then(() => navigate("/admin/auth/login"));
             return;
         }
 
-        axios.post(`${baseUrl}/verify`, {token})
+        axios.post(`${baseUrl}/auth/verify/${token}`)
             .then((res) => {
                 Swal.fire({
                     icon: "success",
                     title: "Akun Diaktifkan",
                     text: res.data.message || "Silakan login kembali.",
                     confirmButtonText: "Login",
-                }).then(() => navigate("/admin/login"));
+                }).then(() => navigate("/admin/auth/login"));
             })
             .catch((err) => {
                 Swal.fire({
@@ -34,7 +34,7 @@ const VerifikasiToken = () => {
                     title: "Verifikasi Gagal",
                     text: err.response?.data?.message || "Token tidak valid atau sudah kadaluarsa.",
                     confirmButtonText: "Kembali",
-                }).then(() => navigate("/admin/login"));
+                }).then(() => navigate("/admin/auth/login"));
             });
     }, [token, navigate]);
 
