@@ -9,16 +9,16 @@ const Login = () => {
 
     const navigate = useNavigate()
 
-    useEffect(() => {
-        if (localStorage.getItem('token')) {
-            if (localStorage.getItem('status') === 'aktif') {
-                navigate("/admin/dashboard")
-            }
-            else {
-                navigate("/admin/auth/aktivasi")
-            }
-        }
-    })
+    // useEffect(() => {
+    //     if (localStorage.getItem('token')) {
+    //         if (localStorage.getItem('status') === 'aktif') {
+    //             navigate("/admin/dashboard")
+    //         }
+    //         else {
+    //             navigate("/admin/auth/aktivasi")
+    //         }
+    //     }
+    // })
 
     const verify = () => {
         if (email.length === 0) {

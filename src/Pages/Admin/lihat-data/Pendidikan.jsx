@@ -197,7 +197,7 @@ const Pendidikan = () => {
                 <DatePicker
                   selected={siswa.pendidikan[field] ? new Date(siswa.pendidikan[field]) : null}
                   onChange={(date) => isEditing && handleChange({ target: { value: date } }, field)}
-                  dateFormat={"dd-MM-yyyy"}
+                  dateFormat={"dd - MM - yyyy"}
                   className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
                   disabled={!isEditing}
                 />
