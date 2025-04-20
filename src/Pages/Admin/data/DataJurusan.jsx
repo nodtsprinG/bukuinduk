@@ -60,7 +60,7 @@ const DataJurusan = () => {
       <div className="flex-1 p-6 bg-white text-black overflow-y-scroll">
         <header className="flex justify-between items-center mb-4">
           <h1 className="text-3xl">Jurusan SMKN 2 Singosari</h1>
-          {roles !== "petugas" && ( // Petugas tidak bisa tambah data
+          {roles === "petugas" && ( // Petugas tidak bisa tambah data
             <button onClick={() => setShowDialog(true)} className="bg-blue-500 text-white p-2 rounded-sm">
               Tambah Jurusan
             </button>
@@ -94,7 +94,7 @@ const DataJurusan = () => {
                       disabled={roles === "petugas"}
                       onClick={() => handleEditClick(s.id, s.nama)}
                       className={`w-full px-4 py-2 rounded text-sm font-semibold transition-colors duration-200 
-                ${roles === "petugas"
+                ${roles !== "petugas"
                           ? "bg-gray-400 text-white cursor-not-allowed"
                           : "bg-green-600 hover:bg-green-700 text-white"}
               `}
@@ -108,7 +108,7 @@ const DataJurusan = () => {
           </table>
         </div>
       </div>
-      {showDialog && roles !== "petugas" && ( // Pastikan petugas tidak bisa tambah data
+      {showDialog && roles === "petugas" && ( // Pastikan petugas tidak bisa tambah data
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-4 rounded-lg shadow-lg">
             <h2 className="text-lg font-semibold mb-4">Tambah Jurusan</h2>
@@ -120,7 +120,7 @@ const DataJurusan = () => {
           </div>
         </div>
       )}
-      {editDialog && roles !== "petugas" && ( // Pastikan petugas tidak bisa edit data
+      {editDialog && roles === "petugas" && ( // Pastikan petugas tidak bisa edit data
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-4 rounded-lg shadow-lg">
             <h2 className="text-lg font-semibold mb-4">Ubah Jurusan</h2>

@@ -230,7 +230,7 @@ const DataSiswa = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then((response) => {
-        fileDownload(response.data, `Nilai Siswa Jurusan ${jurusanNama} Angkatan ${angkatanNama}.xlsx Semester ${semester}`);
+        fileDownload(response.data, `Nilai Siswa Jurusan ${jurusanNama} Angkatan ${angkatanNama} Semester ${semester}.xlsx`);
         Swal.fire({
           title: "Berhasil!",
           text: "Berhasil mengunduh file",
@@ -579,13 +579,13 @@ const DataSiswa = () => {
             </button>
 
             {/* Tombol Unggah Halaman Belakang */}
-            <button
+            {/* <button
               type="button"
               onClick={() => modalImport()}
               className="bg-green-700 rounded-md py-1 px-2 text-white hover:bg-green-800"
             >
               Unggah Rapor
-            </button>
+            </button> */}
             {isModalOpen1 && (
               <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
                 <div className="bg-white p-6 rounded-lg shadow-lg w-80">
