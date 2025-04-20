@@ -107,24 +107,24 @@ const Biodata = () => {
     try {
       const nama = siswa?.data_diri?.nama_lengkap || "Dokumen";
       const token = localStorage.getItem("token");
-      
+
       if (!token) {
         console.error("Token tidak ditemukan!");
         return alert("Anda belum login!");
       }
-  
+
       if (!id) {
         console.error("ID tidak valid!");
         return alert("Terjadi kesalahan, ID tidak ditemukan.");
       }
-  
+
       console.log(`Mengunduh PDF untuk: ${nama}`);
-      
+
       const response = await axios.get(`${baseUrl}/admin/export-pdf/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob", // Format binary agar bisa di-download
       });
-  
+
       // Buat URL dari Blob
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
@@ -132,7 +132,7 @@ const Biodata = () => {
       link.download = `${nama}.pdf`;
       document.body.appendChild(link);
       link.click();
-  
+
       // Cleanup setelah download
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -141,13 +141,13 @@ const Biodata = () => {
       alert("Terjadi kesalahan saat mengunduh PDF. Coba lagi nanti!");
     }
   };
-  
+
   const getUnit = (field) => {
     switch (field) {
-        case "pengeluaran_per_bulan":
-            return "Rp";
+      case "pengeluaran_per_bulan":
+        return "Rp";
     }
-};
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -186,21 +186,21 @@ const Biodata = () => {
             { label: "Nama Wali", field: "nama" },
             { label: "Tempat Lahir", field: "tempat_lahir" },
             { label: "Tanggal Lahir", field: "tanggal_lahir", type: "date" },
-            { label: "Agama", field: "agama" },
+            { label: "Agama", field: "agama", type: "select", options: ["Islam", "Kristen", "Katholik", "Hindu", "Buddha", "Konghucu"] },
             { label: "Kewarganegaraan", field: "kewarganegaraan" },
-            { label: "Pendidikan", field: "pendidikan" },
+            { label: "Pendidikan", field: "pendidikan", type: "select", options: ["SD", "SMP", "SMA/SMK/MA", "Diploma 1 (D1)", "Diploma 2 (D2)", "Diploma 3 (D3)", "Diploma 4 (D4)/Sarjana (S1)", "Magister (S2)", "Doktor (S3)"] },
             { label: "Pekerjaan", field: "pekerjaan" },
             { label: "Pengeluaran per Bulan", field: "pengeluaran_per_bulan", type: "integer" },
             { label: "Alamat", field: "alamat" },
             { label: "No Telepon", field: "no_telepon" },
-          ].map(({ label, field, type }, index) => (
+          ].map(({ label, field, type, options }, index) => (
             <div key={index} className="flex flex-col">
               <label className="text-gray-700 font-medium mb-1">{label}</label>
               {type === 'date' ? (
                 <DatePicker
                   selected={siswa.wali[field] ? new Date(siswa.wali[field]) : null}
                   onChange={(date) => isEditing && handleChange({ target: { value: date } }, field)}
-                  dateFormat={"dd-MM-yyyy"}
+                  dateFormat={"dd - MM - yyyy"}
                   className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
                   disabled={!isEditing}
                 />
@@ -221,6 +221,20 @@ const Biodata = () => {
                   className="input-field"
                   disabled={!isEditing}
                 />
+              ) : type === "select" ? (
+                <select
+                  value={siswa.wali[field]}
+                  onChange={(e) => isEditing && handleChange(e, field)}
+                  disabled={!isEditing}
+                  className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none capitalize"
+                >
+                  <option value="" hidden>Pilih</option>
+                  {options.map((option, idx) => (
+                    <option key={idx} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               ) : (
                 <TextInput
                   value={siswa.wali[field]}

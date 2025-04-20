@@ -149,9 +149,25 @@ const Wali = () => {
             <TextInput value={kewarganegaraan} onChange={(e) => setKewarganegaraan(e.target.value)} />
           </div>
 
+          {/* Pendidikan */}
           <div>
             <label className="block font-medium mb-1">Pendidikan</label>
-            <TextInput value={pendidikan} onChange={(e) => setPendidikan(e.target.value)} />
+            <select
+              value={pendidikan}
+              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
+              onChange={(e) => setAgama(e.target.value)}
+            >
+              <option value="default" hidden>Pilih</option>
+              <option value="SD">SD</option>
+              <option value="SMP Sederajat">SMP Sederajat</option>
+              <option value="SMA/SMK Sederajat">SMA/SMK/MA Sederajat</option>
+              <option value="D1">D1</option>
+              <option value="D2">D2</option>
+              <option value="D3">D3</option>
+              <option value="D4/S1">D4/S1</option>
+              <option value="S2">S2</option>
+              <option value="S3">S3</option>
+            </select>
           </div>
 
           <div>

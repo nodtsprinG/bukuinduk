@@ -144,10 +144,10 @@ const Biodata = () => {
 
   const getUnit = (field) => {
     switch (field) {
-        case "pengeluaran_per_bulan":
-            return "Rp";
+      case "pengeluaran_per_bulan":
+        return "Rp";
     }
-};
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -184,23 +184,24 @@ const Biodata = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[
             { label: "Nama Ibu", field: "nama" },
-            { label: "Agama", field: "agama" },
+            { label: "Agama", field: "agama", type: "select", options: ["Islam", "Kristen", "Katholik", "Hindu", "Buddha", "Konghucu"] },
             { label: "Tempat Lahir", field: "tempat_lahir" },
             { label: "Tanggal Lahir", field: "tanggal_lahir", type: "date" },
             { label: "Kewarganegaraan", field: "kewarganegaraan" },
-            { label: "Pendidikan", field: "pendidikan" },
+            { label: "Pendidikan", field: "pendidikan", type: "select", options: ["SD", "SMP", "SMA/SMK/MA", "Diploma 1 (D1)", "Diploma 2 (D2)", "Diploma 3 (D3)", "Diploma 4 (D4)/Sarjana (S1)", "Magister (S2)", "Doktor (S3)"] },
             { label: "Pekerjaan", field: "pekerjaan" },
             { label: "Pengeluaran per Bulan", field: "pengeluaran_per_bulan", type: "integer" },
             { label: "Alamat", field: "alamat" },
             { label: "No Telepon", field: "no_telepon" },
-          ].map(({ label, field, type }, index) => (
+            { label: "Status", field: "status", type: "select", options: ["masih hidup", "meninggal"] },
+          ].map(({ label, field, type, options }, index) => (
             <div key={index} className="flex flex-col">
               <label className="text-gray-700 font-medium mb-1">{label}</label>
               {type === 'date' ? (
                 <DatePicker
                   selected={siswa.ibu_kandung[field] ? new Date(siswa.ibu_kandung[field]) : null}
                   onChange={(date) => isEditing && handleChange({ target: { value: date } }, field)}
-                  dateFormat={"dd-MM-yyyy"}
+                  dateFormat={"dd - MM - yyyy"}
                   className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
                   disabled={!isEditing}
                 />
@@ -221,6 +222,20 @@ const Biodata = () => {
                   className="input-field"
                   disabled={!isEditing}
                 />
+              ) : type === "select" ? (
+                <select
+                  value={siswa.ibu_kandung[field]}
+                  onChange={(e) => isEditing && handleChange(e, field)}
+                  disabled={!isEditing}
+                  className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none capitalize"
+                >
+                  <option value="" hidden>Pilih</option>
+                  {options.map((option, idx) => (
+                    <option key={idx} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               ) : (
                 <TextInput
                   value={siswa.ibu_kandung[field]}
@@ -231,27 +246,6 @@ const Biodata = () => {
               )}
             </div>
           ))}
-
-          {/* Anak Yatim */}
-          <div className="flex flex-col">
-            <label className="text-gray-700 font-medium mb-1">Status</label>
-            <select
-              name="status"
-              value={siswa.ibu_kandung.status || ""}
-              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
-              onChange={(e) =>
-                isEditing &&
-                setSiswa((prev) => ({
-                  ...prev,
-                  ibu_kandung: { ...prev.ibu_kandung, status: e.target.value },
-                }))
-              }
-              disabled={!isEditing}
-            >
-              <option value="masih hidup">Masih Hidup</option>
-              <option value="meninggal">Meninggal</option>
-            </select>
-          </div>
         </div>
       </div>
       {/* Tombol Next & Back */}

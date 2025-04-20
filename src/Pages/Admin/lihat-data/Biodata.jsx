@@ -216,7 +216,7 @@ const Biodata = () => {
             { label: "Jumlah Saudara Kandung", field: "jml_saudara_kandung", type: "integer" },
             { label: "Jumlah Saudara Tiri", field: "jml_saudara_tiri", type: "integer" },
             { label: "Jumlah Saudara Angkat", field: "jml_saudara_angkat", type: "integer" },
-            { label: "Status", field: "anak_yatim", type: "select", options: ["lengkap", "yatim", "piatu", "yatim piatu"] },
+            { label: "Kelengkapan Orang Tua", field: "kelengkapan_ortu", type: "select", options: ["lengkap", "yatim", "piatu", "yatim piatu"] },
           ].map(({ label, field, type, options }, index) => (
             <div key={index} className="flex flex-col">
               <label className="text-gray-700 font-medium mb-1">{label}</label>
@@ -224,7 +224,7 @@ const Biodata = () => {
                 <DatePicker
                   selected={siswa.data_diri[field] ? new Date(siswa.data_diri[field]) : null}
                   onChange={(date) => isEditing && handleChange({ target: { value: date } }, field)}
-                  dateFormat={"dd-MM-yyyy"}
+                  dateFormat={"dd - MM - yyyy"}
                   className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
                   disabled={!isEditing}
                 />

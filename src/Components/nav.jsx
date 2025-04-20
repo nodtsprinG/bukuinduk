@@ -99,7 +99,7 @@ const Navigation = () => {
     <nav className="h-full w-72 bg-gray-900 text-white p-6 flex flex-col space-y-5">
       <div className="flex items-center space-x-3 mb-6">
         <img 
-          src={`data:image/png;base64,${logo}`} 
+          src={logo} 
           alt="Logo Sekolah" 
           className="w-14 h-14 rounded-full shadow-md object-cover" 
         />

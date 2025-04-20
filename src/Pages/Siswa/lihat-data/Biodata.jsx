@@ -160,6 +160,7 @@ const Biodata = () => {
             { label: "Jumlah Saudara Kandung", field: "jml_saudara_kandung", type: "integer" },
             { label: "Jumlah Saudara Tiri", field: "jml_saudara_tiri", type: "integer" },
             { label: "Jumlah Saudara Angkat", field: "jml_saudara_angkat", type: "integer" },
+            { label: "Kelengkapan Orang Tua", field: "kelengkapan_ortu", type: "select", options: ["lengkap", "yatim", "piatu", "yatim piatu"] },
           ].map(({ label, field, type, options }, index) => (
             <div key={index} className="flex flex-col">
               <label className="text-gray-700 font-medium mb-1">{label}</label>
@@ -209,30 +210,6 @@ const Biodata = () => {
               )}
             </div>
           ))}
-
-          {/* Anak Yatim */}
-          <div className="flex flex-col">
-            <label className="text-gray-700 font-medium mb-1">Status</label>
-            <select
-              name="anak_yatim"
-              value={siswa.data_diri.kelengkapan_ortu || ""}
-              className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
-              onChange={(e) =>
-                isEditing &&
-                setSiswa((prev) => ({
-                  ...prev,
-                  data_diri: { ...prev.data_diri, kelengkapan_ortu: e.target.value },
-                }))
-              }
-              disabled={!isEditing}
-            >
-              <option value="" hidden>Pilih</option>
-              <option value="lengkap">Lengkap</option>
-              <option value="yatim">Yatim</option>
-              <option value="piatu">Piatu</option>
-              <option value="yatim piatu">Yatim Piatu</option>
-            </select>
-          </div>
         </div>
       </div>
       {/* Tombol Next & Back */}

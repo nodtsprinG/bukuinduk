@@ -84,6 +84,7 @@ function DataDiriNav({ data }) {
                                 typeof data[active] === "object" &&
                                 Object.keys(data[active]).map((val, index) => {
                                     if (["id", "user_id", "status_data"].includes(val)) return null;
+                                    const isDifferent = oldData?.[active]?.[val] !== data?.[active]?.[val];
                                     return (
                                         <tr
                                             key={index}
@@ -92,7 +93,8 @@ function DataDiriNav({ data }) {
                                         >
                                             <td className="p-2 w-1/3 text-gray-600 border-b">{val.replaceAll("_", " ")}</td>
                                             <td className="p-2 w-10 border-b text-center">:</td>
-                                            <td className="p-2 w-2/3 text-gray-800 border-b">{data[active][val]}</td>
+                                            <td className={`p-2 w-2/3 border-b ${isDifferent ? "font-semibold text-green-500" : "text-gray-800"
+                                                    }`}>{data[active][val]}</td>
                                         </tr>
                                     );
                                 })}
