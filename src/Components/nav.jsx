@@ -92,7 +92,8 @@ const Navigation = () => {
     { to: "/admin/datasiswa", icon: <FaUserGraduate size={20} />, label: "Data Siswa" },
     role !== "petugas" && { to: "/admin/petugas", icon: <FaUserCog size={20} />, label: "Data Petugas" },
     role !== "petugas" && { to: "/admin/pending", icon: <MdPendingActions size={20} />, label: "Data Pengajuan" },
-    role !== "petugas" && { to: "/admin/unverified", icon: <MdPendingActions size={20} />, label: "Verifikasi Data" }
+    role !== "petugas" && { to: "/admin/unverified", icon: <MdPendingActions size={20} />, label: "Verifikasi Data" },
+    role !== "petugas" && { to: "/admin/backup", icon: <MdPendingActions size={20} />, label: "Manajemen Data" }
   ].filter(Boolean);
 
   return (
