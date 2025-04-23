@@ -115,7 +115,6 @@ const Ayah = () => {
       });
     }
   };
-
   return (
     <div className="bg-gray-100 w-screen min-h-screen px-8 py-6 text-lg overflow-y-auto">
       <HeaderInput title="Keterangan Ayah" word="E" form="siswa" />
@@ -163,7 +162,8 @@ const Ayah = () => {
               <option value="Katholik">Katholik</option>
               <option value="Hindu">Hindu</option>
               <option value="Buddha">Hindu</option>
-              <option value="Konghucu">Konghuchu</option>
+              <option value="Konghucu">Konghucu</option>
+              <option value="Aliran Kepercayaan">Aliran Kepercayaan</option>
             </select>
             {errors.agama && <p className="text-red-500 text-sm">{errors.agama}</p>}
           </div>

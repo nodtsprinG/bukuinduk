@@ -23,6 +23,7 @@ import DataSiswa from "./data/DataSiswa";
 import DataMapel from "./data/DataMapel";
 import DataPetugas from "./data/DataPetugas"
 import DataSekolah from "./data/DataSekolah"
+import Backup from './data/ManagementData'
 
 import Lbiodata from "./lihat-data/Biodata"
 import LtempatTinggal from "./lihat-data/TempatTinggal"
@@ -137,6 +138,7 @@ const AdminRouting = () => {
       <Route exact path="/petugas" element={<DataPetugas />} />
       <Route exact path="/pending" element={<Pending />} />
       <Route exact path="/unverified" element={<Unverified />} />
+      <Route exact path="/backup" element={<Backup />} />
       <Route exact path="/pending/:id" element={<PendingDetail />} />
     </Routes>
   );
