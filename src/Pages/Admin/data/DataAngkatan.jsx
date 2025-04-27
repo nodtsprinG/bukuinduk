@@ -15,7 +15,16 @@ const DataAngkatan = () => {
   const [filtered, setFiltered] = useState([]);
   const [role, setRole] = useState(""); // State untuk menyimpan role pengguna
 
-  const roles = localStorage.getItem("user_role")
+  useEffect(() => {
+    axios.get(baseUrl + "/auth/me", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
+      .then((res) => {
+        console.log("Role pengguna:", res.data); // Debugging
+        setRole(res.data.role); // Pastikan state diperbarui
+      }) // Ambil role dari response API
+      .catch((err) => console.error("Gagal mengambil data user:", err));
+  }, []);
 
   const updateAngkatan = () => {
     axios.get(baseUrl + "/admin/angkatan", {
@@ -61,12 +70,15 @@ const DataAngkatan = () => {
       <Navigation />
       <div className="flex-1 p-6 bg-white text-black overflow-y-scroll">
         <header className="flex justify-between items-center mb-4">
-          <h1 className="text-3xl">Angkatan SMKN 2 Singosari</h1>
-          {roles !== "petugas" && (
-            <button onClick={() => setShowDialog(true)} className="bg-blue-500 text-white p-2 rounded-sm">
+          <h1 className="text-3xl">Angkatan SMKN 2 Singosari</h1> 
+            <button
+              disabled={role !== "admin"}
+              onClick={() => setShowDialog(true)}
+              className={`p-2 rounded-sm text-white ${role !== "admin" ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500"
+                }`}
+            >
               Tambah Angkatan
             </button>
-          )}
         </header>
         <div className="mt-6 overflow-x-auto shadow">
           <table className="min-w-full border border-gray-200 bg-white text-sm">
@@ -87,10 +99,10 @@ const DataAngkatan = () => {
                   <td className="px-6 py-3 border">{s.tahun}</td>
                   <td className="px-6 py-3 border">
                     <button
-                      disabled={role === "petugas"}
+                      disabled={role !== "admin"}
                       onClick={() => handleEditClick(s.id, s.tahun)}
                       className={`w-full px-4 py-2 rounded text-sm font-semibold transition-colors duration-200 
-                ${roles === "petugas"
+                ${role !== "admin"
                           ? "bg-gray-400 text-white cursor-not-allowed"
                           : "bg-green-600 hover:bg-green-700 text-white"}
               `}
@@ -104,7 +116,7 @@ const DataAngkatan = () => {
           </table>
         </div>
       </div>
-      {showDialog && role !== "petugas" && (
+      {showDialog && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-md">
             <h2 className="text-lg font-semibold mb-4">Tambah Angkatan</h2>
@@ -131,7 +143,7 @@ const DataAngkatan = () => {
           </div>
         </div>
       )}
-      {editDialog && roles !== "petugas" && (
+      {editDialog && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-4 rounded-lg shadow-lg">
             <h2 className="text-lg font-semibold mb-4">Ubah Angkatan</h2>

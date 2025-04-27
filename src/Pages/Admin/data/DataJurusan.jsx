@@ -12,8 +12,18 @@ const DataJurusan = () => {
   const [jurusan, setJurusan] = useState([]);
   const [searchkey, setSearchkey] = useState("");
   const [filtered, setFiltered] = useState([]);
+  const [role, setRole] = useState(""); // State untuk menyimpan role pengguna
 
-  const roles = localStorage.getItem("user_role")
+  useEffect(() => {
+    axios.get(baseUrl + "/auth/me", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
+      .then((res) => {
+        console.log("Role pengguna:", res.data); // Debugging
+        setRole(res.data.role); // Pastikan state diperbarui
+      }) // Ambil role dari response API
+      .catch((err) => console.error("Gagal mengambil data user:", err));
+  }, []);
 
   const updateJurusan = () => {
     axios.get(baseUrl + "/admin/jurusan", {
@@ -60,11 +70,14 @@ const DataJurusan = () => {
       <div className="flex-1 p-6 bg-white text-black overflow-y-scroll">
         <header className="flex justify-between items-center mb-4">
           <h1 className="text-3xl">Jurusan SMKN 2 Singosari</h1>
-          {roles !== "petugas" && ( // Petugas tidak bisa tambah data
-            <button onClick={() => setShowDialog(true)} className="bg-blue-500 text-white p-2 rounded-sm">
-              Tambah Jurusan
-            </button>
-          )}
+          <button
+            disabled={role !== "admin"}
+            onClick={() => setShowDialog(true)}
+            className={`p-2 rounded-sm text-white ${role !== "admin" ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500"
+              }`}
+          >
+            Tambah Jurusan
+          </button>
         </header>
         <input
           type="search"
@@ -91,13 +104,12 @@ const DataJurusan = () => {
                   <td className="px-6 py-3 border">{s.nama}</td>
                   <td className="px-6 py-3 border">
                     <button
-                      disabled={roles === "petugas"}
+                      disabled={role !== "admin"}
                       onClick={() => handleEditClick(s.id, s.nama)}
-                      className={`w-full px-4 py-2 rounded text-sm font-semibold transition-colors duration-200 
-                ${roles === "petugas"
-                          ? "bg-gray-400 text-white cursor-not-allowed"
-                          : "bg-green-600 hover:bg-green-700 text-white"}
-              `}
+                      className={`w-full px-4 py-2 rounded text-sm font-semibold transition-colors duration-200 ${role !== "admin"
+                        ? "bg-gray-400 text-white cursor-not-allowed"
+                        : "bg-green-600 hover:bg-green-700 text-white"
+                        }`}
                     >
                       Ubah
                     </button>
@@ -108,26 +120,54 @@ const DataJurusan = () => {
           </table>
         </div>
       </div>
-      {showDialog && roles === "petugas" && ( // Pastikan petugas tidak bisa tambah data
+      {showDialog && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-4 rounded-lg shadow-lg">
             <h2 className="text-lg font-semibold mb-4">Tambah Jurusan</h2>
-            <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} className="w-full p-2 border rounded-lg" />
+            <input
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              className="w-full p-2 border rounded-lg"
+            />
             <div className="flex justify-end mt-4 gap-2">
-              <button onClick={() => setShowDialog(false)} className="bg-gray-500 text-white p-2 rounded-lg">Batal</button>
-              <button onClick={handleAddClick} className="bg-blue-500 text-white p-2 rounded-lg">Tambah</button>
+              <button
+                onClick={() => setShowDialog(false)}
+                className="bg-gray-500 text-white p-2 rounded-lg"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleAddClick}
+                className="bg-blue-500 text-white p-2 rounded-lg"
+              >
+                Tambah
+              </button>
             </div>
           </div>
         </div>
       )}
-      {editDialog && roles === "petugas" && ( // Pastikan petugas tidak bisa edit data
+      {editDialog && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white p-4 rounded-lg shadow-lg">
             <h2 className="text-lg font-semibold mb-4">Ubah Jurusan</h2>
-            <input value={editValue} onChange={(e) => setEditValue(e.target.value)} className="w-full p-2 border rounded-lg" />
+            <input
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              className="w-full p-2 border rounded-lg"
+            />
             <div className="flex justify-end mt-4 gap-2">
-              <button onClick={() => setEditDialog(false)} className="bg-gray-500 text-white p-2 rounded-lg">Batal</button>
-              <button onClick={handleUpdateClick} className="bg-blue-500 text-white p-2 rounded-lg">Simpan</button>
+              <button
+                onClick={() => setEditDialog(false)}
+                className="bg-gray-500 text-white p-2 rounded-lg"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleUpdateClick}
+                className="bg-blue-500 text-white p-2 rounded-lg"
+              >
+                Simpan
+              </button>
             </div>
           </div>
         </div>

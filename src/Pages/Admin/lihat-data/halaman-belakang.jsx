@@ -6,6 +6,7 @@ import { baseUrl } from "../../../utils/constan";
 import Profil from "../../../Components/profileCard"
 import PilihHalaman from "../../../Components/pilihHalaman"
 import { Edit, Save } from "lucide-react"
+import Swal from "sweetalert2";
 
 const ERaport = () => {
   const [activeSemester, setActiveSemester] = useState(1);
@@ -15,7 +16,7 @@ const ERaport = () => {
   const [editing, setIsEditing] = useState(false)
 
   // const params = useParams();
-
+  const nama = localStorage.getItem("Nama")
   useEffect(() => {
     fetchMapel();
   }, []);
@@ -113,10 +114,22 @@ const ERaport = () => {
         }
       );
       setIsEditing(false)
-      alert("Data berhasil disimpan!");
+      Swal.fire({
+        icon: "success",
+        title: "Berhasil",
+        text: "Data berhasil disimpan",
+        showConfirmButton: false,
+        timer: 1500,
+      })
     } catch (error) {
       console.error("Error saving nilai:", error);
-      alert("Terjadi kesalahan saat menyimpan data.");
+      Swal.fire({
+        icon: "error",
+        title: "Gagal",
+        text: "Data gagal disimpan",
+        showConfirmButton: false,
+        timer: 1500,
+      })
     }
   };
 
@@ -175,10 +188,24 @@ const ERaport = () => {
         },
       })
       .then((response) => {
-        fileDownload(response.data, "nilai-siswa.pdf");
+        fileDownload(response.data, `Nilai ${nama}.pdf`);
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil",
+          text: "Data akan diunduh",
+          showConfirmButton: false,
+          timer: 1500,
+        })
       })
       .catch((error) => {
         console.error("Download error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          text: "Data gagal diunduh",
+          showConfirmButton: false,
+          timer: 1500,
+        })
       });
   };
 
@@ -191,7 +218,14 @@ const ERaport = () => {
         },
       })
       .then((response) => {
-        fileDownload(response.data, "nilai-siswa.xlsx");
+        fileDownload(response.data, `Nilai ${nama}.xlsx`);
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil",
+          text: "Data akan diunduh",
+          showConfirmButton: false,
+          timer: 1500,
+        })
       })
       .catch((error) => {
         console.error("Download error:", error);
@@ -208,9 +242,23 @@ const ERaport = () => {
       })
       .then((response) => {
         fileDownload(response.data, "format-nilai-siswa.xlsx");
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil",
+          text: "Data akan diunduh",
+          showConfirmButton: false,
+          timer: 1500,
+        })
       })
       .catch((error) => {
         console.error("Download error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          text: "Data gagal diunduh",
+          showConfirmButton: false,
+          timer: 1500,
+        })
       });
   }
 
@@ -226,9 +274,21 @@ const ERaport = () => {
       await axios.post(`${baseUrl}/admin/import-individual-raport`, formData, {
         headers: { "Content-Type": "multipart/form-data", "Authorization": "Bearer " + localStorage.getItem("token") },
       });
-      alert("File berhasil diunggah");
+      Swal.fire({
+        icon: "success",
+        title: "Berhasil",
+        text: "File berhasil diunggah",
+        showConfirmButton: false,
+        timer: 1500,
+      })
     } catch {
-      alert("File gagal diunggah");
+      Swal.fire({
+        icon: "error",
+        title: "Gagal",
+        text: "File gagal diunggah",
+        showConfirmButton: false,
+        timer: 1500,
+      })
     }
   };
 

@@ -25,6 +25,7 @@ const StudentInfo = () => {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 });
+                localStorage.setItem("Nama", response.data.data_diri.nama_lengkap); // Debugging)
 
                 setSiswa(response.data);
             } catch (err) {

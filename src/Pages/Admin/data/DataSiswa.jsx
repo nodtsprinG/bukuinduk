@@ -221,16 +221,17 @@ const DataSiswa = () => {
     }
     const jurusanNama = jurusanList.find((j) => j.id === parseInt(jurusanId))?.nama || "Jurusan-Tidak-Diketahui";
     const angkatanNama = angkatanList.find((a) => a.id === parseInt(angkatanId))?.tahun || "Angkatan-Tidak-Diketahui";
-    // const semester = prompt("Masukkan semester 1-5")
-    const url = `${baseUrl}/admin/export-raport-excel?&jurusanId=${jurusanId}&angkatanId=${angkatanId}&semester=${semester}`;
 
     axios
-      .get(url, {
+      .get(`${baseUrl}/admin/export-raport-excel?&angkatanId=${angkatanId}&jurusanId=${jurusanId}&semester=${semester}`, {
         responseType: "blob",
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then((response) => {
-        fileDownload(response.data, `Nilai Siswa Jurusan ${jurusanNama} Angkatan ${angkatanNama} Semester ${semester}.xlsx`);
+        fileDownload(
+          response.data,
+          `Nilai Siswa Jurusan ${jurusanNama} Angkatan ${angkatanNama} Semester ${semester}.xlsx`
+        );
         Swal.fire({
           title: "Berhasil!",
           text: "Berhasil mengunduh file",
@@ -246,14 +247,14 @@ const DataSiswa = () => {
         console.error("Download error:", error);
         Swal.fire({
           title: "Gagal!",
-          text: "Gagal mengekspor PDF!",
+          text: "Gagal mengekspor Excel!",
           icon: "error",
           confirmButtonText: "OK",
         });
       });
   };
 
-  //Elspor Format Rapor
+  //Ekspor Format Rapor
   const exportDataExcelHalBelakangDummy = (e) => {
     if (!semester) {
       Swal.fire({
