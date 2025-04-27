@@ -13,8 +13,12 @@ const Verify = () => {
     const { code } = useParams()
 
     const verify = () => {
-        if (code.length === 0) {
-            alert("Error");
+        if (kode !== code) {
+            Swal.fire({
+                title: "Error",
+                text: "Kode Salah",
+                icon: "error",
+            });
         } else {
             axios.post(baseUrl + '/auth/code-admin', { code })
                 .then((res) => {

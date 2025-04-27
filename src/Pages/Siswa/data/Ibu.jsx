@@ -95,7 +95,7 @@ const Ibu = () => {
         localStorage.setItem("ibu-nama", nama);
         localStorage.setItem("ibu-tempatlahir", tempatlahir);
         localStorage.setItem("ibu-tanggallahir", tanggallahir);
-        localStorage.setItem("ibu-agama", nama);
+        localStorage.setItem("ibu-agama", agama);
         localStorage.setItem("ibu-kewarganegaraan", kewarganegaraan);
         localStorage.setItem("ibu-pendidikan", pendidikan);
         localStorage.setItem("ibu-pekerjaan", pekerjaan);
@@ -178,18 +178,18 @@ const Ibu = () => {
             <select
               value={pendidikan}
               className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
-              onChange={(e) => setAgama(e.target.value)}
+              onChange={(e) => setPendidikan(e.target.value)}
             >
               <option value="default" hidden>Pilih</option>
               <option value="SD">SD</option>
-              <option value="SMP Sederajat">SMP Sederajat</option>
-              <option value="SMA/SMK Sederajat">SMA/SMK/MA Sederajat</option>
-              <option value="D1">D1</option>
-              <option value="D2">D2</option>
-              <option value="D3">D3</option>
-              <option value="D4/S1">D4/S1</option>
-              <option value="S2">S2</option>
-              <option value="S3">S3</option>
+              <option value="SMP">SMP Sederajat</option>
+              <option value="SMA/SMK/MA">SMA/SMK/MA</option>
+              <option value="Diploma 1 (D1)">D1</option>
+              <option value="Diploma 2 (D2)">D2</option>
+              <option value="Diploma 3 (D3)">D3</option>
+              <option value="D4/Diploma 4 (D4)/Sarjana (S1)">D4/S1</option>
+              <option value="Magister (S2)">S2</option>
+              <option value="Doktor (S3)">S3</option>
             </select>
             {errors.pendidikan && <p className="text-red-500 text-sm">{errors.pendidikan}</p>}
           </div>

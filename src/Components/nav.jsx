@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { baseUrl } from "../utils/constan";
-import { 
+import {
   FaHome,
-  FaSchool, 
+  FaSchool,
   FaUserGraduate,
   FaUserCog,
   FaSignOutAlt,
@@ -22,7 +22,7 @@ const Navigation = () => {
 
   useEffect(() => {
     const cachedUser = localStorage.getItem("user_role");
-  
+
     if (cachedUser) {
       setRole(JSON.parse(cachedUser));
     } else {
@@ -36,10 +36,10 @@ const Navigation = () => {
         .catch((err) => console.error("Gagal mengambil data user:", err));
     }
   }, []);
-  
+
   useEffect(() => {
     const cachedSekolah = localStorage.getItem("data_sekolah");
-  
+
     if (cachedSekolah) {
       const data = JSON.parse(cachedSekolah);
       setNama(data.nama);
@@ -99,10 +99,10 @@ const Navigation = () => {
   return (
     <nav className="h-full w-72 bg-gray-900 text-white p-6 flex flex-col space-y-5">
       <div className="flex items-center space-x-3 mb-6">
-        <img 
-          src={logo} 
-          alt="Logo Sekolah" 
-          className="w-14 h-14 rounded-full shadow-md object-cover" 
+        <img
+          src={`data:image/png;base64, ${logo}`}
+          alt="Logo Sekolah"
+          className="w-14 h-14 rounded-full shadow-md object-cover"
         />
         <div>
           <h1 className="text-lg font-bold capitalize">{nama || "Admin"}</h1>
@@ -113,8 +113,8 @@ const Navigation = () => {
       <ul className="space-y-2 flex-1">
         {menuItems.map((item, index) => (
           <li key={index}>
-            <Link 
-              to={item.to} 
+            <Link
+              to={item.to}
               className="flex items-center space-x-3 p-3 rounded-lg transition duration-300 hover:bg-gray-700"
             >
               {item.icon}
@@ -125,8 +125,8 @@ const Navigation = () => {
       </ul>
 
       <div className="mt-auto">
-        <button 
-          onClick={Logout} 
+        <button
+          onClick={Logout}
           className="flex w-full items-center space-x-3 p-3 rounded-lg bg-red-600 hover:bg-red-700 transition duration-300"
         >
           <FaSignOutAlt size={20} />

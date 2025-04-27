@@ -97,7 +97,7 @@ const Ayah = () => {
         localStorage.setItem("ayah-nama", nama);
         localStorage.setItem("ayah-tempatlahir", tempatlahir);
         localStorage.setItem("ayah-tanggallahir", tanggallahir);
-        localStorage.setItem("ayah-agama", nama);
+        localStorage.setItem("ayah-agama", agama);
         localStorage.setItem("ayah-kewarganegaraan", kewarganegaraan);
         localStorage.setItem("ayah-pendidikan", pendidikan);
         localStorage.setItem("ayah-pekerjaan", pekerjaan);
@@ -180,7 +180,7 @@ const Ayah = () => {
             <select
               value={pendidikan}
               className="bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 py-2 px-4 w-[50%] rounded-lg shadow-sm transition duration-300 ease-in-out focus:outline-none"
-              onChange={(e) => setAgama(e.target.value)}
+              onChange={(e) => setPendidikan(e.target.value)}
             >
               <option value="default" hidden>Pilih</option>
               <option value="SD">SD</option>
